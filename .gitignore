@@ -1,0 +1,7 @@
+*.ff
+*.iwd
+*.files
+*.tmp
+console.log
+missingasset.csv
+TODO.md
