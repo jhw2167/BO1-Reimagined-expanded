@@ -1,0 +1,25 @@
+- Re-add Mulekick to all maps
+- set default sprint not unlimited
+- Add perk-a-punch to existing perks
+	- allow perk to be bought 2nd time for 10k
+	- update hint string
+	- apply gameplay updates to player
+	- make perk permanent
+	- Apply to other perks
+- Add stamina up to 5, Kino
+- Add deadshot up to 5, Kino
+- Add phd up to 5, Kino
+---------------------------------
+
+- Add double pack for 15k
+- double weapon damage, double ammo
+- Set points from zombie to level off for non-pap'd weapons
+- set points to increase from pap'ed weapons
+- set pistols to do double points
+- set shotguns to do much increased damage
+
+---------------------------------
+- implement push mechanics
+	- melee attack w/0 knife
+	- zombie play fall animation from T-gun
+	- zombie temp no collisions
