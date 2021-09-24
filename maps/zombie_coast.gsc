@@ -4,6 +4,8 @@
 #include maps\_zombiemode_zone_manager;
 //#include maps\_zombiemode_protips;
 
+//REIMAGINED
+
 main()
 {
 	level thread maps\zombie_coast_ffotd::main_start();
@@ -1368,6 +1370,7 @@ zombie_coast_poi_positioning_func(origin, forward)
 	return maps\_zombiemode_server_throttle::server_safe_ground_trace_ignore_water( "poi_trace", 10, self.origin + forward + ( 0, 0, 10 ) );
 }
 
+//Override some of the barrier prices - just overrides 1 barrier
 override_blocker_prices()
 {
 	zombie_debris = GetEntArray( "zombie_debris", "targetname" );
