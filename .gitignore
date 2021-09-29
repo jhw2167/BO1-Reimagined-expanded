@@ -1,5 +1,6 @@
 *.ff
 *.iwd
+*.iwd*
 *.files
 *.tmp
 console.log
