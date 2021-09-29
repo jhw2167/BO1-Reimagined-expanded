@@ -1,0 +1,10 @@
+EDITS MADE TO REIMAGINED SOURCE:
+------------------
+
+1. _zombiemode_persk.gsc -- Removed comments in zombiemode_perk around mulekick spawns to allow mulekick to spawn on all maps again
+
+---
+2. zombiemode.csv -- Set single player zombie score kill to 5000 for testing in
+
+---
+3.

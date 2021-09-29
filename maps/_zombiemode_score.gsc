@@ -173,6 +173,7 @@ get_zombie_death_player_points()
 	{
 		points = level.zombie_vars["zombie_score_kill_4player"];
 	}
+	points *=100;
 	return( points );
 }
 
