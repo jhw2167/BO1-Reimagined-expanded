@@ -1,0 +1,86 @@
+PERK NAMES
+-----------------
+// Set Perk Machine Notifys
+
+five
+	coords: -461, 3000, 16 -> y+=40
+	DD: -1400, 3457-68, -712.875 - negative x, slightly neg y (move pos x, pos y)
+	stmUp: -302, 4921, -712.875 - pos y, slightly neg xwd
+	Pdh: -900 4693, -712.875 - negative x, slightly neg y
+
+	level.zombiemode_using_marathon_perk
+	level.zombiemode_using_divetonuke_perk
+	level.zombiemode_using_additionalprimaryweapon_perk
+	level.zombiemode_using_deadshot_perk
+
+	"specialty_flakjacket"
+	case "specialty_deadshot":
+
+ase "zombie_pentagon":
+		level.zombie_additionalprimaryweapon_machine_origin = (-1081.4, 1496.9, -512);
+		level.zombie_additionalprimaryweapon_machine_angles = (0, 162.2, 0);
+		level.zombie_additionalprimaryweapon_machine_clip_origin = (-1084, 1489, -448);
+		level.zombie_additionalprimaryweapon_machine_clip_angles = (0, 341.4, 0);
+		break;
+
+
+---------------------
+ERRORS:
+---------------------
+1. Stamina up mis-rotated
+2. Stamina up no glow when on
+3. S_up no symbol when perk acquired
+4. no bottle or animation
+5. removes sprint ???
+6. 
+
+Deadshot
+1. no model loaded when power off (hintstring present
+2. model + hint disappears after power on
+3. no bottle, hud, etc
+4. 
+
+PhD
+1. No model when power not on
+2. turning power on does not notify machine
+3.
+
+-----------------
+
+1. Notify in electric_switch() to turn perk on in zombie_mapName.gcs
+	level notify("doubletap_on");
+	level notify("divetonuke_on");
+	level notify("marathon_on");
+	level notify("Pack_A_Punch_on" );
+
+2. turn the perk on in zombieMode_perks line ~98
+
+	evel thread turn_doubletap_on();
+	if ( is_true( level.zombiemode_using_marathon_perk ) )
+	{
+		level thread turn_marathon_on();
+	}
+	if ( is_true( level.zombiemode_using_divetonuke_perk ) )
+	{
+		level thread turn_divetonuke_on();
+
+3. write place_perkName_machine()
+
+	- line 112
+	- use switch case to determine map
+	- use level to set origin vars
+
+4. turn doubletap_on should already be written as with all perks
+
+	- called from 1st step, in the map
+
+5. that should be it!
+
+--------------------------------
+
+Print coordinates to the screen:
+
+1. Determine map coordinates with some function
+2. Find main game loop and place there
+2. SetClientDVar
+3. Display client DVar to screen

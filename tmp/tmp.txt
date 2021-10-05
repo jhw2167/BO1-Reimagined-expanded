@@ -1,0 +1,1 @@
+Name: zombie_vending_doubletap | Status: Semi - Loaded | Placeholder: Unkown | NumJoints: 1 | NumMesh: 3 | NumLods: -

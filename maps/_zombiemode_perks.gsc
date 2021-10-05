@@ -6,6 +6,9 @@ init()
 {
 	level thread place_additionalprimaryweapon_machine();
 	level thread place_doubletap_machine();
+	level thread place_marathon_machine();
+	level thread place_divetonuke_machine();
+	level thread place_deadshot_machine();
 
 	// Perks-a-cola vending machine use triggers
 	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
@@ -65,6 +68,11 @@ init()
 	array_thread( vending_triggers, ::vending_trigger_think );
 	array_thread( vending_triggers, ::electric_perks_dialog );
 	//array_thread( vending_triggers, ::bump_trigger_think );
+	
+	//TURN NEW PERKS ON - Reimaged Expanded
+	level.zombiemode_using_marathon_perk = true;
+	level.zombiemode_using_divetonuke_perk = true;
+	level.zombiemode_using_deadshot_perk = true;
 
 	level thread turn_doubletap_on();
 	if ( is_true( level.zombiemode_using_marathon_perk ) )
@@ -108,6 +116,162 @@ init()
 		[[level.quantum_bomb_register_result_func]]( "give_nearest_perk", ::quantum_bomb_give_nearest_perk_result, 100, ::quantum_bomb_give_nearest_perk_validation );
 	}
 }
+
+//Place perk machines on Kino, five, and cosmodrome
+place_marathon_machine() {
+
+switch ( Tolower( GetDvar( #"mapname" ) ) )
+	{
+	case "zombie_pentagon":
+		level.zombie_marathon_machine_origin = (-302, 4921, -712.875);
+		level.zombie_marathon_machine_angles = (0, 72.2, 0);
+		level.zombie_marathon_machine_clip_origin = level.zombie_marathon_machine_origin + (0, -10, 0);
+		level.zombie_marathon_machine_clip_angles = (0, 0, 0);
+		break;
+		
+	//to add
+	case "zombie_kino":
+		level.zombie_marathon_machine_origin = (1129.3, 743.9, -321.9);
+		level.zombie_marathon_machine_angles = (0, 180, 0);
+		level.zombie_marathon_machine_clip_origin = level.zombie_marathon_machine_origin + (0, -10, 0);
+		level.zombie_marathon_machine_clip_angles = (0, 0, 0);
+		break;
+	}
+
+	if ( !isdefined( level.zombie_marathon_machine_origin ) )
+	{
+		return;
+	}
+
+	machine = Spawn( "script_model", level.zombie_marathon_machine_origin );
+	machine.angles = level.zombie_marathon_machine_angles;
+	machine setModel( "zombie_vending_marathon" );
+	machine.targetname = "vending_marathon";
+
+	machine_trigger = Spawn( "trigger_radius_use", level.zombie_marathon_machine_origin + (0, 0, 30), 0, 20, 70 );
+	machine_trigger.targetname = "zombie_vending";
+	machine_trigger.target = "vending_marathon";
+	machine_trigger.script_noteworthy = "specialty_longersprint";
+
+	machine_trigger.script_sound = "mus_perks_marathon_jingle";
+	machine_trigger.script_label = "mus_perks_marathon_sting";
+
+	if ( isdefined( level.zombie_marathon_machine_clip_origin ) )
+	{
+		machine_clip = spawn( "script_model", level.zombie_marathon_machine_clip_origin );
+		machine_clip.angles = level.zombie_marathon_machine_clip_angles;
+		machine_clip setmodel( "collision_geo_64x64x256" );
+		machine_clip Hide();
+	}
+
+
+}
+//END PLACE MARATHON PERK
+
+
+//PLACE DIVETONUKE ON five, kino
+place_divetonuke_machine() {
+	
+	switch ( Tolower( GetDvar( #"mapname" ) ) )
+	{
+	case "zombie_pentagon":
+		level.zombie_divetonuke_machine_origin = (-900, 4693, -712.875);
+		level.zombie_divetonuke_machine_angles = (0, 162.2, 0);
+		level.zombie_divetonuke_machine_clip_origin = level.zombie_divetonuke_machine_origin + (0, -10, 0);
+		level.zombie_divetonuke_machine_clip_angles = (0, 0, 0);
+		break;
+		
+	//to add
+	case "zombie_kino":
+		level.zombie_divetonuke_machine_origin = (1129.3, 743.9, -321.9);
+		level.zombie_divetonuke_machine_angles = (0, 180, 0);
+		level.zombie_divetonuke_machine_clip_origin = level.zombie_divetonuke_machine_origin + (0, -10, 0);
+		level.zombie_divetonuke_machine_clip_angles = (0, 0, 0);
+		break;
+	}
+
+	if ( !isdefined( level.zombie_divetonuke_machine_origin ) )
+	{
+		return;
+	}
+
+	machine = Spawn( "script_model", level.zombie_divetonuke_machine_origin );
+	machine.angles = level.zombie_divetonuke_machine_angles;
+	machine setModel( "zombie_vending_nuke" );
+	machine.targetname = "vending_divetonuke";
+
+	machine_trigger = Spawn( "trigger_radius_use", level.zombie_divetonuke_machine_origin + (0, 0, 30), 0, 20, 70 );
+	machine_trigger.targetname = "zombie_vending";
+	machine_trigger.target = "vending_divetonuke";
+	machine_trigger.script_noteworthy = "specialty_flackjacket";
+
+	machine_trigger.script_sound = "mus_perks_divetonuke_jingle";
+	machine_trigger.script_label = "mus_perks_divetonuke_sting";
+
+	if ( isdefined( level.zombie_divetonuke_machine_clip_origin ) )
+	{
+		machine_clip = spawn( "script_model", level.zombie_divetonuke_machine_clip_origin );
+		machine_clip.angles = level.zombie_divetonuke_machine_clip_angles;
+		machine_clip setmodel( "collision_geo_64x64x256" );
+		machine_clip Hide();
+	}
+
+	
+}
+//END PLACE DIVETONUKE machine
+
+//PLACE DEADSHOT MACHINE
+place_deadshot_machine() {
+	
+	
+	switch ( Tolower( GetDvar( #"mapname" ) ) )
+	{
+	case "zombie_pentagon":
+		level.zombie_deadshot_machine_origin = (-1403, 3459, -712.875);
+		level.zombie_deadshot_machine_angles = (0, 162.2, 0);
+		level.zombie_deadshot_machine_clip_origin = level.zombie_deadshot_machine_origin + (0, -10, 0);
+		level.zombie_deadshot_machine_clip_angles = (0, 0, 0);
+		break;
+		
+	//to add
+	case "zombie_kino":
+		level.zombie_deadshot_machine_origin = (1129.3, 743.9, -321.9);
+		level.zombie_deadshot_machine_angles = (0, 180, 0);
+		level.zombie_deadshot_machine_clip_origin = level.zombie_deadshot_machine_origin + (0, -10, 0);
+		level.zombie_deadshot_machine_clip_angles = (0, 0, 0);
+		break;
+	}
+
+	if ( !isdefined( level.zombie_deadshot_machine_origin ) )
+	{
+		return;
+	}
+
+	machine = Spawn( "script_model", level.zombie_deadshot_machine_origin );
+	machine.angles = level.zombie_deadshot_machine_angles;
+	machine setModel( "zombie_vending_ads" );
+	machine.targetname = "vending_deadshot";
+
+	machine_trigger = Spawn( "trigger_radius_use", level.zombie_deadshot_machine_origin + (0, 0, 30), 0, 20, 70 );
+	machine_trigger.targetname = "zombie_vending";
+	machine_trigger.target = "vending_deadshot";
+	machine_trigger.script_noteworthy = "specialty_deadshot";
+
+	machine_trigger.script_sound = "mus_perks_deadshot_jingle";
+	machine_trigger.script_label = "mus_perks_deadshot_sting";
+
+	if ( isdefined( level.zombie_deadshot_machine_clip_origin ) )
+	{
+		machine_clip = spawn( "script_model", level.zombie_deadshot_machine_clip_origin );
+		machine_clip.angles = level.zombie_deadshot_machine_clip_angles;
+		machine_clip setmodel( "collision_geo_64x64x256" );
+		machine_clip Hide();
+	}
+
+}
+//END PLACE DEADSHOT MACHINE
+
+
 
 place_doubletap_machine()
 {
@@ -1301,6 +1465,8 @@ turn_marathon_on()
 turn_divetonuke_on()
 {
 	machine = getentarray("vending_divetonuke", "targetname");
+	
+	println("P H D   IS   WAITING");
 	level waittill("divetonuke_on");
 
 	for( i = 0; i < machine.size; i++ )
@@ -1311,6 +1477,8 @@ turn_divetonuke_on()
 		machine[i] thread perk_fx( "divetonuke_light" );
 	}
 	level notify( "specialty_flakjacket_power_on" );
+	
+	println("P H D   IS   ON");
 }
 
 divetonuke_explode( attacker, origin )
@@ -1933,7 +2101,12 @@ give_perk( perk, bought )
 		self thread additional_weapon_indicator(perk, perk_str);
 		self thread unsave_additional_weapon_on_bleedout();
 	}
-
+	if( perk == "specialty_endurance" )
+	{	
+		//expanded_edit
+		self SetPerk("specialty_unlimitedsprint");
+	}
+		
 
 	self perk_hud_create( perk );
 
@@ -2230,11 +2403,16 @@ perk_think( perk )
 		case "specialty_deadshot_upgrade":
 			self ClearClientFlag(level._ZOMBIE_PLAYER_FLAG_DEADSHOT_PERK);
 			break;
+		case "specialty_endurance":
+		//expanded_edit
+		self UnsetPerk("specialty_unlimitedsprint");
+		break;
 	}
+
 
 	self perk_hud_destroy( perk );
 	self.perk_purchased = undefined;
-	//self iprintln( "Perk Lost: " + perk );
+	self iprintln( "Perk Lost: " + perk );
 
 
 	if ( IsDefined( level.perk_lost_func ) )
@@ -2494,6 +2672,9 @@ perk_give_bottle_begin( perk )
 		weapon = "zombie_perk_bottle_additionalprimaryweapon";
 		break;
 	}
+
+	iprintln("Perk coming through: " + perk);
+	iprintln("Weapon assigned: " + weapon);
 
 	self GiveWeapon( weapon );
 	self SwitchToWeapon( weapon );

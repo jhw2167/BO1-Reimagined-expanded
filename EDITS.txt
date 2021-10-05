@@ -7,4 +7,61 @@ EDITS MADE TO REIMAGINED SOURCE:
 2. zombiemode.csv -- Set single player zombie score kill to 5000 for testing in
 
 ---
-3.
+3. zombiemode.csv:2013 -- commented out unlimited spring for players on spawn
+
+---*
+4. _zombiemode_perk.csv:1936 -- if perk is "specialty_endurance" set unlimited sprint
+	:2237 -- if perk is "specialty_endurance" remove unlimited sprint
+
+---
+5. _zombiemode_perk.csv:2247 -- printed out "Perk lost"
+
+---
+6. zombiemode.csv:2067 -- printed out self origin to screen
+	- 2015 - prinln
+	- :2080
+---
+7. zombiemode_perks.csv:9 -- call method for placing Phd, deadshot and stamina in various maps
+	- 
+
+---
+8. zombiemode_perks.csv:58 -- write place_divetoNuke, place_marathon, place_deadshot
+	
+
+---
+9. zombiemode_perks.csv:104 -- indicate using diveToNuke, marathon, deadshot = true
+	- set in _zombiemode
+
+---
+10. _zombie_pentagon.gsc -- notify to turn on new perks, pdh, stamina, deadshot
+
+
+---
+11. _zombiemode_persk.gsc -- Removed comments in zombiemode_perk around mulekick spawns to allow mulekick to spawn on all maps again
+
+---
+12. zombiemode.csv -- Set single player zombie score kill to 5000 for testing in
+
+---
+13. zombiemode.csv:2013 -- commented out unlimited spring for players on spawn
+
+---*
+14. _zombiemode_perk.csv:1936 -- if perk is "specialty_endurance" set unlimited sprint
+	:2237 -- if perk is "specialty_endurance" remove unlimited sprint
+
+---
+15. _zombiemode_perk.csv:2247 -- printed out "Perk lost"
+
+---
+16. zombiemode.csv:2067 -- printed out self origin to screen
+	- 2015 - prinln
+	- :2080
+---
+17. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
+
+---
+18. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
+
+---
+19. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
+

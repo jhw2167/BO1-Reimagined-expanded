@@ -13,6 +13,8 @@
 	- output coordinates to console to view in game
 	- view how time and health bar were outputted to screen
 	- place perks and turn them on
+
+	- see _zombiemode: 8400 for printing to hud
 -----------------------------------
 
 - Add perk-a-punch to existing perks
@@ -35,3 +37,20 @@
 	- melee attack w/0 knife
 	- zombie play fall animation from T-gun
 	- zombie temp no collisions
+
+---------------------------------
+
+- Unlimited number of claymores (mines)
+- activate them by double taping X
+
+---------------------------------
+
+- Increase down time			- see _laststand:726
+- Each zombie kill while down increases time
+
+--------------------------------
+Powerups
+
+	- Add solo powerups
+	- add slowmo group powerups
+

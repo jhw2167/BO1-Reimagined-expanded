@@ -1730,7 +1730,7 @@ onPlayerConnect_clientDvars()
 	self SetClientDvar("cg_drawFPSLabels", 0);
 
 	// no cheats
-	self SetClientDvar("sv_cheats", 0);
+	//self SetClientDvar("sv_cheats", 0);
 
 	// allows shooting while looking at players
 	self SetClientDvar("g_friendlyFireDist", 0);
@@ -2012,6 +2012,7 @@ onPlayerSpawned()
 
 		//self SetPerk("specialty_unlimitedsprint");
 
+		println("Initiing values");
 		if( isdefined( self.initialized ) )
 		{
 			if( self.initialized == false )
@@ -2061,6 +2062,9 @@ onPlayerSpawned()
 				self thread zone_hud();
 
 				self thread grenade_hud();
+				
+				//print location of player
+				self thread give_location();
 			}
 			else
 			{
@@ -2068,6 +2072,18 @@ onPlayerSpawned()
 			}
 		}
 	}
+}
+
+
+give_location() {
+	
+	iprintln("trying to print location");
+
+	while(1) {
+		iprintln("Location: " + self.origin);
+		wait 5;	
+	}
+	
 }
 
 // unfreeze after a frame so players cant become "frozen" when spawning in if they are holding attack button
