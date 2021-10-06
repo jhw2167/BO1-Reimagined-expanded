@@ -123,8 +123,8 @@ place_marathon_machine() {
 switch ( Tolower( GetDvar( #"mapname" ) ) )
 	{
 	case "zombie_pentagon":
-		level.zombie_marathon_machine_origin = (-302, 4921, -712.875);
-		level.zombie_marathon_machine_angles = (0, 72.2, 0);
+		level.zombie_marathon_machine_origin = (-307, 4880, -712.875);
+		level.zombie_marathon_machine_angles = (0, 172.2, 0);
 		level.zombie_marathon_machine_clip_origin = level.zombie_marathon_machine_origin + (0, -10, 0);
 		level.zombie_marathon_machine_clip_angles = (0, 0, 0);
 		break;
@@ -176,7 +176,7 @@ place_divetonuke_machine() {
 	{
 	case "zombie_pentagon":
 		level.zombie_divetonuke_machine_origin = (-900, 4693, -712.875);
-		level.zombie_divetonuke_machine_angles = (0, 162.2, 0);
+		level.zombie_divetonuke_machine_angles = (0, 62.2, 0);
 		level.zombie_divetonuke_machine_clip_origin = level.zombie_divetonuke_machine_origin + (0, -10, 0);
 		level.zombie_divetonuke_machine_clip_angles = (0, 0, 0);
 		break;
@@ -203,7 +203,8 @@ place_divetonuke_machine() {
 	machine_trigger = Spawn( "trigger_radius_use", level.zombie_divetonuke_machine_origin + (0, 0, 30), 0, 20, 70 );
 	machine_trigger.targetname = "zombie_vending";
 	machine_trigger.target = "vending_divetonuke";
-	machine_trigger.script_noteworthy = "specialty_flackjacket";
+	machine_trigger.script_noteworthy = "specialty_flakjacket";
+	
 
 	machine_trigger.script_sound = "mus_perks_divetonuke_jingle";
 	machine_trigger.script_label = "mus_perks_divetonuke_sting";
@@ -228,7 +229,7 @@ place_deadshot_machine() {
 	{
 	case "zombie_pentagon":
 		level.zombie_deadshot_machine_origin = (-1403, 3459, -712.875);
-		level.zombie_deadshot_machine_angles = (0, 162.2, 0);
+		level.zombie_deadshot_machine_angles = (0, 242.2, 0);
 		level.zombie_deadshot_machine_clip_origin = level.zombie_deadshot_machine_origin + (0, -10, 0);
 		level.zombie_deadshot_machine_clip_angles = (0, 0, 0);
 		break;
@@ -1466,7 +1467,7 @@ turn_divetonuke_on()
 {
 	machine = getentarray("vending_divetonuke", "targetname");
 	
-	println("P H D   IS   WAITING");
+	players = getplayers();
 	level waittill("divetonuke_on");
 
 	for( i = 0; i < machine.size; i++ )
@@ -1477,9 +1478,9 @@ turn_divetonuke_on()
 		machine[i] thread perk_fx( "divetonuke_light" );
 	}
 	level notify( "specialty_flakjacket_power_on" );
-	
-	println("P H D   IS   ON");
 }
+//END TURN DIVETONUKE ON
+
 
 divetonuke_explode( attacker, origin )
 {
@@ -1935,6 +1936,8 @@ vending_trigger_think()
 		{
 			player UnSetPerk("specialty_fastswitch");
 		}
+		
+		player iprintln("Giving player perk: " + perk);
 		gun = player perk_give_bottle_begin( perk );
 		self thread give_perk_think(player, gun, perk, cost);
 	}
@@ -1954,6 +1957,8 @@ give_perk_think(player, gun, perk, cost)
 
 	// restore player controls and movement
 	player perk_give_bottle_end( gun, perk );
+	//player iprintln("Switching back to weapon: ");
+
 
 	// TODO: race condition?
 	if ( player maps\_laststand::player_is_in_laststand() || is_true( player.intermission ) )
@@ -1963,6 +1968,7 @@ give_perk_think(player, gun, perk, cost)
 
 	if ( isDefined( level.perk_bought_func ) )
 	{
+		//player iprintln("perk_bought_func is defined: ");
 		player [[ level.perk_bought_func ]]( perk );
 	}
 
@@ -2412,7 +2418,7 @@ perk_think( perk )
 
 	self perk_hud_destroy( perk );
 	self.perk_purchased = undefined;
-	self iprintln( "Perk Lost: " + perk );
+	//self iprintln( "Perk Lost: " + perk );
 
 
 	if ( IsDefined( level.perk_lost_func ) )
@@ -2673,8 +2679,8 @@ perk_give_bottle_begin( perk )
 		break;
 	}
 
-	iprintln("Perk coming through: " + perk);
-	iprintln("Weapon assigned: " + weapon);
+	//iprintln("Perk coming through: " + perk);
+	//iprintln("Weapon assigned in give perk bottle: " + weapon);
 
 	self GiveWeapon( weapon );
 	self SwitchToWeapon( weapon );
@@ -2798,6 +2804,7 @@ perk_give_bottle_end( gun, perk )
 	}
 
 	self waittill( "weapon_change_complete" );
+	self iprint("Weapon change completed");
 
 	if ( !self maps\_laststand::player_is_in_laststand() && !is_true( self.intermission ) )
 	{

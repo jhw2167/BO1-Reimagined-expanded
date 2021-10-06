@@ -2,11 +2,18 @@ PERK NAMES
 -----------------
 // Set Perk Machine Notifys
 
+*** see player_damange_override in zombiebmode: 5000
+
 five
-	coords: -461, 3000, 16 -> y+=40
-	DD: -1400, 3457-68, -712.875 - negative x, slightly neg y (move pos x, pos y)
-	stmUp: -302, 4921, -712.875 - pos y, slightly neg xwd
-	Pdh: -900 4693, -712.875 - negative x, slightly neg y
+	spawn coords: -461, 3000, 16 -> y+=40
+	DD: -1400, 3457-68, -712.875 - negative x, slightly neg y (move pos x, pos y), (0, 162.2, 0);
+		- ROTATE 90 RIGHT -> 32.2, 
+		- Rotate 80 other right -> 242.2
+	stmUp: -302, 4921, -712.875 - pos y, slightly neg xwd - (0, 162.2, 0) + 90; ROTATE 90 RIGHT -> 72.2
+		- try 307, 4880
+		- try 80, then 60
+	Pdh: -900 4693, -712.875 - negative x, slightly neg y - (0, 162.2, 0); Rotate 130 RIGHT 32.2
+		- 72.2 -> 30-70, attempting left rotation
 
 	level.zombiemode_using_marathon_perk
 	level.zombiemode_using_divetonuke_perk
@@ -31,8 +38,9 @@ ERRORS:
 2. Stamina up no glow when on
 3. S_up no symbol when perk acquired
 4. no bottle or animation
-5. removes sprint ???
-6. 
+5. removes sprint ON ANY PERK BOUGH, also removes ads
+6. no hintstring or indication of bought after first perk bought
+
 
 Deadshot
 1. no model loaded when power off (hintstring present
@@ -43,7 +51,23 @@ Deadshot
 PhD
 1. No model when power not on
 2. turning power on does not notify machine
-3.
+
+General 
+1. Pull "on" models from zombies game
+2. Pull glow light from zombies game
+3. Pull Perk icon from zombies game
+
+Next steps:
+1. Ensure all models render				XXX
+2. ensure all models buyable				XXX - not after first perk
+	- Maybe client input is blocked after first perk - it indicates weapon assignment takes place
+	- no bottle observed, perhaps this model/animation needs to be set
+	- perhaps user input for ads, sprint thread is not running after these perks
+3. Ensure no glitches after purchase
+4. Provide perk icons in hud ( may need to pull from game )
+5. Re-pull OFF models from game, skin and apply
+6. Pull on models from game
+7. pull and apply glow from game
 
 -----------------
 

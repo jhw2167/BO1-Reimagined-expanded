@@ -45,7 +45,7 @@ EDITS MADE TO REIMAGINED SOURCE:
 ---
 13. zombiemode.csv:2013 -- commented out unlimited spring for players on spawn
 
----*
+---
 14. _zombiemode_perk.csv:1936 -- if perk is "specialty_endurance" set unlimited sprint
 	:2237 -- if perk is "specialty_endurance" remove unlimited sprint
 
@@ -57,7 +57,7 @@ EDITS MADE TO REIMAGINED SOURCE:
 	- 2015 - prinln
 	- :2080
 ---
-17. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
+17. zombiemode_perks.csv:2013 -- DEBUG - debug println statements in _zombiemode_perks
 
 ---
 18. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
