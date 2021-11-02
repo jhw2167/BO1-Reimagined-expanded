@@ -4,6 +4,11 @@
 
 init()
 {
+	//TURN NEW PERKS ON - Reimaged Expanded
+	level.zombiemode_using_marathon_perk = true;
+	level.zombiemode_using_divetonuke_perk = true;
+	level.zombiemode_using_deadshot_perk = true;
+	
 	level thread place_additionalprimaryweapon_machine();
 	level thread place_doubletap_machine();
 	level thread place_marathon_machine();
@@ -68,11 +73,6 @@ init()
 	array_thread( vending_triggers, ::vending_trigger_think );
 	array_thread( vending_triggers, ::electric_perks_dialog );
 	//array_thread( vending_triggers, ::bump_trigger_think );
-	
-	//TURN NEW PERKS ON - Reimaged Expanded
-	level.zombiemode_using_marathon_perk = true;
-	level.zombiemode_using_divetonuke_perk = true;
-	level.zombiemode_using_deadshot_perk = true;
 
 	level thread turn_doubletap_on();
 	if ( is_true( level.zombiemode_using_marathon_perk ) )
@@ -123,7 +123,7 @@ place_marathon_machine() {
 switch ( Tolower( GetDvar( #"mapname" ) ) )
 	{
 	case "zombie_pentagon":
-		level.zombie_marathon_machine_origin = (-307, 4880, -712.875);
+		level.zombie_marathon_machine_origin = (-326, 4890, -712.875);
 		level.zombie_marathon_machine_angles = (0, 172.2, 0);
 		level.zombie_marathon_machine_clip_origin = level.zombie_marathon_machine_origin + (0, -10, 0);
 		level.zombie_marathon_machine_clip_angles = (0, 0, 0);
@@ -176,7 +176,7 @@ place_divetonuke_machine() {
 	{
 	case "zombie_pentagon":
 		level.zombie_divetonuke_machine_origin = (-900, 4693, -712.875);
-		level.zombie_divetonuke_machine_angles = (0, 62.2, 0);
+		level.zombie_divetonuke_machine_angles = (0, 110, 0);
 		level.zombie_divetonuke_machine_clip_origin = level.zombie_divetonuke_machine_origin + (0, -10, 0);
 		level.zombie_divetonuke_machine_clip_angles = (0, 0, 0);
 		break;
@@ -229,7 +229,7 @@ place_deadshot_machine() {
 	{
 	case "zombie_pentagon":
 		level.zombie_deadshot_machine_origin = (-1403, 3459, -712.875);
-		level.zombie_deadshot_machine_angles = (0, 242.2, 0);
+		level.zombie_deadshot_machine_angles = (0, 232.2, 0);
 		level.zombie_deadshot_machine_clip_origin = level.zombie_deadshot_machine_origin + (0, -10, 0);
 		level.zombie_deadshot_machine_clip_angles = (0, 0, 0);
 		break;
@@ -499,25 +499,25 @@ default_vending_precaching()
 	PrecacheItem( "zombie_perk_bottle_sleight" );
 	PrecacheItem( "zombie_knuckle_crack" );
 
-	if ( is_true( level.zombiemode_using_marathon_perk ) )
+	//if ( is_true( level.zombiemode_using_marathon_perk ) )
 	{
 		PrecacheItem( "zombie_perk_bottle_marathon" );
 		PrecacheShader( "specialty_marathon_zombies" );
 	}
 
-	if ( is_true( level.zombiemode_using_divetonuke_perk ) )
+	//if ( is_true( level.zombiemode_using_divetonuke_perk ) )
 	{
 		PrecacheItem( "zombie_perk_bottle_nuke" );
 		PrecacheShader( "specialty_divetonuke_zombies" );
 	}
 
-	if( is_true( level.zombiemode_using_deadshot_perk ) )
+	//if( is_true( level.zombiemode_using_deadshot_perk ) )
 	{
 		PreCacheItem( "zombie_perk_bottle_deadshot" );
 		PrecacheShader( "specialty_ads_zombies" );
 	}
 
-	if ( is_true( level.zombiemode_using_additionalprimaryweapon_perk ) )
+	//if ( is_true( level.zombiemode_using_additionalprimaryweapon_perk ) )
 	{
 		PrecacheItem( "zombie_perk_bottle_additionalprimaryweapon" );
 		PrecacheShader( "specialty_extraprimaryweapon_zombies" );
@@ -1945,6 +1945,7 @@ vending_trigger_think()
 
 give_perk_think(player, gun, perk, cost)
 {
+	player iprintln("Waiting on weapon change complete ");
 	player waittill_any( "fake_death", "death", "player_downed", "weapon_change_complete" );
 
 	if ( !player maps\_laststand::player_is_in_laststand() && !is_true( player.intermission ) )
@@ -1956,8 +1957,8 @@ give_perk_think(player, gun, perk, cost)
 	}
 
 	// restore player controls and movement
+	player iprintln("Switching back to weapon: ");
 	player perk_give_bottle_end( gun, perk );
-	//player iprintln("Switching back to weapon: ");
 
 
 	// TODO: race condition?
@@ -2679,11 +2680,13 @@ perk_give_bottle_begin( perk )
 		break;
 	}
 
-	//iprintln("Perk coming through: " + perk);
-	//iprintln("Weapon assigned in give perk bottle: " + weapon);
+	self iprintln("Perk coming through: " + perk);
+	self iprintln("Weapon assigned in give perk bottle: " + weapon);
 
 	self GiveWeapon( weapon );
 	self SwitchToWeapon( weapon );
+
+	self iprintln("Weapon assigned and switch finished: ");
 
 	return gun;
 }
@@ -2804,7 +2807,7 @@ perk_give_bottle_end( gun, perk )
 	}
 
 	self waittill( "weapon_change_complete" );
-	self iprint("Weapon change completed");
+	self iprintln("Weapon change completed");
 
 	if ( !self maps\_laststand::player_is_in_laststand() && !is_true( self.intermission ) )
 	{
