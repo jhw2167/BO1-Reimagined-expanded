@@ -4,16 +4,17 @@
 
 init()
 {
-	//TURN NEW PERKS ON - Reimaged Expanded
-	level.zombiemode_using_marathon_perk = true;
-	level.zombiemode_using_divetonuke_perk = true;
-	level.zombiemode_using_deadshot_perk = true;
-	
+
 	level thread place_additionalprimaryweapon_machine();
 	level thread place_doubletap_machine();
 	level thread place_marathon_machine();
 	level thread place_divetonuke_machine();
 	level thread place_deadshot_machine();
+	
+	//TURN NEW PERKS ON - Reimaged Expanded
+	level.zombiemode_using_marathon_perk = true;
+	level.zombiemode_using_divetonuke_perk = true;
+	level.zombiemode_using_deadshot_perk = true;
 
 	// Perks-a-cola vending machine use triggers
 	vending_triggers = GetEntArray( "zombie_vending", "targetname" );

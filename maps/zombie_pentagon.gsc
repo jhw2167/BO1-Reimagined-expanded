@@ -8,11 +8,6 @@
 
 main()
 {
-	//TURN NEW PERKS ON - Reimaged Expanded
-	level.zombiemode_using_marathon_perk = true;
-	level.zombiemode_using_divetonuke_perk = true;
-	level.zombiemode_using_deadshot_perk = true;
-	
 	level thread maps\zombie_pentagon_ffotd::main_start();
 
 	maps\zombie_pentagon_fx::main();

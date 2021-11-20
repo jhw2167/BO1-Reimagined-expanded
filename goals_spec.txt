@@ -1,4 +1,13 @@
 PERK NAMES
+
+CREDITS:
+----------------
+Perk Shaders: Deadnaut - https://zombiemodding.com/index.php?topic=16593.0
+
+Drop Shaders:
+
+
+
 -----------------
 // Set Perk Machine Notifys
 
@@ -9,11 +18,17 @@ five
 	DD: -1400, 3457-68, -712.875 - negative x, slightly neg y (move pos x, pos y), (0, 162.2, 0);
 		- ROTATE 90 RIGHT -> 32.2, 
 		- Rotate 80 other right -> 242.2
+		- 232 or X252X is sweet spot
+		- 252 is pretty damn close, try 232 - > we want to go CC
+		-
 	stmUp: -302, 4921, -712.875 - pos y, slightly neg xwd - (0, 162.2, 0) + 90; ROTATE 90 RIGHT -> 72.2
 		- try 307, 4880
-		- try 80, then 60
+		- try 170, then 150
+		- We want to move right, so lets go, lower X, lower y (-307, 4900, -712.875) => (-326, 4890, -712.875)
 	Pdh: -900 4693, -712.875 - negative x, slightly neg y - (0, 162.2, 0); Rotate 130 RIGHT 32.2
 		- 72.2 -> 30-70, attempting left rotation
+		- INCREASE: CLOCKWISE, DECREASE: CC
+		- Midway between 70 and 150 looks good
 
 	level.zombiemode_using_marathon_perk
 	level.zombiemode_using_divetonuke_perk
