@@ -1544,7 +1544,7 @@ difficulty_init()
 		else
 		{
 			players[p].score = 500;
-			//players[p].score = 10000000;
+			players[p].score = 10000000;
 		}
 		players[p].score_total = players[p].score;
 		players[p].old_score = players[p].score;

@@ -1,0 +1,53 @@
+commit d685d2671433d2b7ef2c39a148e0422434ae6463
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Sat Nov 20 15:02:54 2021 -0600
+
+    starting commit, 11/20
+
+commit 16b8d301d7399a1089d690c85c8a33fad818c1e1
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Tue Nov 2 12:52:53 2021 -0500
+
+    initial commit, 11/2
+
+commit 9c2d7e051aad2c10ba29992495ff9e6c9141cd12
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Tue Oct 5 17:07:12 2021 -0700
+
+    not compiling, error likely in _zombiemode_perks
+
+commit 9cd617b5ea56dc4cdc37b25eaa5d8266ec729993
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Mon Oct 4 20:11:11 2021 -0700
+
+    working on adding ads, marathon, nuke to five, most edits have been in adding/generating models from game
+
+commit df9a8d400654aab5a06002084d40957942944174
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Wed Sep 29 15:55:42 2021 -0700
+
+    removed unlimitted sprint on spawn
+
+commit 8b63825b69c165df03ef24fc1313040ca1ececfb
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Tue Sep 28 19:07:27 2021 -0700
+
+    base code compiles after using mod tools to convert additional gave files; made changes to adding mulekick back to all maps and providing unlimited points for testing; need to figure out cheat mode
+
+commit f0a62fcc3d39f07cd77113c816c9f5de32f4c1ef
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Fri Sep 24 05:24:16 2021 -0700
+
+    added goals text file
+
+commit 98499a13c95bc020bca0f2c03066c486aae7104c
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Thu Sep 23 20:55:33 2021 -0700
+
+    re-initial commit, staged changes for RE-ADDING MULEKICK to all maps
+
+commit 0bc8dbb17f00afe63a993caaa8a6d1b95e7296ed
+Author: jhw2167 <jhw2167@columbia.edu>
+Date:   Wed Sep 8 18:05:20 2021 -0700
+
+    initial commit, fork of BO1-Reimagined-Master

@@ -63,5 +63,7 @@ EDITS MADE TO REIMAGINED SOURCE:
 18. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
 
 ---
-19. zombiemode_perks.csv:2013 -- commented out unlimited spring for players on spawn
+19. zombiemode_perks.csv:2013 -- commented out unlimited sprint for players on spawn
 
+-- CHANGEBACK
+20. zombiemode.gsc:1547 - set default points to 1000000
