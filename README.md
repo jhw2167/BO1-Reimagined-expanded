@@ -22,93 +22,257 @@ changes. It is intentionally built on top of the excellent and well received [Bl
 
 ## Features
 
-#### Double Pack-a-Punch
+### Double Pack-a-Punch
 
 Added double Pack-a-Punch to *most* guns in Black Ops Zombies. Most of the wonder weapons and wall weapons are exceptions. Double Pack-a-Punch weapons have the following bonuses:
+
+
   - Flat 2x damage increase from their single upgraded version
-  - One of four major bullet effects:
+  - One of four bullet effects:
       - Hellfire - Sets zombie on fire and kills it after 2 seconds, zombies killed by Hellfire drop Hellfire on the ground that can affect other zombies
       - Sheercold - Slows zombies within a close range to the player. Emits a frost effect.
       - Eletrify - Bullets shock zombies, instantly killing them and nearby enemies
       - Extra damage - An additional 20% boost to damage, or additional headshot multiplier.
    
-<details>
-<summary>Hellfire Weapons</summary>
+    <details>
+     <summary><b>Hellfire Weapons</b></summary>
+    
+    - PPSh
+    - RPK
+    - AK47_FT
+    - Rottweil72
+    
+    </details>
+    ---
+    
+    <details>
+    <summary><b>Sheercold Weapons</b></summary>
+    
+    - Spectre
+    - HK21
+    - Galil
+    
+    </details>
+    
+    <details>
+    <summary><b>Shock Weapons</b></summary>
+    
+    - AK74u
+    - AUG ACOG MK
+    - FAMAS
+    - Balistic Knife
+    
+    </details>
+    
+    
+    <details>
+    <summary><b>Big Damage</b></summary>
+    
+    - Commando
+    - Stoner63
+    - FN FAL
+    - M14
+    - PSG1
+    - L96A1
+    
+    </details>
+    
+    <details>
+    <summary><b>Double PaP Blacklisted Weapons</b></summary>
+    - Microwave Gun DW
+    - Microwave Gun
+    - Tesla Gun Power-Up
+    - Tesla Gun
+    - Thundergun
+    - Ray Gun
+    - Starburst Ray Gun
+    - Freeze Gun
+    - "Baby Gun"
+    - Human Gun [Human Gun]
+    - Scavenger (No double PaP WaW weapons)
+    - M14
+    - MPL
+    - MP5K
+    - MP40
+    - AK74u
+    - PM63
+    - Rottweil72
+    - M16 GL
+    - GL M16
+    - Ithaca
+    - MK AUG
+    - M72 LAW
+    - China Lake
+    - No "WaW weapons" may be double PaP
+    </details>
 
-- PPSh
-- RPK
-- AK47_FT
-- Rottweil72
+![Pack a Punch Bullet Effects Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+
+### Upgradable Perks - "PerkaPunch"
+
+  _**"PerkaPunch"ed**_ perks are permament. And come with the following special effects:
+  
+  **Juggernog:**
+  - Set pro perk
+  - Player Max Health now 325
+  
+  **Quick Revive:**
+  - Set pro perk
+  - Trigger zombie blood for revived players
+  - Larger revive radius for QR
+  
+  **Speed Cola:**
+  - Set pro perk
+  - Can't speed up reload or anything, those times are set
+  - Magic reload
+    - After 3.5 seconds, your secondary gun is reloaded for you
+    - Send pulse when reloading that slows time around you (Not Implemented)
+  
+  **Double Tap:**
+  - Set pro perk
+  - Provides bullet penetration of up to 6 zombies
+  
+  **Stamina:**
+  - Set pro perk
+  - Further speed increase, look into SetPlayerMoveSpeed (Not Implemented)
+  - When you sprint, go into a ghost mode for 2 seconds
+    - Add zombie blood
+    - Trigger zombie blood fx for 2 seconds
+    - All zombies in radius, collision off for 2 seconds
+  
+  **Phd:**
+  - Set pro perk
+  - Larger splash area and damage with all explosive weapons and flop
+  - Longer lasting Hellfire
+  
+  **Deadshot:**
+  - Set pro perk
+  - Base 1.5 damage increase when ADS on bullet weapons
+  - Hitmarkers on hitting zombies
+  - Red hitmarker on hitting zombie weak spot (Not Implemented)
+  - Each successive headshot or weak point hit gives your next shot an additional 5% damage, stackable
+  - HUD showcases current streak (Not Implemented)
+  
+  **Mule Kick:**
+  - Set pro perk
+  - 3rd weapon permanent - don't lose perk
+  - Give player max ammo on purchase
+  
+  **Electric Cherry (Not Implemented):**
+  - Widows effect except with electricity, when zombie hits you, 30s cooldown
+  - Effect always full charge
+  
+  **Vulture Aid (Not Implemented):**
+  - See zombies' eyes around near corners, or maybe turn it on/off
+  - Increase ammo recovery
+  - See which zombies will produce drops
+
+        
+
+![Mini Perkapunch Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+
+### Push Mechanics - Zombie Knockdown
+
+    You may knock zombies down with your base melee attack. For about 2 seconds, their collisions are off and you may run by them. This attack still deals some damage, but your knife is in your equipment slot if you would like to use it. See an example below.
+
+![Zombie Knockdown and Switch to Knife](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+
+
+### BabyJugg!
+
+  BabyJugg is a buyable "PermaPerk" in each spawn room of every map, it permanently increases your health from 100->140 so you can survive up to 3 hits from zombies instead of 2.
+
+![BabyJugg Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+
+### Zombie Health and Weapon Balance Changes
+
+  You may view the expected zombie health value per round and expected number of bullets to kill by weapon class [here](https://docs.google.com/spreadsheets/d/1LdMHwtOZKg7aRkDjs8t1waXxXBAzW58_5yTC6NoLz_c/edit#gid=0). The current Max Zombie Health is **200,000** reached on round 46, subject to change
+
+
+<details>
+<summary><b>Particular Weapon Damage</b></summary>
+
+- **Pistols**
+  - CZ75 / CZ75 Dual Wield
+    - Base: **Damage**: 400, **Headshot Multiplier**: 2
+    - Upgraded: **Damage**: 1000, **Headshot Multiplier**: 3.5
+    - Double Upgraded: **Damage**: 4000, **Headshot Multiplier**: 3.5
+  - Python
+    - Base: **Damage**: 2200, **Headshot Multiplier**: 1.5
+    - Upgraded: **Damage**: 5000, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 20000, **Headshot Multiplier**: 3
+
+- **SMGS**
+  - MP40
+    - Base: **Damage**: 360, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1100, **Headshot Multiplier**: 3
+  - MPL / MP5K / PM63
+    - Base: **Damage**: 320, **Headshot Multiplier**: 2
+    - Upgraded: **Damage**: 1060, **Headshot Multiplier**: 3
+  - PPSh / Spectre
+    - Base: **Damage**: 360, **Headshot Multiplier**: 2.25
+    - Upgraded: **Damage**: 1100, **Headshot Multiplier**: 3
+
+- **Assault Rifles**
+  - M14
+    - Base: **Damage**: 390, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1400, **Headshot Multiplier**: 3 
+  - M16 GL
+    - Base: **Damage**: 400, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1350, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 5400, **Headshot Multiplier**: 3
+  - FAMAS
+    - Base: **Damage**: 50, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1450, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 5800, **Headshot Multiplier**: 3
+  - AK74U
+    - Base: **Damage**: 50, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1100, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 4400, **Headshot Multiplier**: 3
+  - AUG ACOG MK
+    - Base: **Damage**: 1200, **Headshot Multiplier**: 2.25
+    - Upgraded: **Damage**: 1500, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 6000, **Headshot Multiplier**: 3
+  - Commando / AK47 FT
+    - Base: **Damage**: 100, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1600, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 6400, **Headshot Multiplier**: 3
+  - Galil
+    - Base: **Damage**: 100, **Headshot Multiplier**: 2.5
+    - Upgraded: **Damage**: 1550, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 6200, **Headshot Multiplier**: 3
+  - Spectre
+    - Base: **Damage**: 50, **Headshot Multiplier**: 2.25
+    - Upgraded: **Damage**: 1200, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 4800, **Headshot Multiplier**: 3
+
+- **Machineguns**
+  - RPK
+    - Base: **Damage**: 4000, **Headshot Multiplier**: 2
+    - Upgraded: **Damage**: 1980, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 7920, **Headshot Multiplier**: 3
+  - HK21
+    - Base: **Damage**: 50, **Headshot Multiplier**: 2
+    - Upgraded: **Damage**: 1800, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 7200, **Headshot Multiplier**: 3
+  - Stoner63
+    - Base: **Damage**: 100, **Headshot Multiplier**: 2
+    - Upgraded: **Damage**: 2100, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 8400, **Headshot Multiplier**: 3
+
+- **Sniper Rifles**
+  - PSG1
+    - Base: **Damage**: 3600, **Headshot Multiplier**: 3
+    - Upgraded: **Damage**: 8500, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 34000, **Headshot Multiplier**: 3
+  - L96A1
+    - Base: **Damage**: 4400, **Headshot Multiplier**: 3
+    - Upgraded: **Damage**: 9000, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 36000, **Headshot Multiplier**: 3
 
 </details>
 
-<details>
-<summary>Sheercold Weapons</summary>
-
-- Spectre
-- HK21
-- Galil
-
-</details>
-
-<details>
-<summary>Shock Weapons</summary>
-
-- AK74u
-- AUG ACOG MK
-- FAMAS
-- Balistic Knife
-
-</details>
-
-<details>
-<summary>Big Damage</summary>
-
-- Commando
-- Stoner63
-- FN FAL
-- M14
-- PSG1
-- L96A1
-
-</details>
-
-<details>
-<summary>Double PaP Blacklisted Weapons</summary>
-- Microwave Gun DW
-- Microwave Gun
-- Tesla Gun Power-Up
-- Tesla Gun
-- Thundergun
-- Ray Gun
-- Starburst Ray Gun
-- Freeze Gun
-- "Baby Gun"
-- Human Gun [Human Gun]
-- Scavenger (No double PaP WaW weapons)
-- M14
-- MPL
-- MP5K
-- MP40
-- AK74u
-- PM63
-- Rottweil72
-- M16 GL
-- GL M16
-- Ithaca
-- MK AUG
-- M72 LAW
-- China Lake
-- No "WaW weapons" may be double PaP
-</details>
-
-
-#### Upgradable Perks
-
-#### Push Mechanics - Zombie Knockdown
-
-You may knock zombies down with your base melee attack. For about 2 seconds, their collisions are off and you may run by them. This attack still does some damage, but your knife is in your equipment
-slot if you would like to use it. See an example below.
+### Shotgun Changes
 
 
 
