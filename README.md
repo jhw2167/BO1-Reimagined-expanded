@@ -24,7 +24,7 @@ changes. It is intentionally built on top of the excellent and well received [Bl
 
 ### Double Pack-a-Punch
 
-Added double Pack-a-Punch to *most* guns in Black Ops Zombies. Most of the wonder weapons and wall weapons are exceptions. Double Pack-a-Punch weapons have the following bonuses:
+Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wonder weapons and wall weapons are exceptions. Double Pack-a-Punch weapons have the following bonuses:
 
 
   - Flat 2x damage increase from their single upgraded version
@@ -43,7 +43,6 @@ Added double Pack-a-Punch to *most* guns in Black Ops Zombies. Most of the wonde
     - Rottweil72
     
     </details>
-    ---
     
     <details>
     <summary><b>Sheercold Weapons</b></summary>
@@ -269,21 +268,121 @@ Added double Pack-a-Punch to *most* guns in Black Ops Zombies. Most of the wonde
     - Base: **Damage**: 4400, **Headshot Multiplier**: 3
     - Upgraded: **Damage**: 9000, **Headshot Multiplier**: 3
     - Double Upgraded: **Damage**: 36000, **Headshot Multiplier**: 3
+   
+- **WaW Weapons**
+
+	- Kar98k
+		- **Base Damage**: 700, **Headshot Multiplier**: 2
+		- **Upgraded**: **Damage**: 4200, **Headshot Multiplier**: 2
+		- **Double Upgraded**: **Damage**: 16800, **Headshot Multiplier**: 2
+	- Gewehr 43
+		- **Base Damage**: 300, **Headshot Multiplier**: 2
+		- **Upgraded**: **Damage**: 2240, **Headshot Multiplier**: 3
+		- **Double Upgraded**: **Damage**: 6720, **Headshot Multiplier**: 3
+	- M1 Carbine
+		- **Base Damage**: 300, **Headshot Multiplier**: 2
+		- **Upgraded**: **Damage**: 1680, **Headshot Multiplier**: 3
+		- **Double Upgraded**: **Damage**: 5040, **Headshot Multiplier**: 3
+	- Type 100
+		- **Base Damage**: 300, **Headshot Multiplier**: 2
+		- **Upgraded**: **Damage**: 1120, **Headshot Multiplier**: 3
+		- **Double Upgraded**: **Damage**: 3360, **Headshot Multiplier**: 3
+	- FG42
+		- **Base Damage**: 200, **Headshot Multiplier**: 1.5
+		- **Upgraded**: **Damage**: 1200, **Headshot Multiplier**: 3
+		- **Double Upgraded**: **Damage**: 3600, **Headshot Multiplier**: 3
+	- STG44
+		- **Base Damage**: 200, **Headshot Multiplier**: 1.5
+		- **Upgraded**: **Damage**: 1000, **Headshot Multiplier**: 3
+		- **Double Upgraded**: **Damage**: 3000, **Headshot Multiplier**: 3
+	- Thompson
+		- **Base Damage**: 240, **Headshot Multiplier**: 2
+		- **Upgraded**: **Damage**: 960, **Headshot Multiplier**: 3
+		- **Double Upgraded**: **Damage**: 2880, **Headshot Multiplier**: 3
+  - 
+- **Shotguns**
+	- Rottweil 72 (Olympia)
+		- **Base Damage**: 2000 * (damage / 180)
+		- **Upgraded**: **Damage**: 12500 * (damage / 300)
+		- **Double Upgraded**: **Damage**: 37500 * (damage / 300)
+	- Ithaca (Stakeout)
+		- **Base Damage**: 3000 * (damage / 160)
+		- **Upgraded**: **Damage**: 10000 * (damage / 300)
+		- **Double Upgraded**: **Damage**: 30000 * (damage / 300)
+	- SPAS
+		- **Base Damage**: 2600 * (damage / 160)
+		- **Upgraded**: **Damage**: 18000 * (damage / 300)
+		- **Double Upgraded**: **Damage**: 54000 * (damage / 300)
+	- HS10
+		- **Base Damage**: 4200 * (damage / 160)
+		- **Upgraded**: **Damage**: 17500 * (damage / 300)
+		- **Double Upgraded**: **Damage**: 70000 * (damage / 300)
 
 </details>
 
+(End weapon damage)
+---
+
+
 ### Shotgun Changes
 
+  Shotguns have much improved base damage (see above) and receive a damage bonus from "attrition". For each round you own a shotgun, you do 10% more damage with all shotguns, this stacks up to 15 rounds for a maximum of 4x base damage. Moreover, shockguns will knock zombies over if they do sufficient damage but don't kill the zombie.
 
+  
+![Shotgun Zombie Knockdown](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+
+
+
+### Customizable Game Settings
+
+  Most features added in Reimagined-Expanded will be toggle-able in the settings so you can opt for a more vanilla experience if you wish.
+
+![Reimagined Customization Options](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
 
 ## Apocalypse Mode
-Content for the Apocalypse Mode section...
 
-## Showcases
-Content for the Showcases section...
+  Apocalypse Mode offers a serious challenge for even the most hardcore zombies players. The zombies run very early and hit you very quickly. Bonus points are reduced and most of the Reimagined-Expanded bonues (Perkapunch, Double PaP) are more expensive than on normal difficulty. Zombies spawn very quickly, super-sprinters are on every map and some zombies will run even faster. Zombie bosses will spawn more frequently and zombies that go undamaged for a period of time will despawn and spawn again at full health.
+
+  Some other changes include: (Not Implemented with Alpha Release)
+  - Zombies will spawn with special abilities and resistances designated by their eye color
+  - Zombies will occaisionally spawn in mini hordes of 3-5 zombies all from the same spawn location
+  - Alternative bosess will be added to each map
+  - Zombie "chase" algorithm will be modified to make training more difficult.
+
 
 ## Credits
-Content for the Credits section...
+
+### Special Thanks
+	Jbleezy - BO1-Reimagined scripts and Assets and base repository
+	Shippuden1592 - a multitude of useful scripts and assets
+	Utamia - Frequent script and game mod support on Linkermod Discord
+	Treyarc
+
+### Credits:
+	TescoValueRice - BO2/3 Drops and icons, UGX-Mods Discord
+	John Banana - Frequent script and game mod support on UGX-Mods Discord
+	Sanchez - Fx, assets and Scripts from Rennaissance/Der Reise mod
+	NikolaiLovesVodka/Partisan Executioner- Rennaissance Mod scripts
+	Venom - Various fx/assets
+	Samhain (Discord) - BO2/3 Perk and drop icons
+	Phil81334, Shippuden1592 - Cherry, Vulture, Wine assets
+
+   Origins Staff fx:
+  - Gympie6
+  - Shippuden1592
+  - Salamanca21
+  - Cpt_johnson1
+  - Bamskater
+  - Harry Bo21
+  - Fusorf
+  - Alaurenc9
+  - ConvictioNDR
+  - HitmanVere
+  - Lilfria
+  - Redspace200
+  - StevieWonder87
+  - Rollonmath
+  - UGX, CCM, Treyarch and Activision
 
 ## Official Changelog
 Content for the Official Changelog section...
