@@ -1,13 +1,17 @@
 # BO1-Reimagined-Expanded
-BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod for owners of Black Ops 1 on PC.
+BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod Black Ops 1 PC game owners.
 
-
+- [Release Download](link)
+- [YouTube](https://www.youtube.com/your-channel)
+- [Discord](https://discord.gg/your-discord-invite)
+- [Twitter](https://twitter.com/your-twitter-handle)
+- [Code Repository](https://github.com/jhw2167/BO1-Reimagined-hotfitx)
 
 ## Overview
 
 Black Ops 1 Reimagined-Expanded Zombies is a mod designed to enhance gameplay features and mechanics of the classic Black Ops 1 and WaW style COD 
-zombies with features such as Double Pack-a-Punch, Upgradable Perks, collision mechanics, rebalancing to the weapons and zombies and quality of life
-changes. It is intentionally built on top of the excellent and well received [Black Ops 1 Reimagined Mod](https://github.com/Jbleezy/BO1-Reimagined) by Jbleezy.
+zombies with features such as Double Pack-a-Punch, Upgradable Perks, collision mechanics, rebalancing to the weapons and zombies and many other quality of life
+changes. It is built on top of the well received [Black Ops 1 Reimagined Mod](https://github.com/Jbleezy/BO1-Reimagined) by Jbleezy.
 
 
 ## Table Of Contents
@@ -17,7 +21,8 @@ changes. It is intentionally built on top of the excellent and well received [Bl
 4. [Showcases](#showcases)
 5. [Credits](#credits)
 6. [Official Changelog](#official-changelog)
-7. [Bugs and Feedback](#bugs-and-feedback)
+7. [Installation Instructions](#installation-instructions)
+8. [Bugs and Feedback](#bugs-and-feedback)
 
 
 ## Features
@@ -56,7 +61,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
     <details>
     <summary><b>Shock Weapons</b></summary>
     
-    - AK74u
+    - CZ75
     - AUG ACOG MK
     - FAMAS
     - Balistic Knife
@@ -78,6 +83,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
     
     <details>
     <summary><b>Double PaP Blacklisted Weapons</b></summary>
+	    
     - Microwave Gun DW
     - Microwave Gun
     - Tesla Gun Power-Up
@@ -103,6 +109,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
     - M72 LAW
     - China Lake
     - No "WaW weapons" may be double PaP
+   
     </details>
 
 ![Pack a Punch Bullet Effects Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
@@ -111,60 +118,77 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
 
   _**"PerkaPunch"ed**_ perks are permament. And come with the following special effects:
   
+
   **Juggernog:**
-  - Set pro perk
+  - Perk is permanent
   - Player Max Health now 325
   
   **Quick Revive:**
-  - Set pro perk
+  - Perk is permanent
   - Trigger zombie blood for revived players
-  - Larger revive radius for QR
+  - Larger revive radius
+  - Points are not lost while a player with Quick Revive Pro is near a downed player (Apocalypes mode only)
   
   **Speed Cola:**
-  - Set pro perk
-  - Can't speed up reload or anything, those times are set
+  - Perk is permanent
   - Magic reload
     - After 3.5 seconds, your secondary gun is reloaded for you
     - Send pulse when reloading that slows time around you (Not Implemented)
+  - Drinking perks is extremely fast (Not implemented)
+  - Melee animation is extremely fast (Not implemented)
   
   **Double Tap:**
-  - Set pro perk
+  - Perk is permanent
   - Provides bullet penetration of up to 6 zombies
   
   **Stamina:**
-  - Set pro perk
-  - Further speed increase, look into SetPlayerMoveSpeed (Not Implemented)
-  - When you sprint, go into a ghost mode for 2 seconds
-    - Add zombie blood
-    - Trigger zombie blood fx for 2 seconds
-    - All zombies in radius, collision off for 2 seconds
+  - Perk is permanent
+  - Further speed increase
+  - Melee attacks deal double damage
+  - When you melee then sprint, go into a ghost mode for 3 seconds allowing you to run through zombies
   
   **Phd:**
-  - Set pro perk
+  - Perk is permanent
   - Larger splash area and damage with all explosive weapons and flop
   - Longer lasting Hellfire
+  - Any dolphin dive will trigger PhD effects
+  - Closest zombies to PhD explosion are knocked down, hellfire is applied
   
   **Deadshot:**
-  - Set pro perk
+  - Perk is permanent
   - Base 1.5 damage increase when ADS on bullet weapons
   - Hitmarkers on hitting zombies
-  - Red hitmarker on hitting zombie weak spot (Not Implemented)
   - Each successive headshot or weak point hit gives your next shot an additional 5% damage, stackable
+  - Red hitmarker on hitting zombie weak spot (Not Implemented)
   - HUD showcases current streak (Not Implemented)
   
   **Mule Kick:**
-  - Set pro perk
+  - Perk is permanent
   - 3rd weapon permanent - don't lose perk
   - Give player max ammo on purchase
   
-  **Electric Cherry (Not Implemented):**
-  - Widows effect except with electricity, when zombie hits you, 30s cooldown
-  - Effect always full charge
-  
-  **Vulture Aid (Not Implemented):**
-  - See zombies' eyes around near corners, or maybe turn it on/off
-  - Increase ammo recovery
-  - See which zombies will produce drops
+**Electric Cherry (Not Implemented):**
+- Reloading your weapon emits an electric shock that stuns and damages nearby zombies
+- Widows effect except with electricity, when a zombie hits you, 10s cooldown, small radius (upgraded)
+- Electric pulse effect is always full charge (upgraded)
+
+**Vulture Aid 2.0 (Not Implemented):**
+- Visualize all perks and drops on the map
+- Visual indicator of all bosses on the map - or monkeys
+- Visual indicator of the last few zombies remaining on the map
+- Button to disable HUD display elements
+- Knifing zombies gives bonus points
+- Zombies ignore you for the first 10 seconds every round (upgraded)
+- Drops you pick up last longer (upgraded)
+- Zombies with drops glow (upgraded)
+- See zombies' glowing eyes through walls and around corners (upgraded)
+
+**Widows Wine 2.0 (Not Implemented):**
+- HUD effect notifies when a zombie is behind you
+- Bullets poison zombies and do Damage Over Time, reduce them to half health over 5 seconds
+  - only applies to zombies with minimum half health
+- Given web grenades that stop zombies, act as claymores/static semtex (upgraded)
+- Poison reduces to 1/4 health over 10 seconds (keep zombies alive longer) (upgraded)
 
         
 
@@ -320,7 +344,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
 
 </details>
 
-(End weapon damage)
+	(End weapon damage)
 ---
 
 
@@ -359,33 +383,49 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
 	Treyarc
 
 ### Credits:
-	TescoValueRice - BO2/3 Drops and icons, UGX-Mods Discord
-	John Banana - Frequent script and game mod support on UGX-Mods Discord
-	Sanchez - Fx, assets and Scripts from Rennaissance/Der Reise mod
-	NikolaiLovesVodka/Partisan Executioner- Rennaissance Mod scripts
-	Venom - Various fx/assets
-	Samhain (Discord) - BO2/3 Perk and drop icons
-	Phil81334, Shippuden1592 - Cherry, Vulture, Wine assets
+TescoValueRice - BO2/3 Drops and icons, UGX-Mods Discord
+John Banana - Frequent script and game mod support on UGX-Mods Discord
+Sanchez - Fx, assets and Scripts from Rennaissance/Der Reise mod
+NikolaiLovesVodka/Partisan Executioner- Rennaissance Mod scripts
+Venom - Various fx/assets
+Samhain (Discord) - BO2/3 Perk and drop icons
+Phil81334, Shippuden1592 - Cherry, Vulture, Wine assets
 
-   Origins Staff fx:
-  - Gympie6
-  - Shippuden1592
-  - Salamanca21
-  - Cpt_johnson1
-  - Bamskater
-  - Harry Bo21
-  - Fusorf
-  - Alaurenc9
-  - ConvictioNDR
-  - HitmanVere
-  - Lilfria
-  - Redspace200
-  - StevieWonder87
-  - Rollonmath
-  - UGX, CCM, Treyarch and Activision
+Origins Staff fx:
+- Gympie6
+- Shippuden1592
+- Salamanca21
+- Cpt_johnson1
+- Bamskater
+- Harry Bo21
+- Fusorf
+- Alaurenc9
+- ConvictioNDR
+- HitmanVere
+- Lilfria
+- Redspace200
+- StevieWonder87
+- Rollonmath
+- UGX, CCM, Treyarch and Activision
 
 ## Official Changelog
 Content for the Official Changelog section...
+
+## Installation Instructions
+
+1. Download full zip file from Amazon [here](link).
+	- You will need to download "game_mod" as well, or use the version in my zip file
+	- Extract or copy files to Call of Duty Black Ops game directory
+2. Start steam
+3. Attempt to run mod with shortcut only
+	- Create shortcut on homescreen
+4. view "Call of duty Black Ops"/players folder to find dev_cnfg.cfg if you would like to use it
+5. Enable powershell for future updates
+	- Run "powershell"
+	- You will probably have to unrestrict your executre policy
+		Set-ExecutionPolicy Unrestricted
+	- Update the game by running provided script in powershell whenever necessary
+
 
 ## Bugs and Feedback
 Content for the Bugs and Feedback section...
