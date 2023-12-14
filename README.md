@@ -1,7 +1,7 @@
 # BO1-Reimagined-Expanded
-BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod Black Ops 1 PC game owners.
+BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod for Black Ops 1 on PC.
 
-- [Release Download](link)
+- [Release Download](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip)
 - [YouTube](https://www.youtube.com/your-channel)
 - [Discord](https://discord.gg/your-discord-invite)
 - [Twitter](https://twitter.com/your-twitter-handle)
@@ -9,8 +9,7 @@ BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod Black Ops 1 PC
 
 ## Overview
 
-Black Ops 1 Reimagined-Expanded Zombies is a mod designed to enhance gameplay features and mechanics of the classic Black Ops 1 and WaW style COD 
-zombies with features such as Double Pack-a-Punch, Upgradable Perks, collision mechanics, rebalancing to the weapons and zombies and many other quality of life
+Black Ops 1: Reimagined-*Expanded* Zombies is a mod designed to enhance gameplay features and mechanics of the classic Black Ops 1 and WaW style COD zombies. It Includes features such as Double Pack-a-Punch, Upgradable Perks, collision mechanics, rebalancing to the weapons and zombies and many other quality of life
 changes. It is built on top of the well received [Black Ops 1 Reimagined Mod](https://github.com/Jbleezy/BO1-Reimagined) by Jbleezy.
 
 
@@ -29,6 +28,8 @@ changes. It is built on top of the well received [Black Ops 1 Reimagined Mod](ht
 
 ### Double Pack-a-Punch
 
+[Electric_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Ballistic_knife.gif)
+
 Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wonder weapons and wall weapons are exceptions. Double Pack-a-Punch weapons have the following bonuses:
 
 
@@ -38,6 +39,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
       - Sheercold - Slows zombies within a close range to the player. Emits a frost effect.
       - Eletrify - Bullets shock zombies, instantly killing them and nearby enemies
       - Extra damage - An additional 20% boost to damage, or additional headshot multiplier.
+
    
     <details>
      <summary><b>Hellfire Weapons</b></summary>
@@ -112,7 +114,9 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
    
     </details>
 
-![Pack a Punch Bullet Effects Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+[Freeze_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Double_Pap_Freeze.gif)
+
+[HellFire_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Hellfire_Long.gif)
 
 ### Upgradable Perks - "PerkaPunch"
 
@@ -140,12 +144,15 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   **Double Tap:**
   - Perk is permanent
   - Provides bullet penetration of up to 6 zombies
+  - Increases effectiveness of Double PaP Weapon Effects
   
   **Stamina:**
   - Perk is permanent
   - Further speed increase
   - Melee attacks deal double damage
   - When you melee then sprint, go into a ghost mode for 3 seconds allowing you to run through zombies
+
+  [StaminaUp_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/StaminaUp_Demo.gif)
   
   **Phd:**
   - Perk is permanent
@@ -189,16 +196,17 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   - only applies to zombies with minimum half health
 - Given web grenades that stop zombies, act as claymores/static semtex (upgraded)
 - Poison reduces to 1/4 health over 10 seconds (keep zombies alive longer) (upgraded)
-
         
 
-![Mini Perkapunch Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+[Deadshot_Perkapunch](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Buy_Deadshot.gif)
+
+[Perks_Down](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Perks_Down.gif)
 
 ### Push Mechanics - Zombie Knockdown
 
-    You may knock zombies down with your base melee attack. For about 2 seconds, their collisions are off and you may run by them. This attack still deals some damage, but your knife is in your equipment slot if you would like to use it. See an example below.
+You may knock zombies down with your base melee attack. For about 2 seconds, their collisions are off and you may run by them. This attack still deals some damage, but your knife is in your equipment slot if you would like to use it. See an example below.
 
-![Zombie Knockdown and Switch to Knife](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+![Zombie Knockdown and Switch to Knife](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/zombie_punch.gif)
 
 
 ### BabyJugg!
@@ -235,6 +243,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   - PPSh / Spectre
     - Base: **Damage**: 360, **Headshot Multiplier**: 2.25
     - Upgraded: **Damage**: 1100, **Headshot Multiplier**: 3
+    - - Upgraded: **Damage**: 4400, **Headshot Multiplier**: 3
 
 - **Assault Rifles**
   - M14
@@ -287,52 +296,51 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   - PSG1
     - Base: **Damage**: 3600, **Headshot Multiplier**: 3
     - Upgraded: **Damage**: 8500, **Headshot Multiplier**: 3
-    - Double Upgraded: **Damage**: 34000, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 34000, **Headshot Multiplier**: 5
   - L96A1
     - Base: **Damage**: 4400, **Headshot Multiplier**: 3
     - Upgraded: **Damage**: 9000, **Headshot Multiplier**: 3
-    - Double Upgraded: **Damage**: 36000, **Headshot Multiplier**: 3
+    - Double Upgraded: **Damage**: 36000, **Headshot Multiplier**: 5
    
 - **WaW Weapons**
 
 	- Kar98k
 		- **Base Damage**: 700, **Headshot Multiplier**: 2
 		- **Upgraded**: **Damage**: 4200, **Headshot Multiplier**: 2
-		- **Double Upgraded**: **Damage**: 16800, **Headshot Multiplier**: 2
+
 	- Gewehr 43
 		- **Base Damage**: 300, **Headshot Multiplier**: 2
 		- **Upgraded**: **Damage**: 2240, **Headshot Multiplier**: 3
-		- **Double Upgraded**: **Damage**: 6720, **Headshot Multiplier**: 3
+
 	- M1 Carbine
 		- **Base Damage**: 300, **Headshot Multiplier**: 2
 		- **Upgraded**: **Damage**: 1680, **Headshot Multiplier**: 3
-		- **Double Upgraded**: **Damage**: 5040, **Headshot Multiplier**: 3
+
 	- Type 100
 		- **Base Damage**: 300, **Headshot Multiplier**: 2
 		- **Upgraded**: **Damage**: 1120, **Headshot Multiplier**: 3
-		- **Double Upgraded**: **Damage**: 3360, **Headshot Multiplier**: 3
+
 	- FG42
 		- **Base Damage**: 200, **Headshot Multiplier**: 1.5
 		- **Upgraded**: **Damage**: 1200, **Headshot Multiplier**: 3
-		- **Double Upgraded**: **Damage**: 3600, **Headshot Multiplier**: 3
+
 	- STG44
 		- **Base Damage**: 200, **Headshot Multiplier**: 1.5
 		- **Upgraded**: **Damage**: 1000, **Headshot Multiplier**: 3
-		- **Double Upgraded**: **Damage**: 3000, **Headshot Multiplier**: 3
+
 	- Thompson
 		- **Base Damage**: 240, **Headshot Multiplier**: 2
 		- **Upgraded**: **Damage**: 960, **Headshot Multiplier**: 3
-		- **Double Upgraded**: **Damage**: 2880, **Headshot Multiplier**: 3
   - 
 - **Shotguns**
 	- Rottweil 72 (Olympia)
 		- **Base Damage**: 2000 * (damage / 180)
 		- **Upgraded**: **Damage**: 12500 * (damage / 300)
-		- **Double Upgraded**: **Damage**: 37500 * (damage / 300)
+
 	- Ithaca (Stakeout)
 		- **Base Damage**: 3000 * (damage / 160)
 		- **Upgraded**: **Damage**: 10000 * (damage / 300)
-		- **Double Upgraded**: **Damage**: 30000 * (damage / 300)
+
 	- SPAS
 		- **Base Damage**: 2600 * (damage / 160)
 		- **Upgraded**: **Damage**: 18000 * (damage / 300)
@@ -344,7 +352,9 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
 
 </details>
 
-	(End weapon damage)
+
+(End weapon damage)
+
 ---
 
 
@@ -353,7 +363,7 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   Shotguns have much improved base damage (see above) and receive a damage bonus from "attrition". For each round you own a shotgun, you do 10% more damage with all shotguns, this stacks up to 15 rounds for a maximum of 4x base damage. Moreover, shockguns will knock zombies over if they do sufficient damage but don't kill the zombie.
 
   
-![Shotgun Zombie Knockdown](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
+![Shotgun Zombie Knockdown](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Shotguns.gif)
 
 
 
@@ -373,23 +383,25 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   - Alternative bosess will be added to each map
   - Zombie "chase" algorithm will be modified to make training more difficult.
 
+![Apocalypse_Mode](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Apocalypse_Mode.gif)
+
 
 ## Credits
 
 ### Special Thanks
-	Jbleezy - BO1-Reimagined scripts and Assets and base repository
-	Shippuden1592 - a multitude of useful scripts and assets
-	Utamia - Frequent script and game mod support on Linkermod Discord
-	Treyarc
+Jbleezy - BO1-Reimagined scripts and Assets and base repository
+Shippuden1592 - a multitude of useful scripts and assets
+Utamia - Frequent script and game mod support on Linkermod Discord
+Treyarc
 
 ### Credits:
-TescoValueRice - BO2/3 Drops and icons, UGX-Mods Discord
-John Banana - Frequent script and game mod support on UGX-Mods Discord
-Sanchez - Fx, assets and Scripts from Rennaissance/Der Reise mod
-NikolaiLovesVodka/Partisan Executioner- Rennaissance Mod scripts
-Venom - Various fx/assets
-Samhain (Discord) - BO2/3 Perk and drop icons
-Phil81334, Shippuden1592 - Cherry, Vulture, Wine assets
+- TescoValueRice - BO2/3 Drops and icons, UGX-Mods Discord
+- John Banana - Frequent script and game mod support on UGX-Mods Discord
+- Sanchez - Fx, assets and Scripts from Rennaissance/Der Reise mod
+- NikolaiLovesVodka/Partisan Executioner- Rennaissance Mod scripts
+- Venom - Various fx/assets
+- Samhain (Discord) - BO2/3 Perk and drop icons
+- Phil81334, Shippuden1592 - Cherry, Vulture, Wine assets
 
 Origins Staff fx:
 - Gympie6
@@ -413,19 +425,46 @@ Content for the Official Changelog section...
 
 ## Installation Instructions
 
-1. Download full zip file from Amazon [here](link).
+1. Download full zip file from Amazon [here](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip).
 	- You will need to download "game_mod" as well, or use the version in my zip file
 	- Extract or copy files to Call of Duty Black Ops game directory
 2. Start steam
-3. Attempt to run mod with shortcut only
-	- Create shortcut on homescreen
-4. view "Call of duty Black Ops"/players folder to find dev_cnfg.cfg if you would like to use it
+3. Attempt to run mod with "Reimagined-Expanded.bat" only
+	- Create a shortcut to this bat file on your homescreen so you can just click to run it
+4. View "Call of duty Black Ops"/players folder to find dev_config.cfg if you would like to use it
 5. Enable powershell for future updates
 	- Run "powershell"
-	- You will probably have to unrestrict your executre policy
+	- You will probably have to unrestrict your execute policy
 		Set-ExecutionPolicy Unrestricted
 	- Update the game by running provided script in powershell whenever necessary
 
+<details>
+<summary><b>FAQ</b></summary>
+
+*Q. I want to play this mod, but I don't have Black Ops, can I?.*
+- No. You need an official copy of Call of Duty Black Ops (probably from Steam). The best deals I see for Black Ops these days are about $45 for the Game + DLC. That is expensive for a 13 year old game. If you see it for cheaper let me know, be careful with cheaper copies of the game that may not be legitimate.
+
+*Q. Can I play this mod on a console?.*
+- No. There is no support for mods on console editions of COD, as far as I am concerned.
+
+*Q. My Black Ops doesn't start. The symbol on the task bar loads, but the game doesn't seem to load.*
+- Sometimes this happens because you are starting the game in fullscreen mode (or windowed) and your computer doesn't like that. Navigate to "Call of Duty Black Ops"/players/mods/Reimagined-Expanded repo and open the config.cfg file with notepad. search for "fullscreen" and switch the setting to "1" or "0", whichever is not currently working.
+
+*Q. I can load the game, but I don't think the mod is working. Help me.*
+-  The only way the mod works is if you run it via the "Reimagined-Expanded.bat" file that loads the mod via game_mod. When you load the game, go to your "Game" settings and see if you have Reimagined-Expanded Game options at the bottom to see if it loaded. When you load into a zombies game, you should have a healthbar and your melee attack should be a punch.
+
+*Q. The mod works, but all my textures are weird and black and messed up.*
+- Make sure you download BOTH the "Green" multiplayer Black Ops and the "Blue" single player/zombies Black Ops. I have also heard the "Shader Warming" graphics setting may affect this.
+
+*Q. When I start the game and try to play zombies, a window pops up that says "Connecting" then the game tells me it can't connect to Black Ops servers, whats the problem?*
+- This happens often. You should restart the game when this happens and keep trying until it lets you go into the zombies mode. If you are just playing solo, you can swap to my provided "dev_config".cfg file in players/mods/Reimagined-Expanded folder which will map the map starts to your F keys (F1-F10). Then you can start a zombies match on solo whenever you want.
+
+*Q. When I try to play with my friend, the loading screen stalls at "Waiting for players.*
+- This can happen if you do not have the same exact mod version as your friend. Use the updater to make sure you have the most recent version. You also may need to port forward or change your NAT type (ask Chat GPT for help).
+
+Reach out to me on my discord if you encounter other errors or need additional help.
+
+</details>
 
 ## Bugs and Feedback
 Content for the Bugs and Feedback section...
