@@ -661,7 +661,7 @@ humangun_zombie_get_destination_point_origin()
 	if ( struct_array_active_human_spots.size == 0 )
 	{
 /#
-		iprintlnbold( "no escape structs in a playable area!" );
+		//iprintlnbold( "no escape structs in a playable area!" );
 #/
 		return self.origin;
 	}

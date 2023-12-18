@@ -50,7 +50,7 @@ solo_quick_revive_disable()
 randomize_vending_machines()
 {
 	vending_machines = GetEntArray( "zombie_vending", "targetname" );
-	swap_quick_revive( vending_machines );
+	//swap_quick_revive( vending_machines );
 	vending_machine_remove = [];
 	for( i = 0; i < vending_machines.size; i ++ )
 	{

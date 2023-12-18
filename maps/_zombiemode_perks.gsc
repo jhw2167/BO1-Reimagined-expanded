@@ -611,7 +611,7 @@ vending_weapon_upgrade()
 
 		if ( player.score < self.cost )
 		{
-			//player iprintln( "Not enough points to buy Perk: " + perk );
+			//player //iprintln( "Not enough points to buy Perk: " + perk );
 			self playsound("deny");
 			player maps\_zombiemode_audio::create_and_play_dialog( "general", "perk_deny", undefined, 0 );
 			continue;
@@ -619,7 +619,7 @@ vending_weapon_upgrade()
 		
 		if ( player maps\_zombiemode_weapons::is_weapon_upgraded( current_weapon ) && player.score < self.cost2 )
 		{
-			//player iprintln( "Not enough points to buy Perk: " + perk );
+			//player //iprintln( "Not enough points to buy Perk: " + perk );
 			self playsound("deny");
 			player maps\_zombiemode_audio::create_and_play_dialog( "general", "perk_deny", undefined, 0 );
 			continue;
@@ -832,7 +832,7 @@ wait_for_player_to_take( player, weapon, packa_timer )
 			/#
 			if ( "none" == current_weapon )
 			{
-				iprintlnbold( "WEAPON IS NONE, PACKAPUNCH RETRIEVAL DENIED" );
+				//iprintlnbold( "WEAPON IS NONE, PACKAPUNCH RETRIEVAL DENIED" );
 			}
 			#/
 
@@ -1528,7 +1528,7 @@ electric_perks_dialog()
 				wait(3);
 				self notify ("warning_dialog");
 				/#
-				iprintlnbold("warning_given");
+				//iprintlnbold("warning_given");
 				#/
 			}
 		}
@@ -1646,7 +1646,7 @@ addProPerk( perk )
 disableProPerk( perk, time ) 
 {
 	if( !IsDefined( self ) || !IsDefined( self.PRO_PERKS ) ) {
-		iprintln("disableProPerk: self or self.PRO_PERKS is undefined");
+		//iprintln("disableProPerk: self or self.PRO_PERKS is undefined");
 		return;
 	}
 
@@ -1674,7 +1674,7 @@ returnProPerk( perk )
 removeProPerk( perk, removeOrDisableHud )
 {
 	if( !IsDefined( self ) || !IsDefined( self.PRO_PERKS ) ) {
-		iprintln("removeProPerk: self or self.PRO_PERKS is undefined");
+		//iprintln("removeProPerk: self or self.PRO_PERKS is undefined");
 		return;
 	}
 
@@ -1757,7 +1757,7 @@ givePhdUpgrade() {
 player_print_msg(msg) {
 	flag_wait( "all_players_connected" );
 	wait(2);
-	iprintln( msg );
+	//iprintln( msg );
 }
 
 disableSpeed( wait_time ) {
@@ -1843,7 +1843,7 @@ vending_trigger_think()
 
 			if ( player.score < cost )
 			{
-				//player iprintln( "Not enough points to buy Perk: " + perk );
+				//player //iprintln( "Not enough points to buy Perk: " + perk );
 				wait(0.1);
 				self playsound("evt_perk_deny");
 				continue;
@@ -2158,7 +2158,7 @@ vending_trigger_think()
 				player.num_perks--;		//Will be incremented later when perk is perchased, so we pre-decrement!
 			} else if ( cheat != true )
 			{
-				//player iprintln( "Already using Perk: " + perk );
+				//player //iprintln( "Already using Perk: " + perk );
 				self playsound("deny");
 				player maps\_zombiemode_audio::create_and_play_dialog( "general", "perk_deny", undefined, 1 );
 				continue;
@@ -2167,7 +2167,7 @@ vending_trigger_think()
 
 		if ( player.score < cost )
 		{
-			//player iprintln( "Not enough points to buy Perk: " + perk );
+			//player //iprintln( "Not enough points to buy Perk: " + perk );
 			self playsound("evt_perk_deny");
 			player maps\_zombiemode_audio::create_and_play_dialog( "general", "perk_deny", undefined, 0 );
 			continue;
@@ -2176,7 +2176,7 @@ vending_trigger_think()
 		
 		if ( player.num_perks >= level.max_perks && !is_true(player._retain_perks) )
 		{
-			//player iprintln( "Too many perks already to buy Perk: " + perk );
+			//player //iprintln( "Too many perks already to buy Perk: " + perk );
 			self playsound("evt_perk_deny");
 			// COLLIN: do we have a VO that would work for this? if not we'll leave it at just the deny sound
 			player maps\_zombiemode_audio::create_and_play_dialog( "general", "sigh" );
@@ -2297,7 +2297,7 @@ give_perk_think(player, gun, perk, cost)
 
 	//player give_perk( perk, true );
 
-	//player iprintln( "Bought Perk: " + perk );
+	//player //iprintln( "Bought Perk: " + perk );
 	bbPrint( "zombie_uses: playername %s playerscore %d teamscore %d round %d cost %d name %s x %f y %f z %f type perk",
 		player.playername, player.score, level.team_pool[ player.team_num ].score, level.round_number, cost, perk, self.origin );
 }
@@ -2768,7 +2768,7 @@ perk_think( perk )
 		self perk_hud_destroy( perk );
 
 	self.perk_purchased = undefined;
-	//self iprintln( "Perk Lost: " + perk );
+	//self //iprintln( "Perk Lost: " + perk );
 
 
 	if ( IsDefined( level.perk_lost_func ) )

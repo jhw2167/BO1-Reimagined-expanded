@@ -132,7 +132,7 @@ auto_turret_think()
 //			 (players.size > 1 && level.team_pool[player.team_num].score < cost) )
 		if(player.score < level.auto_turret_cost)
 		{
-			//player iprintln( "Not enough points to buy Perk: " + perk );
+			//player //iprintln( "Not enough points to buy Perk: " + perk );
 			self playsound("deny");
 			player thread play_no_money_turret_dialog();
 			continue;

@@ -2289,7 +2289,7 @@ check_for_desirable_chest_location()
 	}
 
 	/#
-		iprintln(level.desirable_chest_location + " is an invalid box location!");
+		//iprintln(level.desirable_chest_location + " is an invalid box location!");
 #/
 	level.desirable_chest_location = undefined;
 	return level.chest_index;

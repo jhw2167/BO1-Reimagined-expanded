@@ -808,7 +808,7 @@ check_for_egg_damage()
 	}
 	self waittill ("damage");
 	level.egg_damage_counter = level.egg_damage_counter + 1;
-//	iprintlnbold ("ouch");	
+//	//iprintlnbold ("ouch");	
 }
 
 time_to_play()

@@ -229,7 +229,7 @@ anims_test()
 	{
 		if(IsSubStr(zombs[i] black_hole_bomb_store_movement_anim(), "fast_pull"))
 		{
-			iprintln("anim didnt switch");
+			//iprintln("anim didnt switch");
 		}
 	}
 }
@@ -1142,7 +1142,7 @@ black_hole_teleport_trigger_thread( ent, on_enter_payload, on_exit_payload )	// 
 
 	self black_hole_teleport_add_trigger_to_ent( ent );
 
-//	iprintlnbold("Trigger " + self.targetname + " hit by ent " + ent getentitynumber());
+//	//iprintlnbold("Trigger " + self.targetname + " hit by ent " + ent getentitynumber());
 
 	endon_condition = "leave_trigger_" + self GetEntityNumber();
 
@@ -1158,7 +1158,7 @@ black_hole_teleport_trigger_thread( ent, on_enter_payload, on_exit_payload )	// 
 
 	ent notify( endon_condition );
 
-//	iprintlnbold(ent getentitynumber() + " leaves trigger " + self.targetname + ".");
+//	//iprintlnbold(ent getentitynumber() + " leaves trigger " + self.targetname + ".");
 
 	if( IsDefined( ent ) && IsDefined( on_exit_payload ) )
 	{

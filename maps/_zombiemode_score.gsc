@@ -109,13 +109,13 @@ player_add_points( event, mod, hit_location, zombie)
 						multiplier = 0;
 				}				
 		
+				multiplier *= self weapon_points_multiplier( self getcurrentweapon() );
 			}
 			else //Regular zombies!
 			{
 				player_points = level.zombie_vars["zombie_score_damage_light"];
 			}
 			
-			multiplier *= self weapon_points_multiplier( self getcurrentweapon() );
 			break;
 
 		case "rebuild_board":
@@ -199,7 +199,9 @@ weapon_points_multiplier( weapon, mod )
 		case "cz75_upgraded_zm":
 		case "cz75dw_upgraded_zm":
 		case "python_upgraded_zm":
-		multiplier = 2;	
+			if(isSubStr(mod, "BULLET")) {
+				multiplier = 2;	
+			}
 		break;
 
 		//No points for wonder weapons in apocalypse

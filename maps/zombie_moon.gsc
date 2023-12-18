@@ -1645,7 +1645,7 @@ moon_devgui( cmd )
 				return;
 			}
 
-			iprintln( "Activating power" );
+			//iprintln( "Activating power" );
 			trigger notify( "trigger", get_players()[0] );
 			break;
 
@@ -1673,7 +1673,7 @@ moon_devgui( cmd )
 
 		case "digger_speed":
 			level.digger_speed_multiplier = getdvarfloat(#"scr_moon_digger_speed");
-			iprintlnbold(level.digger_speed_multiplier);
+			//iprintlnbold(level.digger_speed_multiplier);
 			break;
 
 		case "spawn":

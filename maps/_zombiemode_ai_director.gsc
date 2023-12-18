@@ -578,7 +578,7 @@ show_damage()
 {
 	while ( 1 )
 	{
-		iprintln( "damage = " + self.dmg_taken );
+		//iprintln( "damage = " + self.dmg_taken );
 		wait( 1 );
 	}
 }
@@ -3069,7 +3069,7 @@ director_print( str )
 /#
 	if ( is_true( level.debug_director ) )
 	{
-		iprintln( str + "\n" );
+		//iprintln( str + "\n" );
 	}
 #/
 }

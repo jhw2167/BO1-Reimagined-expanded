@@ -212,6 +212,8 @@ zombie_spawn_init( animname_set )
 	self thread zombie_damage_failsafe();	
 	
 	self.respawn_zombie = false;
+	self.marked_for_freeze=false;
+	self.marked_for_tesla=false;
 	if(self.animname == "zombie" ) 
 	{
 		//Check respawn queue
@@ -1564,7 +1566,7 @@ zombie_tear_notetracks( msg, chunk, node, tear_anim )
 								//if( random_chance >= 4 )
 								//{
 									bar_bend_left = spawn( "script_model", chunk.origin);
-									// jl, debug iprintlnbold("BEND LEFT");
+									// jl, debug //iprintlnbold("BEND LEFT");
 									bar_bend_left RotateTo( chunk.angles ,  0.2, 0.1, 0.1 );
 									bar_bend_left waittill("rotatedone");
 									bar_bend_left SetModel( "p_zom_win_cell_bars_01_vert01_bent" ); // jl this should not be the 180, this is a hack to adjust for the prefab orientation not being aligned
@@ -1607,7 +1609,7 @@ zombie_tear_notetracks( msg, chunk, node, tear_anim )
 								//if( random_chance >= 4 )
 								//{
 									bar_bend_right = spawn( "script_model", chunk.origin);
-									// jl, debug iprintlnbold("BEND LEFT");
+									// jl, debug //iprintlnbold("BEND LEFT");
 									bar_bend_right RotateTo( chunk.angles ,  0.2, 0.1, 0.1 );
 									bar_bend_right waittill("rotatedone");
 									bar_bend_right SetModel( "p_zom_win_cell_bars_01_vert04_bent" ); // jl this should not be the 180, this is a hack to adjust for the prefab orientation not being aligned
@@ -4779,12 +4781,31 @@ zombie_follow_enemy()
 // When a Zombie spawns, set his eyes to glowing.
 zombie_eye_glow()
 {
+	self endon("death");
+		
 	if(!IsDefined(self))
 	{
 		return;
 	}
 	if ( !isdefined( self.no_eye_glow ) || !self.no_eye_glow )
 	{
+		if( self.animname == "zombie") 
+		{
+			eye_glow = Spawn( "script_model", self GetTagOrigin( "J_EyeBall_LE" ) );
+			assert( IsDefined( eye_glow ) );
+
+			eye_glow.angles = self GetTagAngles( "J_EyeBall_LE" );
+			eye_glow SetModel( "tag_origin" );
+			eye_glow LinkTo( self, "J_EyeBall_LE" );
+
+			if( isDefined( self ) && isAlive( self ) ) {
+				self.fx_eye_glow = eye_glow;
+				network_safe_play_fx_on_tag( "zombie_fx", 2, level._effect["eye_glow"], self.fx_eye_glow, "tag_origin" );
+			} else {
+				eye_glow delete();
+			}
+		}
+
 		self haseyes(1);
 	}
 }
@@ -4798,6 +4819,8 @@ zombie_eye_glow_stop()
 	}
 	if ( !isdefined( self.no_eye_glow ) || !self.no_eye_glow )
 	{
+		if( isDefined( self.fx_eye_glow ) )
+			self.fx_eye_glow delete();
 		self haseyes(0);
 	}
 }

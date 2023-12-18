@@ -389,7 +389,7 @@ _setup_zone_info()
 		valid = IsDefined(zoneName) && IsDefined(level.zones[zoneName]);
 		if ( !valid )
 		{
-			iprintln("Could not find zone for barrier: " + checkEnt.origin);
+			//iprintln("Could not find zone for barrier: " + checkEnt.origin);
 			continue;
 		}
 

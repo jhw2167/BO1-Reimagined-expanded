@@ -1047,7 +1047,7 @@ _debug_astro_health_watch()
 	while ( 1 )
 	{
 		/#
-		iprintln( "health = " + self.health );
+		//iprintln( "health = " + self.health );
 		#/
 
 		wait( 1 );
@@ -1059,7 +1059,7 @@ _debug_astro_print( str )
 	/#
 	if ( is_true( level.debug_astro ) )
 	{
-		iprintln( str );
+		//iprintln( str );
 	}
 	#/
 }

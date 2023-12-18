@@ -40,7 +40,7 @@ main()
 	level._effect[ "vulture_perk_machine_glow_deadshot" ] = LoadFX( "vulture/vulture_deadshot_glow" );
 	level._effect[ "vulture_perk_mystery_box_glow" ] = LoadFX( "vulture/vulture_box_glow" );
 	level._effect[ "vulture_perk_powerup_drop" ] = LoadFX( "vulture/vulture_powerup_glow" );
-	level._effect[ "vulture_perk_zombie_eye_glow" ] = LoadFX( "vulture/fx_zombie_eye_vulture" );
+	//level._effect[ "vulture_perk_zombie_eye_glow" ] = LoadFX( "vulture/fx_zombie_eye_vulture" );
 	//level._effect[ "widows_wine_wrap" ] = LoadFX( "widows_wine/fx_widows_wine_zombie" );
 	//level._effect[ "widows_wine_exp_1p" ] = LoadFX( "widows_wine/fx_widows_wine_explode" );
 	level._zombieCBFunc = ::on_zombie_spawn;
@@ -1255,8 +1255,8 @@ init_vulture()
 	level.perk_vulture_players_with_vulture_perk = [];
 	add_level_notify_callback( "vulture_active_1", ::vulture_toggle, "1" );
 	add_level_notify_callback( "vulture_active_0", ::vulture_toggle, "0" );
-	add_level_notify_callback( "vulture_stink_sound_1", ::sndvulturestink, "1" );
-	add_level_notify_callback( "vulture_stink_sound_0", ::sndvulturestink, "0" );
+	//add_level_notify_callback( "vulture_stink_sound_1", ::sndvulturestink, "1" );
+	//add_level_notify_callback( "vulture_stink_sound_0", ::sndvulturestink, "0" );
 	level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_POWERUP_DROP = 12;
 	level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX = 13;
 	level._ZOMBIE_ACTOR_FLAG_VULTURE_STINK_TRAIL_FX = 3;

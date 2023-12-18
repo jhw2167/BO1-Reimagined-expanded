@@ -344,7 +344,7 @@ door_delay()
 	for ( i=0; i<self.script_int; i++ )
 	{
 		/#
-		iprintln( self.script_int - i );
+		//iprintln( self.script_int - i );
 		#/
 		wait(1);
 	}
@@ -1725,7 +1725,7 @@ board_completion()
 		// need to be place a delay if done within a certain time frame
 		//wait(1.2);
 		//self play_sound_on_ent( "purchase" );
-		//players[i] iprintlnbold("Entrance 1 is fixed!!!");
+		//players[i] //iprintlnbold("Entrance 1 is fixed!!!");
 		//wait(0.3);
 		//self play_sound_on_ent( "purchase" );
 		//wait(0.3);
@@ -2603,11 +2603,11 @@ replace_chunk( chunk, perk, via_powerup )
 		sound = "zmb_vent_fix";
 	}*/
 	
-	/*iprintln("script_ender: " + self.script_ender);
-	iprintln("script_string: " + chunk.script_string);
-	iprintln("script_parameters: " + chunk.script_parameters);
-	iprintln("material: " + chunk.material);
-	iprintln("script_noteworthy: " + chunk.unbroken_section.script_noteworthy);*/
+	/*//iprintln("script_ender: " + self.script_ender);
+	//iprintln("script_string: " + chunk.script_string);
+	//iprintln("script_parameters: " + chunk.script_parameters);
+	//iprintln("material: " + chunk.material);
+	//iprintln("script_noteworthy: " + chunk.unbroken_section.script_noteworthy);*/
 
 		//TUEY Play the sounds
 		// JL, hey Tuey I added calls in here for our different windows so we can call different sounds

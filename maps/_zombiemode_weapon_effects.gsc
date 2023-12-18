@@ -205,7 +205,6 @@ wait_projectile_impacts() {
 	
 		self waittill ( "projectile_impact", weaponName, position );
 		grenade = spawn("script_model", position);
-		iprintln("weapon impact: " + weaponName);
 		
 			switch( weaponName )
 			{
@@ -577,20 +576,21 @@ freezegun_get_enemies_in_range() {
 /** TESLA EFFECTS **/
 tesla_arc_damage( source_enemy, player, distance, arcs )
 {
-	player endon( "disconnect" );
+	self endon( "death" );
 	
 	arc_num = 1;
 
 	wait_network_frame();
 	
 	enemies = tesla_get_enemies_in_area( source_enemy.origin, distance, player );
-
-	//iprintln("Enemies size: " + enemies.size);
 	source_enemy thread tesla_do_damage( source_enemy, 0, player, 1);
+	
 	for( i = 0; i < enemies.size; i++ )
 	{
-		if( i > arcs )
-			return;
+		if( i > arcs ) {
+			enemies[i].marked_for_tesla=false;
+			continue;
+		}
 		
 		if(enemies[i] == source_enemy) {
 			continue;
@@ -599,7 +599,9 @@ tesla_arc_damage( source_enemy, player, distance, arcs )
 		enemies[i] thread tesla_do_damage( source_enemy, arc_num, player, 1);
 		arc_num++;
 	}
+	
 }
+
 
 
 
@@ -608,13 +610,13 @@ tesla_get_enemies_in_area( origin, distance, player )
 	distance_squared = distance * distance;
 	enemies = [];
 	
-	zombies = get_array_of_closest( origin, player.tesla_enemies );
+	zombies = get_array_of_closest( origin, GetAiSpeciesArray( "axis", "all" ), undefined, undefined, distance );
 
 	if ( IsDefined( zombies ) )
 	{
 		for ( i = 0; i < zombies.size; i++ )
 		{
-			 if ( !IsDefined( zombies[i] )  || !IsAlive( zombies[i] ) )
+			 if ( !IsDefined( zombies[i] )  || !IsAlive( zombies[i] ) || zombies[i].marked_for_tesla )
 			{
 				//iprintln("dead zombie");
 				continue;
@@ -734,15 +736,8 @@ tesla_do_damage( source_enemy, arc_num, player, upgraded )
 		return;
 	}
 
-	if ( IsDefined( self.tesla_damage_func ) )
-	{
-		self [[ self.tesla_damage_func ]]( origin, player );
-		return;
-	}
-	else
-	{
-		self DoDamage( self.health + 666, origin, player );
-	}
+	self DoDamage( self.health + 666, origin, player );
+
 
 	if(!self.isdog)
 	{
@@ -773,7 +768,7 @@ tesla_play_death_fx( arc_num )
 		tag = "J_Spine1";
 	}
 
-
+	//iprintln("Play texla death fx");
 	PlayFxOnTag( level._effect[fx], self, tag );
 
 	

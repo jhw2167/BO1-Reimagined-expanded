@@ -210,7 +210,7 @@ thief_health_watch()
 	while ( 1 )
 	{
 		/#
-		iprintln( "health = " + self.health );
+		//iprintln( "health = " + self.health );
 		#/
 
 		wait( 1 );
@@ -464,7 +464,7 @@ thief_round_tracker()
 			thief_round_start();
 
 			level.round_spawn_func = ::thief_round_spawning;
-			level.round_wait_func = ::thief_round_wait;
+			//level.round_wait_func = ::thief_round_wait;
 
 			if(!IsDefined(level.prev_thief_round_amount))
 			{
@@ -2508,7 +2508,7 @@ thief_print( str )
 	/#
 	if ( isdefined( level.thief_debug ) && level.thief_debug == true )
 	{
-		iprintln( str );
+		//iprintln( str );
 	}
 	#/
 }
@@ -2518,7 +2518,7 @@ thief_info( str )
 	/#
 	if ( isdefined( level.thief_info ) && level.thief_info == true )
 	{
-		iprintln( str );
+		//iprintln( str );
 	}
 	#/
 }
@@ -2530,7 +2530,7 @@ thief_ship_cheat_round_2()
 	wait( 1 );
 	level.next_thief_round = 2;
 	/#
-	iprintlnbold( "thief cheat active" );
+	//iprintlnbold( "thief cheat active" );
 	#/
 }
 

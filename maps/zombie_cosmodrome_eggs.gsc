@@ -1104,7 +1104,7 @@ samantha_is_angry()
 		//if ( weapname != "frag_grenade" )
 		//	continue;
 
-		iprintln(weapname);
+		//iprintln(weapname);
 
 		if(weapname != "zombie_nesting_dolls")
 			continue;

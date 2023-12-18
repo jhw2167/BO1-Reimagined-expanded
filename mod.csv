@@ -375,6 +375,7 @@ fx,env/fire/fx_fire_xlg_fuel
 fx,env/fire/fx_fire_player_torso_mp
 fx,weapon/freeze_gun/fx_trail_freezegun_ring_emit
 fx,weapon/freeze_gun/fx_exp_freezegun_impact
+fx,electric_cherry/fx_electric_cherry_shock
 //fx,trail/fx_trail_blood_streak
 
 

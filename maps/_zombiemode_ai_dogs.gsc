@@ -458,9 +458,6 @@ dog_round_tracker()
 			}
 
 			//level.next_dog_round = level.round_number + randomintrange( 4, 6 );
-			/#
-				get_players()[0] iprintln( "Next dog round: " + level.next_dog_round );
-			#/
 		}
 		else if ( flag( "dog_round" ) )
 		{

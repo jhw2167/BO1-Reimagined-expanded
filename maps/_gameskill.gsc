@@ -1519,7 +1519,7 @@ DebugTakeCoverWarnings()
 	}
 	if ( getdebugdvar( "scr_debugtakecover" ) == "1" )
 	{
-		iprintln( "Warnings remaining: ", getdebugdvarint( "takeCoverWarnings" ) - 3 );
+		//iprintln( "Warnings remaining: ", getdebugdvarint( "takeCoverWarnings" ) - 3 );
 	}
 }
 #/

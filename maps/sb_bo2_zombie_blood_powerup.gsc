@@ -147,7 +147,7 @@ zombie_blood_create_fx()
 	fx_origin LinkTo( self );
 	fx_origin PlayLoopSound( "zmb_bo2_powerup_zombie_blood_loop" );
 	PlayFXOnTag( level._effect[ "bo2_powerup_zombie_blood_glow" ], fx_origin, "tag_origin" );
-	iprintln("waiting for zombie blood over");
+	//iprintln("waiting for zombie blood over");
 	self waittill_any( "zombie_blood_over", "disconnect" );
 	fx_origin StopLoopSound();
 	fx_origin Delete();

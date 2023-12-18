@@ -979,7 +979,7 @@ zombie_trap_death( trap, param, activator )
 			self dodamage(self.health + 666, self.origin, activator);
 		}
 
-//		iprintlnbold("should be damaged");
+//		//iprintlnbold("should be damaged");
 		break;
 
 	case "rotating":

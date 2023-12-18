@@ -1877,7 +1877,7 @@ play_level_easteregg_vox( object )
 	percent = 35;
 
 	trig = getent( object, "targetname" );
-//	iprintlnbold ("trig = " + trig.targetname);
+//	//iprintlnbold ("trig = " + trig.targetname);
 	if(!isdefined( trig ) )
 	{
 		return;
@@ -1906,15 +1906,15 @@ play_level_easteregg_vox( object )
 			switch( object )
 			{
 				case "vox_corkboard_1":
-	//				iprintlnbold( "Inside trigger " + object );
+	//				//iprintlnbold( "Inside trigger " + object );
 					who thread maps\_zombiemode_audio::create_and_play_dialog( "level", "corkboard_1" );
 					break;
 				case "vox_corkboard_2":
-	//				iprintlnbold( "Inside trigger " + object );
+	//				//iprintlnbold( "Inside trigger " + object );
 					who thread maps\_zombiemode_audio::create_and_play_dialog( "level", "corkboard_2" );
 					break;
 				case "vox_corkboard_3":
-	//				iprintlnbold( "Inside trigger " + object );
+	//				//iprintlnbold( "Inside trigger " + object );
 					who thread maps\_zombiemode_audio::create_and_play_dialog( "level", "corkboard_3" );
 					break;
 				case "vox_teddy":
@@ -1967,7 +1967,7 @@ play_level_easteregg_vox( object )
 setup_custom_vox()
 {
 	wait(1);
-//	iprintlnbold ("setting up custom vox");
+//	//iprintlnbold ("setting up custom vox");
 
 	level.plr_vox["level"]["corkboard_1"] = "resp_corkmap";
 	level.plr_vox["level"]["corkboard_2"] = "resp_corkmap";

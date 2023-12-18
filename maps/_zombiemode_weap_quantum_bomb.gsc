@@ -63,7 +63,7 @@ quantum_bomb_debug_print_ln( msg )
 		return;
 	}
 
-	iprintlnbold( msg );
+	//iprintlnbold( msg );
 #/
 }
 
@@ -76,7 +76,7 @@ quantum_bomb_debug_print_bold( msg )
 		return;
 	}
 
-	iprintlnbold( msg );
+	//iprintlnbold( msg );
 #/
 }
 

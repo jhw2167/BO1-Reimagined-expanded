@@ -238,7 +238,7 @@ track_door_entry_exit( special )
 				else
 				{
 					/#
-					iprintlnbold( "Entering Airless Environment" );
+					//iprintlnbold( "Entering Airless Environment" );
 					#/
 					//playsoundatposition( "vox_mcomp_enter_5", self.origin );
 				}
@@ -347,7 +347,7 @@ audio_alias_override()
 force_player4_override()
 {
 	wait(5);
-	iprintlnbold( "Player 4 Override in 5 seconds!" );
+	//iprintlnbold( "Player 4 Override in 5 seconds!" );
 	wait(5);
 	level thread player_4_override();
 }

@@ -784,9 +784,11 @@ monkey_pack_think()
 //-----------------------------------------------------------------
 monkey_pack_update_perk()
 {
+	self endon( "death" );
+
 	while ( 1 )
 	{
-		if ( !isdefined( self.perk ) )
+		if ( !isdefined( self.perk ) || self.monkeys.size == 0 )
 		{
 			break;
 		}
@@ -965,7 +967,8 @@ monkey_pack_update_enemy()
 			self.enemy = players[ player_idx ];
 		}
 
-		wait( 0.2 );
+		//wait( 0.2 );
+		wait( 1 );
 	}
 }
 
@@ -1116,7 +1119,7 @@ monkey_round_tracker()
 			monkey_round_start();
 
 			level.round_spawn_func = ::monkey_round_spawning;
-			level.round_wait_func = ::monkey_round_wait;
+			//level.round_wait_func = ::monkey_round_wait;
 
 			if(!IsDefined(level.prev_monkey_round_amount))
 			{
@@ -3143,7 +3146,7 @@ monkey_print( str )
 /#
 	if ( is_true( level.debug_monkey ) )
 	{
-		iprintln( str + "\n" );
+		//iprintln( str + "\n" );
 	}
 #/
 }

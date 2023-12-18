@@ -301,7 +301,7 @@ teleport_pad_countdown( index, time )
 {
 	self endon( "stop_countdown" );
 
-//	iprintlnbold( &"WAW_ZOMBIE_START_TPAD" );
+//	//iprintlnbold( &"WAW_ZOMBIE_START_TPAD" );
 
 	if ( level.active_timer < 0 )
 	{
@@ -330,7 +330,7 @@ teleport_pad_countdown( index, time )
 
 	// ran out of time to activate teleporter
 	level.teleport[index] = "timer_off";
-//	iprintlnbold( "out of time" );
+//	//iprintlnbold( "out of time" );
 	ClientNotify( "TRs" );	// Stop flashing the receiver map light
 
 	level.countdown--;
@@ -864,7 +864,7 @@ teleport_core_think()
 
 					//				trigger teleport_trigger_invisible( true );
 
-					//				iprintlnbold( &"WAW_ZOMBIE_LINK_ACTIVE" );
+					//				//iprintlnbold( &"WAW_ZOMBIE_LINK_ACTIVE" );
 
 					// link the activated pads
 					for ( i = 0; i < level.teleport.size; i++ )
