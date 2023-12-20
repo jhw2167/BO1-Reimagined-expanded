@@ -2,15 +2,13 @@
 BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod for Black Ops 1 on PC.
 
 - [Release Download](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip)
-- [YouTube](https://www.youtube.com/your-channel)
-- [Discord](https://discord.gg/your-discord-invite)
-- [Twitter](https://twitter.com/your-twitter-handle)
+- [YouTube](https://www.youtube.com/channel/UCC010vuB04zQ80YG0dTQbCg)
+- [Discord](https://discord.gg/tR2QU7gy)
 - [Code Repository](https://github.com/jhw2167/BO1-Reimagined-hotfitx)
 
 ## Overview
 
-Black Ops 1: Reimagined-*Expanded* Zombies is a mod designed to enhance gameplay features and mechanics of the classic Black Ops 1 and WaW style COD zombies. It Includes features such as Double Pack-a-Punch, Upgradable Perks, collision mechanics, rebalancing to the weapons and zombies and many other quality of life
-changes. It is built on top of the well received [Black Ops 1 Reimagined Mod](https://github.com/Jbleezy/BO1-Reimagined) by Jbleezy.
+Black Ops: Reimagined-*Expanded* Zombies is a mod designed to enhance the gameplay features and mechanics of the classic Black Ops 1 and WaW style COD zombies. It Includes features such as Double Pack-a-Punch, Upgradable Perks, collision mechanics, rebalancing to the weapons, and many other quality of life changes. It is built on top of the well received [Black Ops 1 Reimagined Mod](https://github.com/Jbleezy/BO1-Reimagined) by Jbleezy.
 
 
 ## Table Of Contents
@@ -426,20 +424,23 @@ Content for the Official Changelog section...
 ## Installation Instructions
 
 1. Download full zip file from Amazon [here](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip).
-	- You will need to download "game_mod" as well, or use the version in my zip file
+	- You will need to download [game_mod](https://github.com/Nukem9/LinkerMod/releases) as well, or you can use the version in my zip file
 	- Extract or copy files to Call of Duty Black Ops game directory
 2. Start steam
 3. Attempt to run mod with "Reimagined-Expanded.bat" only
 	- Create a shortcut to this bat file on your homescreen so you can just click to run it
+ 	- Determine if the mod works by running the game and going into Settings > Game, you should see additional options at the bottom like "Apocalypse Mode"
 4. View "Call of duty Black Ops"/players folder to find dev_config.cfg if you would like to use it
 5. Enable powershell for future updates
 	- Run "powershell"
-	- You will probably have to unrestrict your execute policy
+	- You will probably have to unrestrict your execute policy in order to run the powershell file
 		Set-ExecutionPolicy Unrestricted
 	- Update the game by running provided script in powershell whenever necessary
 
 <details>
 <summary><b>FAQ</b></summary>
+
+Youtube Guide [here](https://youtu.be/2_kCFR6lkO8). 
 
 *Q. I want to play this mod, but I don't have Black Ops, can I?.*
 - No. You need an official copy of Call of Duty Black Ops (probably from Steam). The best deals I see for Black Ops these days are about $45 for the Game + DLC. That is expensive for a 13 year old game. If you see it for cheaper let me know, be careful with cheaper copies of the game that may not be legitimate.
@@ -451,7 +452,7 @@ Content for the Official Changelog section...
 - Sometimes this happens because you are starting the game in fullscreen mode (or windowed) and your computer doesn't like that. Navigate to "Call of Duty Black Ops"/players/mods/Reimagined-Expanded repo and open the config.cfg file with notepad. search for "fullscreen" and switch the setting to "1" or "0", whichever is not currently working.
 
 *Q. I can load the game, but I don't think the mod is working. Help me.*
--  The only way the mod works is if you run it via the "Reimagined-Expanded.bat" file that loads the mod via game_mod. When you load the game, go to your "Game" settings and see if you have Reimagined-Expanded Game options at the bottom to see if it loaded. When you load into a zombies game, you should have a healthbar and your melee attack should be a punch.
+-  The only way the mod works is if you run it via the "Reimagined-Expanded.bat" file that loads the mod via game_mod. When you load the game, go to your "Game" settings and see if you have Reimagined-Expanded Game options at the bottom. When you load into a zombies game, you should have a healthbar and your melee attack should be a punch.
 
 *Q. The mod works, but all my textures are weird and black and messed up.*
 - Make sure you download BOTH the "Green" multiplayer Black Ops and the "Blue" single player/zombies Black Ops. I have also heard the "Shader Warming" graphics setting may affect this.
