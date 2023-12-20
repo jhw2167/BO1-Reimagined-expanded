@@ -26,7 +26,7 @@ Black Ops: Reimagined-*Expanded* Zombies is a mod designed to enhance the gamepl
 
 ### Double Pack-a-Punch
 
-[Electric_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Ballistic_knife.gif)
+![Ballistic_knife](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/bd1f2dc0-7eb9-4213-b949-dbdb6002a5fc)
 
 Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wonder weapons and wall weapons are exceptions. Double Pack-a-Punch weapons have the following bonuses:
 
@@ -112,14 +112,13 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
    
     </details>
 
-[Freeze_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Double_Pap_Freeze.gif)
-
-[HellFire_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Hellfire_Long.gif)
+![Hellfire_Short](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/c8cf1103-75f5-473d-b9e7-fd0d37ec67a1)
 
 ### Upgradable Perks - "PerkaPunch"
 
   _**"PerkaPunch"ed**_ perks are permament. And come with the following special effects:
   
+![Buy_Deadshot](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/88977b8f-b154-4432-b4e8-561aeef1be62)
 
   **Juggernog:**
   - Perk is permanent
@@ -150,7 +149,8 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   - Melee attacks deal double damage
   - When you melee then sprint, go into a ghost mode for 3 seconds allowing you to run through zombies
 
-  [StaminaUp_Demo](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/StaminaUp_Demo.gif)
+![Stamina_Up](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/92686772-8e48-4903-b6bd-ac7c51dae313)
+
   
   **Phd:**
   - Perk is permanent
@@ -194,24 +194,18 @@ Added double Pack-a-Punch for *most* guns in Black Ops Zombies. Most of the wond
   - only applies to zombies with minimum half health
 - Given web grenades that stop zombies, act as claymores/static semtex (upgraded)
 - Poison reduces to 1/4 health over 10 seconds (keep zombies alive longer) (upgraded)
-        
 
-[Deadshot_Perkapunch](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Buy_Deadshot.gif)
-
-[Perks_Down](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Perks_Down.gif)
 
 ### Push Mechanics - Zombie Knockdown
 
 You may knock zombies down with your base melee attack. For about 2 seconds, their collisions are off and you may run by them. This attack still deals some damage, but your knife is in your equipment slot if you would like to use it. See an example below.
 
-![Zombie Knockdown and Switch to Knife](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/zombie_punch.gif)
+![Zombie_Punch](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/8a622ad0-dc7f-4992-964b-86a99ecefb08)
 
 
 ### BabyJugg!
 
   BabyJugg is a buyable "PermaPerk" in each spawn room of every map, it permanently increases your health from 100->140 so you can survive up to 3 hits from zombies instead of 2.
-
-![BabyJugg Demo](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
 
 ### Zombie Health and Weapon Balance Changes
 
@@ -360,16 +354,15 @@ You may knock zombies down with your base melee attack. For about 2 seconds, the
 
   Shotguns have much improved base damage (see above) and receive a damage bonus from "attrition". For each round you own a shotgun, you do 10% more damage with all shotguns, this stacks up to 15 rounds for a maximum of 4x base damage. Moreover, shockguns will knock zombies over if they do sufficient damage but don't kill the zombie.
 
-  
-![Shotgun Zombie Knockdown](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Shotguns.gif)
-
+![Shotguns](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/17d0f2a0-5cfc-452d-acc7-2a52da819ff9)
 
 
 ### Customizable Game Settings
 
-  Most features added in Reimagined-Expanded will be toggle-able in the settings so you can opt for a more vanilla experience if you wish.
+  Most features added in Reimagined-Expanded will be toggle-able in the settings so you can opt for a more vanilla experience if you wish.\
+  
+![Options](https://github.com/jhw2167/BO1-Reimagined-expanded/assets/54991158/f67f9e6b-c7af-44b1-8e10-84e0fcf6d560)
 
-![Reimagined Customization Options](https://s3.amazonaws.com/your-bucket-name/path/to/your/gif.gif)
 
 ## Apocalypse Mode
 
@@ -380,9 +373,6 @@ You may knock zombies down with your base melee attack. For about 2 seconds, the
   - Zombies will occaisionally spawn in mini hordes of 3-5 zombies all from the same spawn location
   - Alternative bosess will be added to each map
   - Zombie "chase" algorithm will be modified to make training more difficult.
-
-![Apocalypse_Mode](https://02-zombies.s3.amazonaws.com/BlackOps/Release/content/Apocalypse_Mode.gif)
-
 
 ## Credits
 
