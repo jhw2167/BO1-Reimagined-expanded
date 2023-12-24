@@ -2,6 +2,7 @@
 BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod for Black Ops 1 on PC.
 
 - [Release Download](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip)
+- [Simple Download](https://drive.google.com/file/d/1-qcqdYYmAs9RhEBkXpObHsMn1Ic0-b3j/view?usp=drive_link) (On Google Drive, only contains .iwd and .ff, no executables. For those familiar with installing BO Mods)
 - [YouTube](https://www.youtube.com/channel/UCC010vuB04zQ80YG0dTQbCg)
 - [Discord](https://discord.gg/tR2QU7gy)
 - [Code Repository](https://github.com/jhw2167/BO1-Reimagined-hotfitx)
@@ -388,10 +389,10 @@ You may knock zombies down with your base melee attack. For about 2 seconds, the
 ## Credits
 
 ### Special Thanks
-Jbleezy - BO1-Reimagined scripts and assets and base repository
-Shippuden1592 - a multitude of useful scripts and assets
-Utamia - Frequent script and game mod support on Linkermod Discord
-Treyarc
+- Jbleezy - BO1-Reimagined scripts and assets and base repository
+- Shippuden1592 - a multitude of useful scripts and assets
+- Utamia - Frequent script and game mod support on Linkermod Discord
+- Treyarc - An amzing zombies games and tons of assets
 
 ### Credits:
 - TescoValueRice - BO2/3 Drops and icons, UGX-Mods Discord
