@@ -64,7 +64,10 @@ zombie_blood_powerup( player, powerup_time )
 	}
 
 	//player SetClientDvar( "cg_fovscale", player GetDvar("cg_fovscale") - 0.2 );
-	player VisionSetNaked( "undefined", 0.5 );
+		if( IsDefined( level.zombie_visionset ) )
+			player VisionSetNaked( level.zombie_visionset, 0.5 );
+		else
+			player VisionSetNaked( "undefined", 0.5 );
 	player SetMoveSpeedScale( player.moveSpeed - 0.3 );
 	player.ignoreme = false;
 

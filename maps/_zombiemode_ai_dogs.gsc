@@ -67,10 +67,19 @@ init()
 //	Specify an override func if needed.
 enable_dog_rounds()
 {
+	level thread thread_enable_dog_rounds();
+}
+
+thread_enable_dog_rounds()
+{
+	//Reimagined-Expanded - Have to wait or "no bosses" won't be set yet
+	flag_wait("all_players_connected");
+
 	if( level.no_bosses ) {
 		level.dog_rounds_enabled = false;
 		return;
 	}
+
 	level.dog_rounds_enabled = true;
 
 	if( !isdefined( level.dog_round_track_override ) )
@@ -181,7 +190,6 @@ dog_round_spawning()
 			{
 				ai.favoriteenemy = favorite_enemy;
 				spawn_loc thread dog_spawn_fx( ai, spawn_loc );
-				level.zombie_total--;
 				level.zombie_dog_total--;
 				count++;
 			}
@@ -196,7 +204,6 @@ dog_round_spawning()
 			{
 				ai.favoriteenemy = favorite_enemy;
 				spawn_point thread dog_spawn_fx( ai );
-				level.zombie_total--;
 				level.zombie_dog_total--;
 				count++;
 
@@ -393,8 +400,8 @@ get_favorite_enemy()
 
 dog_health_increase()
 {
-	//Reimagined-Expanded, dog health will be one third zombie health
-	level.dog_health = int(level.zombie_health / 3);
+	//Reimagined-Expanded, dog health will be one fourth zombie health
+	level.dog_health = int( level.zombie_health / 4 );
 }
 
 
@@ -421,14 +428,8 @@ dog_round_tracker()
 
 	while ( 1 )
 	{
+		
 		level waittill ( "between_round_over" );
-
-		/#
-			if( GetDvarInt( #"force_dogs" ) > 0 )
-			{
-				level.next_dog_round = level.round_number;
-			}
-		#/
 
 		if ( level.round_number == level.next_dog_round )
 		{
@@ -457,7 +458,7 @@ dog_round_tracker()
 				}
 			}
 
-			//level.next_dog_round = level.round_number + randomintrange( 4, 6 );
+			level.next_dog_round = level.round_number + randomintrange( 4, 6 );
 		}
 		else if ( flag( "dog_round" ) )
 		{
@@ -590,8 +591,8 @@ dog_init()
 
 	if(!is_true(flag("enter_nml")))
 	{
-		self.maxhealth = int( level.dog_health * health_multiplier );
-		self.health = int( level.dog_health * health_multiplier );
+		self.maxhealth = level.dog_health;
+		self.health = level.dog_health;
 	}
 
 	self.freezegun_damage = 0;

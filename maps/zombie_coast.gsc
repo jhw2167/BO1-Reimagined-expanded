@@ -105,10 +105,10 @@ main()
 	//level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_dogs::init );
 
 	//Reimagined-Expanded, no George if no_bosses is true
-	if( !level.no_bosses ) {
-		level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_director::init );
-		maps\zombie_coast_ai_director::init();
-	}
+	
+	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_director::init );
+	maps\zombie_coast_ai_director::init();
+	
 		
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_faller::faller_init );
 

@@ -250,7 +250,7 @@ zombie_spawn_init( animname_set )
 		&& !self.respawn_zombie
 		&& is_in_array(level.ARRAY_DESPAWN_ZOMBIES_VALID, self.animname)
 		)
-			self thread zombie_determine_drop();
+			self thread zombie_wait_determine_drop();
 	}
 
 	if(IsDefined(level._zombie_custom_spawn_logic))
@@ -323,16 +323,42 @@ zombie_spawn_init( animname_set )
 
 zombie_on_death()
 {
-	self waittill("death");
+	self waittill_any("death", "zombie_delete" );
 
 	if( isDefined( self.zombie_drop_model ) )
 		self.zombie_drop_model Delete();
+
+	if( isDefined( self.fx_eye_glow ) )
+		self.fx_eye_glow Delete();
 	
+}
+
+zombie_wait_determine_drop() 
+{
+	self endon("death");
+	/* I kinda like seeing zombies spawn with the glowy - Reinmagined-Expanded
+	notInPlayableArea = true;
+	playable_area = getentarray("player_volume","script_noteworthy");
+	while( notInPlayableArea )
+	{
+		for(i=0; i < playable_area.size; i++) 
+		{
+			if( self istouching(playable_area[i]) ) {
+				notInPlayableArea = false;
+				break;
+			}
+		}
+		wait(0.5);
+	}
+	*/
+	zombie_determine_drop();
 }
 
 //Determine Zombie Drop
 zombie_determine_drop()
 {
+		self endon("death");
+
 		total = 1000;
 		if( isDefined(level.zombie_round_total) )
 			total = level.zombie_round_total*10;
@@ -363,10 +389,14 @@ zombie_determine_drop()
 			if( rand < green_rate ) {
 				self.hasDrop = "GREEN";
 				//iprintln("SUCESS: rand: " + rand + " < " + green_rate);
-			}		
+			} 
 		}
+
+		if( !IsDefined(self.hasDrop) )
+				self.hasDrop = "NONE";
 			
-		if( isDefined(self.hasDrop) ) 
+			
+		if( self.hasDrop == "GREEN" || self.hasDrop == "BLUE" || self.hasDrop == "RED" ) 
 		{
 			//iprintln("Zombie drop: " + self.hasDrop);
 			self.zombie_drop_model = Spawn( "script_model", self GetTagOrigin( "j_SpineLower" ) );
@@ -374,8 +404,8 @@ zombie_determine_drop()
 			self.zombie_drop_model LinkTo( self, "tag_origin" );
 
 			//This needs to be in client csc for Vulture aid Pro, not for all to see
-			//PlayFXOnTag( level._effect["powerup_on"], self.zombie_drop_model, "tag_origin" );
-			//PlayFXOnTag( level._effect["powerup_on"], self, "J_SpineLower" );
+			// -- PlayFXOnTag( level._effect["powerup_on"], self.zombie_drop_model, "tag_origin" );
+			//PlayFXOnTag( level._effect["powerup_on"], self, "J_SpineLower" ); - this wont get deleted
 		}
 }
 
@@ -636,7 +666,7 @@ set_run_speed()
 
 	//iprintln( "zombie_spawn_init -> rand = " + rand );
 //	self thread print_run_speed( rand );
-	if( rand <= 35 && level.gamemode == "survival" )
+	if( rand <= 35 )
 	{
 		self.zombie_move_speed = "walk";
 	}

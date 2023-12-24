@@ -617,7 +617,7 @@ vending_weapon_upgrade()
 			continue;
 		}
 		
-		if ( player maps\_zombiemode_weapons::is_weapon_upgraded( current_weapon ) && player.score < self.cost2 )
+		if ( player maps\_zombiemode_weapons::is_weapon_upgraded( current_weapon ) && player.score < self.double_cost )
 		{
 			//player //iprintln( "Not enough points to buy Perk: " + perk );
 			self playsound("deny");
@@ -652,7 +652,7 @@ vending_weapon_upgrade()
 		flag_set("pack_machine_in_use");
 
 		if( IsSubStr(current_weapon, "upgraded") )
-			player maps\_zombiemode_score::minus_to_player_score( self.cost2 ); //Double PaP
+			player maps\_zombiemode_score::minus_to_player_score( self.double_cost ); //Double PaP
 		else
 			player maps\_zombiemode_score::minus_to_player_score( self.cost );
 
@@ -734,7 +734,7 @@ vending_weapon_upgrade()
 			}
 		}
 
-		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.cost2 );
+		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
 		//self setvisibletoall();
 		flag_clear("pack_machine_in_use");
 		self.user = undefined;
@@ -790,20 +790,25 @@ vending_weapon_upgrade_cost()
 	while ( 1 )
 	{
 		self.cost = level.VALUE_PAP_COST;
-		self.cost2 = level.VALUE_PAP_X2_COST; 
+		self.double_cost = level.VALUE_PAP_X2_COST; 
 		if(level.expensive_perks) {
 			self.cost = level.VALUE_PAP_EXPENSIVE_COST;
-			self.cost2 = level.VALUE_PAP_X2_EXPENSIVE_COST;
+			self.double_cost = level.VALUE_PAP_X2_EXPENSIVE_COST;
 		}
 			
 		
-		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.cost2 );
+		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
 
 		level waittill( "powerup bonfire sale" );
 
-		self.cost = 1000;
-		self.cost2 = self.cost2 / 3;
-		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.cost2 );
+		self.cost = level.VALUE_PAP_BONFIRE_COST;
+		self.double_cost = level.VALUE_PAP_X2_BONFIRE_COST;
+		if(level.expensive_perks) {
+			self.cost = level.VALUE_PAP_EXPENSIVE_BONFIRE_COST;
+			self.double_cost = level.VALUE_PAP_X2_EXPENSIVE_BONFIRE_COST;
+		}
+			
+		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
 
 		level waittill( "bonfire_sale_off" );
 	}
@@ -3722,6 +3727,7 @@ watch_stamina_upgrade(perk_str)
 			self VisionSetNaked( level.zombie_visionset, 0.5 );
 		else
 			self VisionSetNaked( "undefined", 0.5 );
+
 	}
 
 	checkDist(a, b, distance )

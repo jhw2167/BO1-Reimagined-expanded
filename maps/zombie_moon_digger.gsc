@@ -1297,7 +1297,7 @@ get_correct_times( digger )
 
 	for(i=0;i<500;i++)
 	{
-		iprintlnbold( i );
+		//iprintlnbold( i );
 		wait(1);
 	}
 }

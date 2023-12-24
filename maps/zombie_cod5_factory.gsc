@@ -128,7 +128,7 @@ main()
 
 	teleporter_init();
 
-	//level thread intro_screen();
+	level thread intro_screen();
 
 	//level thread jump_from_bridge();
 	level lock_additional_player_spawner();

@@ -95,6 +95,7 @@ init()
 	//level thread remove_carpenter();
 	level thread add_powerup_later("fire_sale");
 	level thread add_powerup_later("minigun");
+	//level thread watch_bonfire();
 }
 
 //
@@ -798,12 +799,17 @@ powerup_drop(drop_point, player, zombie)
 
 	} else if(level.round_number >= level.THRESHOLD_ZOMBIE_RANDOM_DROP_ROUND)
 	{
-		if( !IsDefined(zombie.hasDrop) )
+		if( !IsDefined(zombie.hasDrop) || zombie.hasDrop == "NONE" )
 			return;
 		
 		type = "random";
 	}
 
+	level.total_drops_round++;
+	if ( level.total_drops_round > level.THRESHOLD_MAX_DROPS )
+		return;
+
+	//iprintln("SPAWNING DROP FROM POWERUP_DROP: " + type);
 	// This needs to go above the network_safe_spawn because that has a wait.
 	// Otherwise, multiple threads could attempt to drop powerups.
 
@@ -1708,6 +1714,17 @@ start_fire_sale( item )
 		players[i].zombie_vars["zombie_powerup_fire_sale_on"] = false;
 	}
 	level notify ( "fire_sale_off" );
+}
+
+watch_bonfire()
+{
+	flag_wait( "all_players_connected" );
+	p = get_players()[0];
+	while(1)
+	{
+		p waittill("reload");
+		level thread start_bonfire_sale( undefined );
+	}
 }
 
 start_bonfire_sale( item )

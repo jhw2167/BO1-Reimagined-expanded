@@ -46,7 +46,7 @@ player_add_points( event, mod, hit_location, zombie)
 				if( player_points > 0 )
 					player_points += quick_kill_bonus_points( zombie );
 			}
-
+			//iprintln("Points after multiplier: " + player_points);
 
 			if(IsDefined(self.kill_tracker))
 			{
@@ -109,7 +109,8 @@ player_add_points( event, mod, hit_location, zombie)
 						multiplier = 0;
 				}				
 		
-				multiplier *= self weapon_points_multiplier( self getcurrentweapon() );
+				player_points *= self weapon_points_multiplier( self getcurrentweapon(), mod );
+				//iprintln("Points after multiplier: " + player_points);
 			}
 			else //Regular zombies!
 			{
@@ -121,6 +122,8 @@ player_add_points( event, mod, hit_location, zombie)
 		case "rebuild_board":
 		case "carpenter_powerup":
 			player_points	= mod* (Int(level.round_number/5)+1);
+			if( player_points > level.THRESHOLD_MAX_POINTS_CARPENTER )
+				player_points = level.THRESHOLD_MAX_POINTS_CARPENTER;
 			break;
 
 		case "bonus_points_powerup":
@@ -129,6 +132,8 @@ player_add_points( event, mod, hit_location, zombie)
 
 		case "nuke_powerup":
 			player_points	= mod* (Int(level.round_number/5)+1);
+			if( player_points > level.THRESHOLD_MAX_POINTS_NUKE )
+				player_points = level.THRESHOLD_MAX_POINTS_NUKE;
 			team_points		= mod;
 			break;
 
@@ -184,7 +189,7 @@ weapon_points_multiplier( weapon, mod )
 			weapon = GetSubStr(weapon, 0, weapon.size-3);
 	}
 
-	if(mod == undefined) {
+	if( !IsDefined( mod ) ) {
 		mod = "MOD_UNKNOWN";
 	}
 
