@@ -1,7 +1,8 @@
 # BO1-Reimagined-Expanded
 BO1 Reimagined-Expanded is a Call of Duty Black Ops 1 Zombies Mod for Black Ops 1 on PC.
 
-- [Release Download](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip)
+- [Release Download](https://02-zombies.s3.amazonaws.com/BlackOps/Release/Call+of+Duty+Black+Ops.zip) **This link has been disabled because hosting with Amazon is unfortunately expensive, use google drive and download game mod seperately. Reach out to me on discord if you need help**
+- [Game Mod](https://github.com/Nukem9/LinkerMod/releases)
 - [Simple Download](https://drive.google.com/file/d/1-qcqdYYmAs9RhEBkXpObHsMn1Ic0-b3j/view?usp=drive_link) (On Google Drive, only contains .iwd and .ff, no executables. For those familiar with installing BO Mods)
 - [YouTube](https://www.youtube.com/channel/UCC010vuB04zQ80YG0dTQbCg)
 - [Discord](https://discord.com/invite/KqW7zdnH9y)
