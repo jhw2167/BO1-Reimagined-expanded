@@ -1,6 +1,8 @@
 #include maps\_utility;
 #include common_scripts\utility;
 #include maps\_zombiemode_utility;
+#include maps\_zombiemode_net;
+#include maps\_zombiemode_reimagined_utility;
 
 init()
 {
@@ -14,26 +16,37 @@ init()
 	level.zombiemode_using_marathon_perk = true;
 	level.zombiemode_using_deadshot_perk = true;
 	level.zombiemode_using_additionalprimaryweapon_perk = true;
-	//level.zombiemode_using_electriccherry_perk = true;
-	//level.zombiemode_using_vulture_perk = true;
-	//level.zombiemode_using_widowswine_perk = true;
+	level.zombiemode_using_electriccherry_perk = false;
+	level.zombiemode_using_vulture_perk = false;
+	level.zombiemode_using_widowswine_perk = false;
+
+	if( level.bo2_perks ) 
+	{
+		level.zombiemode_using_electriccherry_perk = true;
+		level.zombiemode_using_vulture_perk = true;
+		level.zombiemode_using_widowswine_perk = true;
+	}
+	
 
 	/*
 	level.zombiemode_using_chugabud_perk = true;
 	
 	level.zombiemode_using_bandolier_perk = true;
 	level.zombiemode_using_timeslip_perk = true;
-	level.zombiemode_using_pack_a_punch = true;
 	*/
+	level.zombiemode_using_pack_a_punch = true;
+	
 
-	level thread place_perk_machines_by_map();
+	level place_perk_machines_by_map();
 	level thread place_doubletap_machine();
 
 	// Perks-a-cola vending machine use triggers
 	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
+	//bump_triggers = GetEntArray( "audio_bump_trigger", "targetname" );
 
 	// Pack-A-Punch weapon upgrade machine use triggers
 	vending_weapon_upgrade_trigger = GetEntArray("zombie_vending_upgrade", "targetname");
+	
 	flag_init("pack_machine_in_use");
 	flag_init( "solo_game" );
 
@@ -55,13 +68,12 @@ init()
 		return;
 	}
 
-	if ( vending_weapon_upgrade_trigger.size >= 1 )
+	if ( vending_weapon_upgrade_trigger.size >= 1  && level.mapname != "zombie_cod5_sumpf")
 	{
 		array_thread( vending_weapon_upgrade_trigger, ::vending_weapon_upgrade );
 	}
 
 	//Perks machine
-	//load_fx();
 	default_vending_precaching();
 	if( !isDefined( level.custom_vending_precaching ) )
 	{
@@ -88,9 +100,9 @@ init()
 
 	array_thread( vending_triggers, ::vending_trigger_think );
 	array_thread( vending_triggers, ::electric_perks_dialog );
-	//array_thread( vending_triggers, ::bump_trigger_think );
+	//array_thread( bump_triggers, ::bump_trigger_think );
 	
-	level thread turn_PackAPunch_on();
+	//level thread turn_PackAPunch_on();
 
 	if ( isdefined( level.quantum_bomb_register_result_func ) )
 	{
@@ -126,7 +138,7 @@ place_doubletap_machine()
 
 	machine = Spawn( "script_model", level.zombie_doubletap_machine_origin );
 	machine.angles = level.zombie_doubletap_machine_angles;
-	machine setModel( "zombie_vending_doubletap" );
+	machine setModel( "zombie_vending_doubletap2" );
 	machine.targetname = "vending_doubletap";
 
 	machine_trigger = Spawn( "trigger_radius_use", level.zombie_doubletap_machine_origin + (0, 0, 30), 0, 20, 70 );
@@ -141,7 +153,7 @@ place_doubletap_machine()
 	{
 		machine_clip = spawn( "script_model", level.zombie_doubletap_machine_clip_origin );
 		machine_clip.angles = level.zombie_doubletap_machine_clip_angles;
-		machine_clip setmodel( "collision_geo_64x64x256" );
+		machine_clip setmodel( "collision_geo_64x64x64" );
 		machine_clip Hide();
 	}
 
@@ -223,19 +235,7 @@ remove_bump_trigger(perk)
 	level send_message_to_csc("zombiemode_perks", perk + "|delete_bump");
 }
 
-load_fx()
-{
-	//Phd
-	level._effect["divetonuke_groundhit"] = LoadFx( "maps/zombie/fx_perk_phd" );
 
-	//Stamina
-
-	//Vulture
-
-	//Cherry
-
-
-}
 
 //
 //	Precaches all machines
@@ -250,11 +250,47 @@ default_vending_precaching()
 
 	PrecacheItem( "zombie_perk_bottle" );
 	PreCacheModel( "t6_wpn_zmb_perk_bottle_jugg_world" );
+	PrecacheItem( "zombie_knuckle_crack" );
+
+	/*
+	PreCacheShader( "specialty_glow_dbl_tap" );
+	PreCacheShader( "specialty_glow_deadshot" );
+	PreCacheShader( "specialty_glow_flopper" );
+	PreCacheShader( "specialty_glow_jugg" );
+	PreCacheShader( "specialty_glow_magic_box" );
+	PreCacheShader( "specialty_glow_mule_kick" );
+	PreCacheShader( "specialty_glow_pap" );
+	PreCacheShader( "specialty_glow_quickrevive" );
+	PreCacheShader( "specialty_glow_rifle" );
+	PreCacheShader( "specialty_glow_skull" );
+	PreCacheShader( "specialty_glow_speed" );
+	PreCacheShader( "specialty_glow_stamin" );
+	PreCacheShader( "specialty_glow_tombstone" );
+	PreCacheShader( "specialty_glow_vulture" );
+	PreCacheShader( "specialty_glow_whoswho" );
+	PreCacheShader( "specialty_glow_widow" );
+	PreCacheShader( "specialty_glow_wunderfizz" );
+	PreCacheShader( "specialty_nuke_zombies" );
+*/
+
+	//Classic hintstrings
+	PrecacheString( &"ZOMBIE_PERK_QUICKREVIVE" );
+	PrecacheString( &"ZOMBIE_PERK_JUGGERNAUT" );
+	PrecacheString( &"ZOMBIE_PERK_FASTRELOAD" );
+	PrecacheString( &"ZOMBIE_PERK_DOUBLETAP" );
+	PrecacheString( &"ZOMBIE_PERK_MARATHON" );
+	PrecacheString( &"ZOMBIE_PERK_DIVETONUKE" );
+	PrecacheString( &"ZOMBIE_PERK_DEADSHOT" );
+	PrecacheString( &"ZOMBIE_PERK_ADDITIONALPRIMARYWEAPON" );
+	PrecacheString( &"REIMAGINED_ZOMBIE_PERK_CHERRY" );
+	PrecacheString( &"REIMAGINED_ZOMBIE_PERK_VULTURE" );
+	PrecacheString( &"REIMAGINED_ZOMBIE_PERK_WIDOWSWINE" );
 
 	if( is_true( level.zombiemode_using_juggernaut_perk ) )
 	{
 		PreCacheShader( "specialty_juggernaut_zombies" );
 		PreCacheShader( "specialty_juggernaut_zombies_pro" );
+		PreCacheShader( "specialty_glow_jugg" );
 		PreCacheModel( "zombie_vending_jugg" );
 		PreCacheModel( "zombie_vending_jugg_on" );
 		PreCacheString( &"REIMAGINED_PERK_JUGGERNAUT" );
@@ -265,6 +301,7 @@ default_vending_precaching()
 	{
 		PreCacheShader( "specialty_fastreload_zombies" );
 		PreCacheShader( "specialty_fastreload_zombies_pro" );
+		PrecacheShader( "specialty_glow_speed" );
 		PreCacheModel( "zombie_vending_sleight" );
 		PreCacheModel( "zombie_vending_sleight_on" );
 		PreCacheString( &"REIMAGINED_PERK_FASTRELOAD" );
@@ -275,8 +312,9 @@ default_vending_precaching()
 	{
 		PreCacheShader( "specialty_doubletap_zombies" );
 		PreCacheShader( "specialty_doubletap_zombies_pro" );
-		PreCacheModel( "zombie_vending_doubletap" );
-		PreCacheModel( "zombie_vending_doubletap_on" );
+		PrecacheShader( "specialty_glow_dbl_tap" );
+		PreCacheModel( "zombie_vending_doubletap2" );
+		PreCacheModel( "zombie_vending_doubletap2_on" );
 		PreCacheString( &"REIMAGINED_PERK_DOUBLETAP" );
 		level._effect[ "doubletap_light" ] = LoadFX( "misc/fx_zombie_cola_dtap_on" );
 		level thread turn_doubletap_on();
@@ -285,6 +323,7 @@ default_vending_precaching()
 	{
 		PreCacheShader( "specialty_quickrevive_zombies" );
 		PreCacheShader( "specialty_quickrevive_zombies_pro" );
+
 		PreCacheModel( "zombie_vending_revive" );
 		PreCacheModel( "zombie_vending_revive_on" );
 		PreCacheString( &"REIMAGINED_PERK_QUICKREVIVE" );
@@ -296,12 +335,14 @@ default_vending_precaching()
 	{
 		level.zombiemode_divetonuke_perk_func = ::divetonuke_explode;
 
+		PrecacheRumble("explosion_generic");
 		PreCacheShader( "specialty_divetonuke_zombies" );
 		PreCacheShader( "specialty_divetonuke_zombies_pro" );
 		PreCacheModel( "zombie_vending_nuke" );
 		PreCacheModel( "zombie_vending_nuke_on" );
 		PreCacheString( &"REIMAGINED_PERK_DIVETONUKE" );
 		level._effect[ "divetonuke_light" ] = LoadFX( "misc/fx_zombie_cola_dtap_on" );
+		level._effect["divetonuke_groundhit"] = loadfx("maps/zombie/fx_zmb_phdflopper_exp");
 
 		set_zombie_var( "zombie_perk_divetonuke_radius", 500 ); // WW (01/12/2011): Issue 74726:DLC 2 - Zombies - Cosmodrome - PHD Flopper - Increase the radius on the explosion (Old: 150)
 		set_zombie_var( "zombie_perk_divetonuke_min_damage", 1550 );
@@ -346,7 +387,9 @@ default_vending_precaching()
 		PreCacheModel( "p6_zm_vending_electric_cherry_off" );
 		PreCacheModel( "p6_zm_vending_electric_cherry_on" );
 		PreCacheString( &"REIMAGINED_PERK_CHERRY" );
-		level._effect[ "electriccherry_light" ] = LoadFX( "misc/fx_zombie_cola_on" );
+		//level._effect[ "electriccherry_light" ] = LoadFX( "misc/fx_zombie_cola_on" );
+		level._effect[ "electriccherry_light" ] = level._effect[ "doubletap_light" ];
+		thread init_electric_cherry();
 		level thread turn_electriccherry_on();
 	}
 	if( is_true( level.zombiemode_using_vulture_perk ) )
@@ -356,18 +399,25 @@ default_vending_precaching()
 		PreCacheModel( "bo2_zombie_vending_vultureaid" );
 		PreCacheModel( "bo2_zombie_vending_vultureaid_on" );
 		PreCacheString( &"REIMAGINED_PERK_VULTURE" );
-		level._effect[ "vulture_light" ] = LoadFX( "misc/fx_zombie_cola_jugg_on" );
+		level._effect[ "vulture_light" ] = level._effect["jugger_light"];
+		thread init_vulture();
 		level thread turn_vulture_on();
 	}
 	if( is_true( level.zombiemode_using_widowswine_perk ) )
 	{
+		PreCacheModel( "bo3_t7_ww_grenade_world" );
+		//PreCacheModel( "bo3_t7_ww_grenade_proj" );
+		//PreCacheModel( "bo3_t7_ww_grenade_view" );
+
+		PrecacheShader( "vending_widows_grenade_icon" );
 		PreCacheShader( "specialty_widowswine_zombies" );
 		PreCacheShader( "specialty_widowswine_zombies_pro" );
 		PreCacheModel( "bo3_p7_zm_vending_widows_wine_off" );
 		PreCacheModel( "bo3_p7_zm_vending_widows_wine_on" );
 		PreCacheString( &"REIMAGINED_PERK_WIDOWSWINE" );
-		level._effect[ "widow_light" ] = LoadFX( "misc/fx_zombie_cola_jugg_on" );
-		//level thread turn_widowswine_on();
+		level._effect[ "widow_light" ] = level._effect["jugger_light"];
+		thread init_widows_wine();
+		level thread turn_widowswine_on();
 	}
 	if( is_true( level.zombiemode_using_bandolier_perk ) )
 	{
@@ -376,6 +426,16 @@ default_vending_precaching()
 	if( is_true( level.zombiemode_using_timeslip_perk ) )
 	{
 		PreCacheShader( "specialty_timeslip_zombies" );
+	}
+	if( is_true( level.zombiemode_using_pack_a_punch ) )
+	{
+		PreCacheModel( "zombie_vending_packapunch" );
+		PreCacheModel( "zombie_vending_packapunch_on" );
+		PreCacheString( &"REIMAGINED_PERK_PACKAPUNCH");
+		PreCacheString( &"ZOMBIE_GET_UPGRADED" );
+		level._effect[ "packapunch_fx" ] = LoadFX( "maps/zombie/fx_zombie_packapunch" );
+		level.pap_moving = false;
+		level thread turn_PackAPunch_on();
 	}
 
 	// Minimap icons
@@ -392,6 +452,9 @@ third_person_weapon_upgrade( current_weapon, origin, angles, packa_rollers, perk
 	forward = anglesToForward( angles );
 	interact_pos = origin + (forward*-25);
 	PlayFx( level._effect["packapunch_fx"], origin+(0,1,-34), forward );
+
+	if( IsSubStr( current_weapon, "sabertooth" ) )
+		interact_pos += (0,0,10);
 
 	worldgun = spawn( "script_model", interact_pos );
 	worldgun.angles  = self.angles;
@@ -438,21 +501,37 @@ third_person_weapon_upgrade( current_weapon, origin, angles, packa_rollers, perk
 
 	self playsound( "zmb_perks_packa_ready" );
 
+	//Reimagined-Expanded
+	//If gun is the upgraded uzi, get model index specially
+	modelIndex = 0;
+	if( IsSubStr( current_weapon, "upgraded" ) )
+		modelIndex = 1;
+	
+	
+	if( current_weapon == "uzi_upgraded_zm" )
+	{
+		modelIndex = self maps\_zombiemode_weapon_effects::handle_double_pap_uzi( perk_trigger.double_cost );
+	}
+
 	worldgun = spawn( "script_model", origin );
 	worldgun.angles  = angles+(0,90,0);
-	worldgun setModel( GetWeaponModel( level.zombie_weapons[current_weapon].upgrade_name ) );
-	worldgun useweaponhidetags( level.zombie_weapons[current_weapon].upgrade_name );
+	newGun = level.zombie_weapons[current_weapon].upgrade_name;
+	if( !isDefined( newGun ) )
+		newGun = current_weapon;
+
+	worldgun setModel( GetWeaponModel( newGun ) );
+	worldgun useweaponhidetags( newGun );
 	worldgun moveto( interact_pos, 0.5, 0, 0 );
 	perk_trigger.worldgun = worldgun;
 
 	worldgundw = undefined;
-	if ( maps\_zombiemode_weapons::weapon_is_dual_wield( level.zombie_weapons[current_weapon].upgrade_name ) )
+	if ( maps\_zombiemode_weapons::weapon_is_dual_wield( newGun ) )
 	{
 		worldgundw = spawn( "script_model", origin + offsetdw );
 		worldgundw.angles  = angles+(0,90,0);
 
-		worldgundw setModel( maps\_zombiemode_weapons::get_left_hand_weapon_model_name( level.zombie_weapons[current_weapon].upgrade_name ) );
-		worldgundw useweaponhidetags( level.zombie_weapons[current_weapon].upgrade_name );
+		worldgundw setModel( maps\_zombiemode_weapons::get_left_hand_weapon_model_name( newGun ) );
+		worldgundw useweaponhidetags( newGun );
 		worldgundw moveto( interact_pos + offsetdw, 0.5, 0, 0 );
 		perk_trigger.worldgundw = worldgundw;
 	}
@@ -478,6 +557,7 @@ third_person_weapon_upgrade( current_weapon, origin, angles, packa_rollers, perk
 
 vending_machine_trigger_think()
 {
+	
 	self endon("death");
 
 	dist = 128 * 128;
@@ -489,6 +569,7 @@ vending_machine_trigger_think()
 		{
 			if(DistanceSquared( players[i].origin, self.origin ) < dist)
 			{
+				//iprintln("Player in range");
 				current_weapon = players[i] getCurrentWeapon();
 				if(current_weapon == "microwavegun_zm")
 				{
@@ -498,38 +579,37 @@ vending_machine_trigger_think()
 				packInUseByThisPlayer = ( flag("pack_machine_in_use") && IsDefined(self.user) && self.user == players[i] );
 				if ( players[i] hacker_active() )
 				{
+					//iprintln("1");
 					self SetInvisibleToPlayer( players[i], true );
 				}
 				else if( !players[i] maps\_zombiemode_weapons::can_buy_weapon() || players[i] maps\_laststand::player_is_in_laststand() || is_true( players[i].intermission ) || players[i] isThrowingGrenade() )
 				{
+					//iprintln("2");
 					self SetInvisibleToPlayer( players[i], true );
 				}
-				else if( is_true(level.pap_moving)) //can't use the pap machine while it's being lowered or raised
+				else if( is_true(level.pap_moving) ) //can't use the pap machine while it's being lowered or raised
 				{
+					//iprintln("3");
 					self SetInvisibleToPlayer( players[i], true );
 				}
 				else if( players[i] isSwitchingWeapons() )
 		 		{
+					//iprintln("4");
 		 			self SetInvisibleToPlayer( players[i], true );
 		 		}
 		 		else if( !packInUseByThisPlayer && flag("pack_machine_in_use") )
 		 		{
+					//iprintln("5");
 		 			self SetInvisibleToPlayer( players[i], true );
 		 		}
-				else if ( !packInUseByThisPlayer && !IsDefined( level.zombie_include_weapons[current_weapon] ) )
+				else if ( !packInUseByThisPlayer && ! players[i] check_pap_permitted( current_weapon ) )
 				{
+					//iprintln("6");
 					self SetInvisibleToPlayer( players[i], true );
-				}
-				else if ( !packInUseByThisPlayer && players[i] maps\_zombiemode_weapons::is_weapon_double_upgraded( current_weapon ) )
-				{
-					self SetInvisibleToPlayer( players[i], true );
-				}
-				else if ( !packInUseByThisPlayer && vending_2x_blacklist(current_weapon) )
-				{
-					self SetInvisibleToPlayer( players[i], true );
-				}
+				}	
 				else
 				{
+					//iprintln("9");
 					self SetInvisibleToPlayer( players[i], false );
 				}
 			}
@@ -538,11 +618,42 @@ vending_machine_trigger_think()
 	}
 }
 
+/*
+
+Put these conditions in this method:
+	- weapon must be defined
+	- uzi may always be pap'd
+	- weapon may not be double pap'd
+	- certain weapons are blacklisted from double pap
+
+*/
+
+check_pap_permitted( weapon )
+{
+
+	if( !isDefined( level.zombie_include_weapons[weapon] ) ) 
+		return false;
+	
+	if( weapon == "uzi_upgraded_zm" ) {
+		//NOTHING, weapon can always be papped again
+	}
+	else if( self maps\_zombiemode_weapons::is_weapon_double_upgraded( weapon ) )
+		return false;
+
+	if( vending_2x_blacklist( weapon ) )
+		return false;
+
+	return true;
+
+}
+
 //
 //	Pack-A-Punch Weapon Upgrade
 //
 vending_weapon_upgrade()
 {
+	self endon("death");
+
 	perk_machine = GetEnt( self.target, "targetname" );
 	perk_machine_sound = GetEntarray ( "perksacola", "targetname");
 	packa_rollers = spawn("script_origin", self.origin);
@@ -568,6 +679,7 @@ vending_weapon_upgrade()
 	perk_machine playloopsound("zmb_perks_packa_loop");
 
 	self thread vending_weapon_upgrade_cost();
+	alltrue = true;
 
 	for( ;; )
 	{
@@ -587,7 +699,7 @@ vending_weapon_upgrade()
 			player maps\_laststand::player_is_in_laststand() ||
 			is_true( player.intermission ) ||
 			player isThrowingGrenade() ||
-			player maps\_zombiemode_weapons::is_weapon_double_upgraded( current_weapon ) )
+			! player check_pap_permitted( current_weapon ) )
 		{
 			wait( 0.1 );
 			continue;
@@ -643,10 +755,7 @@ vending_weapon_upgrade()
 			
  			continue;
 		}
-		if(vending_2x_blacklist(current_weapon)) {
-			continue;
-		}
-				
+		
 
 		self.user = player;
 		flag_set("pack_machine_in_use");
@@ -734,11 +843,17 @@ vending_weapon_upgrade()
 			}
 		}
 
+		if( IsSubStr(current_weapon, "upgraded") )
+			self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
+		else
+			self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
+
 		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
 		//self setvisibletoall();
 		flag_clear("pack_machine_in_use");
 		self.user = undefined;
 		self.third_person_weapon_complete = undefined;
+		wait(1);
 	}
 }
 //END VENDING WEAPON UPGRADE
@@ -755,20 +870,6 @@ vending_2x_blacklist(weapon) {
 			weapon == "sniper_explosive_bolt_upgraded_zm" ||										//scavenger
 			(IsSubStr( weapon, "sniper" ) && IsSubStr( weapon, "upgraded" )) ||						///scavenger
 			weapon == "humangun_upgraded_zm" ||														//human gun
-			( IsSubStr( weapon, "zombie" ) && IsSubStr( weapon, "upgraded" )) ||					//no double pap WaW weapons
-			weapon == "m14_upgraded_zm" ||
-			weapon == "mpl_upgraded_zm" ||
-			weapon == "mp5k_upgraded_zm" ||
-			weapon == "mp40_upgraded_zm" ||
-			weapon == "ak74u_upgraded_zm" ||
-			weapon == "pm63_upgraded_zm" ||
-			weapon == "rottweil72_upgraded_zm" ||
-			weapon == "m16_gl_upgraded_zm" ||
-			weapon == "gl_m16_upgraded_zm" ||
-			weapon == "ithaca_upgraded_zm" ||
-			weapon == "mk_aug_upgraded_zm" ||
-			weapon == "m72_law_zm" || 
-			weapon == "china_lake_zm" ||
 			weapon == "explosivbe_bolt_upgraded_zm")
 			{
 				return true;
@@ -787,6 +888,8 @@ wait_for_third_person_weapon_complete()
 
 vending_weapon_upgrade_cost()
 {
+	self endon("death");
+
 	while ( 1 )
 	{
 		self.cost = level.VALUE_PAP_COST;
@@ -798,7 +901,7 @@ vending_weapon_upgrade_cost()
 			
 		
 		self SetHintString( &"REIMAGINED_PERK_PACKAPUNCH", self.cost, self.double_cost );
-
+		
 		level waittill( "powerup bonfire sale" );
 
 		self.cost = level.VALUE_PAP_BONFIRE_COST;
@@ -820,9 +923,16 @@ vending_weapon_upgrade_cost()
 wait_for_player_to_take( player, weapon, packa_timer )
 {
 	AssertEx( IsDefined( level.zombie_weapons[weapon] ), "wait_for_player_to_take: weapon does not exist" );
-	AssertEx( IsDefined( level.zombie_weapons[weapon].upgrade_name ), "wait_for_player_to_take: upgrade_weapon does not exist" );
+	//AssertEx( IsDefined( level.zombie_weapons[weapon].upgrade_name ), "wait_for_player_to_take: upgrade_weapon does not exist" );
 
 	upgrade_weapon = level.zombie_weapons[weapon].upgrade_name;
+
+	//Reimagined-Exapnded - Essentially, we use the already upgraded weapon as the new weapon for some weapons
+	if( !isDefined( upgrade_weapon ) ) 
+		upgrade_weapon = weapon;
+	
+	//iprintln("Upgrade weapon to give: " );
+	//iprintln( upgrade_weapon );
 
 	self endon( "pap_timeout" );
 	while( true )
@@ -886,21 +996,31 @@ wait_for_player_to_take( player, weapon, packa_timer )
 				}
 				else
 				{
-					index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(upgrade_weapon);
+					index = player maps\_zombiemode_weapons::get_upgraded_weapon_model_index(upgrade_weapon);
 
 					player GiveWeapon( upgrade_weapon, index, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( upgrade_weapon ) );
 					player maps\_zombiemode_weapons::give_max_ammo(upgrade_weapon, 1);
 				}
 
+				//Upgraded weapon, upgrade_weapon, weap_upgrade
+				player handle_player_packapunch(weapon, true);
 				player SwitchToWeapon( upgrade_weapon );
+				player notify("weapon_upgrade_complete");
 				player maps\_zombiemode_weapons::play_weapon_vo(upgrade_weapon);
+
 				return;
 			}
+
+			
 		}
 		wait( 0.05 );
 	}
 }
 
+handle_player_packapunch(current_weapon, didUpgrade)
+{
+	self maps\_zombiemode::handle_player_packapunch(current_weapon, didUpgrade);
+}
 
 //	Waiting for the weapon to be taken
 //
@@ -1045,6 +1165,21 @@ turn_PackAPunch_on()
 			perk thread activate_PackAPunch();
 		}
 	}
+
+
+	if( Tolower( GetDvar( #"mapname" ) ) != "zombie_cod5_sumpf" )
+		return;
+		
+	machine = getentarray("vending_packapunch", "targetname");
+	level waittill("Pack_A_Punch_on");
+	
+	for( i = 0; i < machine.size; i++ )
+	{
+		machine[i] vibrate((0,-100,0), 0.3, 0.4, 3);
+		machine[i] playsound("zmb_perks_power_on");
+		machine[i] thread perk_fx( "doubletap_light" );
+	}
+	
 }
 
 activate_PackAPunch()
@@ -1101,12 +1236,18 @@ turn_sleight_on()
 //
 turn_revive_on()
 {
+	//if map is moon
+	if( level.mapname == "zombie_moon")
+	{
+		setup_revive_moon();
+	}
+	
 	machine = getentarray("vending_revive", "targetname");
 	/*machine_model = undefined;
 	machine_clip = undefined;
 
 	flag_wait( "all_players_connected" );
-	players = GetPlayers();
+	players = get_players();
 	if ( players.size == 1 || level.vsteams == "ffa" )
 	{
 		for( i = 0; i < machine.size; i++ )
@@ -1146,7 +1287,7 @@ turn_revive_on()
 	}*/
 
 	level waittill("revive_on");
-
+	
 	for( i = 0; i < machine.size; i++ )
 	{
 		if(IsDefined(machine[i].classname) && machine[i].classname == "script_model")
@@ -1161,6 +1302,31 @@ turn_revive_on()
 	level notify( "specialty_quickrevive_power_on" );
 }
 
+	setup_revive_moon()
+	{
+		origin = (6, -123, -2);
+		machine = getentarray("vending_revive", "targetname");
+		trigger = GetEnt( level.QRV_PRK , "script_noteworthy");
+		trigger.origin = origin + (0 , 0, 30);
+		perk_clip = undefined;
+
+		for( i = 0; i < machine.size; i++ )
+		{
+			if(IsDefined(machine[i].classname) && machine[i].classname == "script_model")
+			{
+				machine[i].origin = origin;
+				perk_clip = spawn( "script_model", machine[i].origin + (0, 0, 30) );
+				perk_clip.angles = machine[0].angles;
+				perk_clip SetModel( "collision_geo_64x64x64" );
+				perk_clip Hide();
+
+				bump_trigger = Spawn( "trigger_radius", machine[i].origin, 0, 35, 64 );
+				bump_trigger.script_activated = 1;
+				bump_trigger.script_sound = "fly_bump_bottle";
+				bump_trigger.targetname = "audio_bump_trigger";
+			}
+		}
+	}
 
 revive_solo_fx(machine_clip)
 {
@@ -1270,16 +1436,23 @@ turn_jugger_on()
 
 	level waittill("juggernog_on");
 
+	//iprintln("Juggernog_on");
 	//Reimagined-Expanded
-	level notify("divetonuke_on");
-	level notify("marathon_on");
-	level notify("doubletap_on");
-	level notify("deadshot_on");
-	level notify("additionalprimaryweapon_on");
-	level notify("electriccherry_on");
-	level notify("vultureon");
-	level notify("widowswine_on");
-
+	if(level.mapname != "zombie_cod5_sumpf")
+	{
+		level notify("sleight_on");
+		level notify("revive_on");
+		level notify("divetonuke_on");
+		level notify("marathon_on");
+		level notify("doubletap_on");
+		level notify("deadshot_on");
+		level notify("additionalprimaryweapon_on");
+		level notify("electriccherry_on");
+		level notify("vulture_on");
+		level notify("widowswine_on");
+		level notify("Pack_A_Punch_on");
+	}
+	
 
 	for( i = 0; i < machine.size; i++ )
 	{
@@ -1301,7 +1474,7 @@ turn_doubletap_on()
 
 	for( i = 0; i < machine.size; i++ )
 	{
-		machine[i] setmodel("zombie_vending_doubletap_on");
+		machine[i] setmodel("zombie_vending_doubletap2_on");
 		machine[i] vibrate((0,-100,0), 0.3, 0.4, 3);
 		machine[i] playsound("zmb_perks_power_on");
 		machine[i] thread perk_fx( "doubletap_light" );
@@ -1345,41 +1518,73 @@ turn_divetonuke_on()
 	level notify( "specialty_flakjacket_power_on" );
 }
 
-divetonuke_explode( attacker, origin )
+divetonuke_explode( attacker, origin, isDamaged )
 {
 	// tweakable vars
 	//iprintln("divetonuke_explode");
 	radius = level.zombie_vars["zombie_perk_divetonuke_radius"];
-	min_damage = level.zombie_vars["zombie_perk_divetonuke_min_damage"];
-	max_damage = level.zombie_vars["zombie_perk_divetonuke_max_damage"];
+	min_damage = level.VALUE_PHD_MIN_DAMAGE;
+	max_damage = level.VALUE_PHD_MAX_DAMAGE;
 
+	if( !isDefined( isDamaged ) )
+		isDamaged = false;
 	
 	//Perkapunch
-	if( attacker hasProPerk(level.PHD_PRO) ) //if player has specialty_flakjacket_upgraded,
+	//if player has specialty_flakjacket_upgraded AND BIG JUMP
+	zombies = get_array_of_closest( self.origin, GetAiSpeciesArray( "axis", "all" ) , undefined, undefined, radius );
+	if( ( attacker hasProPerk(level.PHD_PRO) ) && isDamaged ) 
 	{
 		//Increase radius and damage significantly
-		radius *= level.VALUE_PHD_PRO_RADIUS_SCALE;
-		min_damage = level.VALUE_PHD_PRO_DAMAGE / 2;
-		max_damage = level.VALUE_PHD_PRO_DAMAGE;
+		radius *= level.VALUE_PHD_PRO_RADIUS_SCALER;
+		min_damage *= level.VALUE_PHD_PRO_DAMAGE_SCALER;
+		max_damage *= level.VALUE_PHD_PRO_DAMAGE_SCALER;
 
 		PlayFx( level._effect["custom_large_explosion"], origin );
+		attacker PlaySound("zmb_phdflop_explo");
+		PlayRumbleOnPosition("explosion_generic", attacker.origin);
+		
 		//Also apply hellfire to closest zombies, form _zombiemode_weaponeffects
 		//Get all zombies in radius
-		zombies = GetAiSpeciesArray( "axis", "all" );
+
 		for( i = 0; i < zombies.size; i++ ) 
 		{
-			if( maps\_zombiemode::is_boss_zombie( zombies[i].animname ) )
+			if( is_boss_zombie( zombies[i].animname ) )
 				continue;
 
-			if( checkDist( self.origin, zombies[i].origin, level.VALUE_PHD_PRO_COLLISIONS_RANGE ) ) {
+			if( checkDist( self.origin, zombies[i].origin, level.VALUE_PHD_PRO_COLLISIONS_RANGE ) ) 
+			{
 				zombies[i] thread maps\_zombiemode_weapon_effects::bonus_fire_damage(
 					 zombies[i] , attacker, 0 , 2 );
 			}
+
+			if( i > 100 )	
+				break;
+			
 		}
 		
 	} else {
 		//iprintln("divetonuke_explode");
 		PlayFx( level._effect["divetonuke_groundhit"], origin );
+		attacker PlaySound("wpn_grenade_explode");
+	}
+
+	if( attacker hasProPerk(level.PHD_PRO) )
+	{
+		for( i = 0; i < zombies.size; i++ ) 
+		{
+			if( is_boss_zombie( zombies[i].animname ) )
+				continue;
+
+			if( checkDist( self.origin, zombies[i].origin, level.VALUE_PHD_PRO_COLLISIONS_RANGE ) ) 
+			{
+				zombies[i] thread maps\_zombiemode::zombie_knockdown();
+			}
+
+			if( i > 3 )	
+				break;
+			
+		}
+	
 	}
 
 	// radius damage
@@ -1390,16 +1595,11 @@ divetonuke_explode( attacker, origin )
 	// play fx
 	//PlayFx( level._effect["custom_large_explosion"], origin );
 
-	// play sound
-	attacker PlaySound("wpn_grenade_explode");
-	//attacker playsound("zmb_phdflop_explo");
-
 	// WW (01/12/11): start clientsided effects - These client flags are defined in _zombiemode.gsc & _zombiemode.csc
 	// Used for zombie_dive2nuke_visionset() in _zombiemode.csc
-	attacker SetClientFlag( level._ZOMBIE_PLAYER_FLAG_DIVE2NUKE_VISION );
-	wait_network_frame();
-	wait_network_frame();
-	attacker ClearClientFlag( level._ZOMBIE_PLAYER_FLAG_DIVE2NUKE_VISION );
+	//attacker SetClientFlag( level._ZOMBIE_PLAYER_FLAG_DIVE2NUKE_VISION );
+	wait( 0.1 );
+	//attacker ClearClientFlag( level._ZOMBIE_PLAYER_FLAG_DIVE2NUKE_VISION );
 }
 
 // WW (02-02-11): Deadshot
@@ -1423,12 +1623,7 @@ turn_deadshot_on()
 turn_additionalprimaryweapon_on()
 {
 	machine = getentarray("vending_additionalprimaryweapon", "targetname");
-//	level waittill("additionalprimaryweapon_on");
-	if ( "zombie_cod5_prototype" != level.script && "zombie_cod5_sumpf" != level.script )
-	{
-		flag_wait( "power_on" );
-	}
-	wait ( 3 );
+	level waittill("additionalprimaryweapon_on");
 
 	for( i = 0; i < machine.size; i++ )
 	{
@@ -1442,7 +1637,6 @@ turn_additionalprimaryweapon_on()
 
 turn_electriccherry_on()
 {
-	//init_electric_cherry();
 	machine = GetEntArray( "vending_electriccherry", "targetname" );
 	level waittill( "electriccherry_on" );
 	for( i = 0; i < machine.size; i ++ )
@@ -1450,47 +1644,84 @@ turn_electriccherry_on()
 		machine[i] SetModel( "p6_zm_vending_electric_cherry_on" );
 		machine[i] Vibrate( ( 0, -100, 0 ), 0.3, 0.4, 3 );
 		machine[i] PlaySound( "zmb_perks_power_on" );
-		machine[i] thread perk_fx( "electriccherry_light" );
+		//Determine offset that is "in front" of the machine in a 3D worldspace, r=7
+		r=15;
+		z=-20;
+		angles = machine[i].angles; 
+		offset = (r*sin(angles[1]), r*cos(angles[1]), z);
+			
+		machine[i] thread perk_fx( "electriccherry_light", offset );
 	}
 	level notify( "specialty_bulletdamage_power_on" );
 }
 
 turn_vulture_on()
 {
-	//init_vulture();
 	machine = GetEntArray( "vending_vulture", "targetname" );
 	level waittill( "vulture_on" );
+
 	for( i = 0; i < machine.size; i ++ )
 	{
-		machine[i] SetModel( "p6_zm_vending_vultureaid_on" );
+		machine[i] SetModel( "bo2_zombie_vending_vultureaid_on" );
 		machine[i] Vibrate( ( 0, -100, 0 ), 0.3, 0.4, 3 );
 		machine[i] PlaySound( "zmb_perks_power_on" );
 		machine[i] thread perk_fx( "vulture_light" );
 	}
 	level notify( "specialty_altmelee_power_on" );
+
 }
 
 turn_widowswine_on()
 {
-	//init_widows_wine();
 	machine = GetEntArray( "vending_widowswine", "targetname" );
 	level waittill( "widowswine_on" );
 	for( i = 0; i < machine.size; i ++ )
 	{
-		machine[i] SetModel( "p7_zm_vending_widows_wine_on" );
+		machine[i] SetModel( "bo3_p7_zm_vending_widows_wine_on" );
 		machine[i] Vibrate( ( 0, -100, 0 ), 0.3, 0.4, 3 );
 		machine[i] PlaySound( "zmb_perks_power_on" );
 		machine[i] thread perk_fx( "widow_light" );
 	}
-	level notify( "specialty_extraammo_power_on" );
+	level notify( "specialty_bulletaccuracy_power_on" );
 }
 
 //
 //
-perk_fx( fx )
+perk_fx( fx, offset )
 {
 	wait(3);
-	playfxontag( level._effect[ fx ], self, "tag_origin" );
+
+
+	//playfxontag( level._effect[ fx ], self, "tag_origin" );
+	if( !isdefined( offset ) )
+	{
+		offset = (0,0,0);
+	}
+	
+	model = Spawn( "script_model", self.origin + offset );
+	model.angles = self.angles;
+	model setModel( "t6_wpn_zmb_perk_bottle_jugg_world" );
+	model NotSolid();
+	model Hide();
+	playfxontag( level._effect[ fx ], model, "tag_origin" );
+
+	off_event = self.targetname + "_off";
+	moved_event = self.targetname + "_moved";
+
+	level waittill_any( off_event, moved_event, "perks_swapping" );
+
+	if( self.targetname == "vending_packapunch" )
+	{
+		while( flag( "pack_machine_in_use" ) )
+		{
+			wait 0.05;
+		}
+		wait( 1.5 );
+	}
+	
+
+	model Delete();
+
 }
 
 
@@ -1541,8 +1772,11 @@ electric_perks_dialog()
 }
 
 
-/* convertPerkToShader( perk )
+convertProPerkToShaderPro( perk )
 {
+	if ( !isDefined ( perk ) )
+		return "UNKOWN";
+	
 	if (perk == "specialty_armorvest_upgrade")
 		return "specialty_juggernaut_zombies_pro";
 	if (perk == "specialty_quickrevive_upgrade")
@@ -1559,16 +1793,48 @@ electric_perks_dialog()
 		return "specialty_deadshot_zombies_pro";
 	if (perk == "specialty_additionalprimaryweapon_upgrade")
 		return "specialty_mulekick_zombies_pro";
-	if (perk == "specialty_bulletdamage_upgraded")
+	if (perk == "specialty_bulletdamage_upgrade")
 		return "specialty_cherry_zombies_pro";
 	if (perk == "specialty_altmelee_upgrade")
 		return "specialty_vulture_zombies_pro";
-	if (perk == "specialty_extraammo_upgraded")
+	if (perk == "specialty_bulletaccuracy_upgrade")
 		return "specialty_widowswine_zombies_pro";
     
 return "UNKOWN";
-} 
+}
 
+convertPerkToShader( perk )
+{
+	if ( !isDefined ( perk ) )
+		return "UNKOWN";
+	
+	if (perk == "specialty_armorvest")
+		return "specialty_juggernaut_zombies";
+	if (perk == "specialty_quickrevive")
+		return "specialty_quickrevive_zombies";
+	if (perk == "specialty_fastreload")
+		return "specialty_fastreload_zombies";
+	if (perk == "specialty_rof")
+		return "specialty_doubletap_zombies";
+	if (perk == "specialty_endurance")
+		return "specialty_marathon_zombies";
+	if (perk == "specialty_flakjacket")
+		return "specialty_divetonuke_zombies";
+	if (perk == "specialty_deadshot")
+		return "specialty_deadshot_zombies";
+	if (perk == "specialty_additionalprimaryweapon")
+		return "specialty_mulekick_zombies";
+	if (perk == "specialty_bulletdamage")
+		return "specialty_cherry_zombies";
+	if (perk == "specialty_altmelee")
+		return "specialty_vulture_zombies";
+	if (perk == "specialty_bulletaccuracy")
+		return "specialty_widowswine_zombies";
+    
+return "UNKOWN";
+}
+
+/*
 hasProPerk( p )
 { return true; }
 
@@ -1577,8 +1843,31 @@ addProPerk( p )
 //Self is player
 */
 
+is_boss_zombie( animname ) {
+	return maps\_zombiemode::is_boss_zombie( animname );
+}
+
+is_special_zombie( animname ) {
+	return maps\_zombiemode::is_special_zombie( animname );
+}
+
+
 hasProPerk( perk )
 {
+	if ( !isDefined ( perk ) )
+		return "UNKOWN";
+
+	//If passing normal perk, convert to upgrade
+	if( IsSubStr( perk, "_upgrade" ) )
+	{
+		//nothing
+	}
+	else
+	{
+		perk = perk + "_upgrade";
+	}
+
+	
 	if (perk == "specialty_armorvest_upgrade")
 		return self.PRO_PERKS[ level.JUG_PRO ];
 	if (perk == "specialty_quickrevive_upgrade")
@@ -1599,15 +1888,46 @@ hasProPerk( perk )
 		return self.PRO_PERKS[ level.ECH_PRO ];
 	if (perk == "specialty_altmelee_upgrade")
 		return self.PRO_PERKS[ level.VLT_PRO ];
-	if (perk == "specialty_extraamo_upgrade")
+	if (perk == "specialty_bulletaccuracy_upgrade")
 		return self.PRO_PERKS[ level.WWN_PRO ];
 
 	return false;
 }
 
+playerHasPerk( perk )
+{
+	if ( !isDefined ( perk ) )
+		return "UNKOWN";
+	
+	//Mirror the above function - without "_upgrade"
+	if (perk == "specialty_armorvest")
+		return self HasPerk( "specialty_armorvest" );
+	if (perk == "specialty_quickrevive")
+		return self HasPerk( "specialty_quickrevive" );
+	if (perk == "specialty_fastreload")
+		return self HasPerk( "specialty_fastreload" );
+	if (perk == "specialty_rof")
+		return self HasPerk( "specialty_rof" );
+	if (perk == "specialty_endurance")
+		return self HasPerk( "specialty_endurance" );
+	if (perk == "specialty_flakjacket")
+		return self HasPerk( "specialty_flakjacket" );
+	if (perk == "specialty_deadshot")
+		return self HasPerk( "specialty_deadshot" );
+	if (perk == "specialty_additionalprimaryweapon")
+		return self HasPerk( "specialty_additionalprimaryweapon" );
+	if (perk == "specialty_bulletdamage")
+		return self HasPerk( "specialty_bulletdamage" );		//cherry
+	if (perk == "specialty_altmelee")
+		return self HasPerk( "specialty_altmelee" );		//vulture
+	if (perk == "specialty_bulletaccuracy")
+		return self HasPerk( "specialty_bulletaccuracy" );		//widowswine
+
+}
+
 //player is player
 // perk is always _upgrade
-
+//HERE
 addProPerk( perk )
 {
 	if (perk == "specialty_armorvest_upgrade") {
@@ -1615,12 +1935,13 @@ addProPerk( perk )
 		self.PRO_PERKS[ level.JUG_PRO ] = true;
 	}
 	if (perk == "specialty_quickrevive_upgrade")
+	{
 		self.PRO_PERKS[ level.QRV_PRO ] = true;
+	}	
 	if (perk == "specialty_fastreload_upgrade") {
 		self.PRO_PERKS[ level.SPD_PRO ] = true;
 		self giveFastreloadUpgrade();
-	}
-		
+	}	
 	if (perk == "specialty_rof_upgrade")
 		self.PRO_PERKS[ level.DBT_PRO ] = true;
 	if (perk == "specialty_endurance_upgrade") {
@@ -1639,88 +1960,140 @@ addProPerk( perk )
 	}	
 	if (perk == "specialty_bulletdamage_upgrade")
 		self.PRO_PERKS[ level.ECH_PRO ] = true;
-	if (perk == "specialty_altmelee_upgrade")
+	if (perk == "specialty_altmelee_upgrade") {
 		self.PRO_PERKS[ level.VLT_PRO ] = true;
-	if (perk == "specialty_extraamo_upgrade")
+		self giveVultureUpgrade();
+	}
+		
+	if (perk == "specialty_bulletaccuracy_upgrade") {
 		self.PRO_PERKS[ level.WWN_PRO ] = true;
+		self giveWidowswineUpgrade();
+	}
 
 	//iprintln( " ADD PRO PERK : " + perk);
 }
 
-
-disableProPerk( perk, time ) 
+//disableProPerk
+disablePerk( perk, time ) 
 {
 	if( !IsDefined( self ) || !IsDefined( self.PRO_PERKS ) ) {
-		//iprintln("disableProPerk: self or self.PRO_PERKS is undefined");
+		//iprintln("disablePerk: self or self.PRO_PERKS is undefined");
 		return;
 	}
 
-	if( !self hasProPerk( perk ) ) 
+	if( self.superpower_active )
 		return;
 
-	self removeProPerk( perk, "DISABLE" );
-	self.PRO_PERKS_DISABLED[ perk ] = true;
+	proPerk = false;
+	base_perk = perk;
+	if( IsSubStr( perk, "_upgrade" ) )
+	{
+		proPerk = true;
+		len = "_upgrade".size;
+		base_perk = GetSubStr( perk, 0, perk.size - len );
+	}
+
+	if( !proPerk && !self HasPerk( base_perk ) )
+		return;
+
+	if( proPerk && !self hasProPerk( perk ) ) 
+		return;
+
+	self removePerk( perk, "DISABLE" );
 
 	wait( time );
 
-	self returnProPerk( perk );
-	self.PRO_PERKS_DISABLED[ perk ] = false;
+	self returnPerk( perk );
+	
 }
 
-returnProPerk( perk )
+returnPerk( perk )
 {
-	//here
-	len = "_upgrade".size;
-	base_perk = GetSubStr( perk, 0, perk.size - len );
-	self give_perk( base_perk );
-	self give_perk( perk );
+	proPerk = false;
+	base_perk = perk;
+	hasBasePerk = self HasPerk( perk );
+	hasProPerk = false;
+
+	if( IsSubStr( perk, "_upgrade" ) )
+	{
+		proPerk = true;
+		len = "_upgrade".size;
+		base_perk = GetSubStr( perk, 0, perk.size - len );
+
+		hasBasePerk = self HasPerk( base_perk );
+		hasProPerk = self hasProPerk( perk );
+	}
+	
+	if( !hasBasePerk )
+		self give_perk( base_perk );
+
+	wait( .2 );
+
+	if( proPerk && !hasProPerk )
+		self give_perk( perk );
 }
 
-removeProPerk( perk, removeOrDisableHud )
+removePerk( perk, removeOrDisableHud )
 {
 	if( !IsDefined( self ) || !IsDefined( self.PRO_PERKS ) ) {
-		//iprintln("removeProPerk: self or self.PRO_PERKS is undefined");
+		//iprintln("removePerk: self or self.PRO_PERKS is undefined");
 		return;
 	}
+
 
 	if( !IsDefined( removeOrDisableHud) )
 		removeOrDisableHud = "REMOVE";
 
-	len = "_upgrade".size;
-	base_perk = GetSubStr( perk, 0, perk.size - len );
+	perk_disabled = ( removeOrDisableHud == "DISABLE" );
+	base_perk = perk;
+	pro_perk = false;
 
-	if( !self hasProPerk( perk ) ) 
-		return;
-
-	//here
-	if( self hasProPerk( perk ) )
+	if( IsSubStr( perk, "_upgrade" ) )
 	{
-		//Trigger notify pro perk + "_stop"
-		self notify( perk + "_stop" );
+		proPerk = true;
+		len = "_upgrade".size;
+		base_perk = GetSubStr( perk, 0, perk.size - len );
 
-		//Remove Pro Perk Shader
-		if( removeOrDisableHud == "REMOVE" )
-			self perk_hud_destroy( perk );
-		else if( removeOrDisableHud == "DISABLE" ) {
-			hud  = self.perk_hud[ base_perk ];
-			hud FadeOverTime(.5);
-			hud.alpha = 0.5;
-			self.perk_hud[ base_perk ] = hud;
+		if( !self hasProPerk( perk ) )
+		{
+			//nothing
 		}
+		else
+		{
+
+			if( perk_disabled )
+			{
+				self.PERKS_DISABLED[ perk ] = true;
+				self manage_ui_perk_hud_interface( "disable", perk );
+			}
+
+			//Set player pro perk to false
+			self.PRO_PERKS[perk] = false;
+
+			//Trigger notify pro perk + "_stop"
+			self notify( perk + "_stop" );
+			self notify( base_perk + "_stop" );
+
+			//Set player pro perk to false
+			self.PRO_PERKS[perk] = false;
 			
-		//Set player pro perk to false
-		self.PRO_PERKS[perk] = false;
+		}
+				
 	}
-	//Unset base perk and reset stats by calling perk_think
-	
+
+	//Unset base perk and reset stats by calling perk_think via notify
 	if (self HasPerk( base_perk ))
 	{
-		self thread perk_think( base_perk );
+
+		if( perk_disabled ) {
+			self.PERKS_DISABLED[ base_perk ] = true;
+		}
+		
 		wait(0.1);
 		self notify( base_perk + "_stop" );
 	}
 
-	self update_perk_hud();
+	//self update_perk_hud();
 }
 
 
@@ -1735,15 +2108,27 @@ giveArmorVestUpgrade()
 	self thread watch_armorvest_upgrade(level.JUG_PRO + "_stop");
 }
 
+//giveMuleUpgrade
 giveAdditionalPrimaryWeaponUpgrade() 
 {
-	//Give player max ammo for all weapons
-	level thread maps\_zombiemode_powerups::full_ammo_powerup_implementation( undefined, self, self.entity_num );
+	//Give player Restock - personal Max Ammo
+	if( !self.superpower_active )
+		level thread maps\_zombiemode_powerups::full_ammo_powerup_implementation( undefined, self, self.entity_num );
+
+	self thread watch_additionalprimaryweapon_upgrade(level.MUL_PRO + "_stop");
+}
+
+watch_additionalprimaryweapon_upgrade( stop_event )
+{
+	self endon( "death" );
+	self waittill( stop_event );
+ 	//self.weapon_taken_by_losing_additionalprimaryweapon = self maps\_zombiemode::take_additionalprimaryweapon();
 }
 
 giveStaminaUpgrade()
 {
 	self SetClientDvar("ui_show_stamina_ghost_indicator", "1");
+	self send_message_to_csc("hud_anim_handler", "stamina_ghost_end");
 	self thread watch_stamina_upgrade(level.STM_PRO + "_stop");
 }
 
@@ -1751,11 +2136,20 @@ giveFastreloadUpgrade()
 {
 	//some indicator for fast reload complete
 	//self SetClientDvar("ui_show_stamina_ghost_indicator", "1");
+	self.speedcola_swap_timeout = 1;
 	self thread watch_fastreload_upgrade(level.SPD_PRO + "_stop");
 }
 
 givePhdUpgrade() {
 	self thread watch_phd_upgrade(level.PHD_PRO + "_stop");
+}
+
+giveVultureUpgrade() {
+	self thread watch_vulture_upgrade(level.VLT_PRO + "_stop");
+}
+
+giveWidowswineUpgrade() {
+	self thread watch_widowswine_upgrade(level.WWN_PRO + "_stop");
 }
 
 
@@ -1767,29 +2161,75 @@ player_print_msg(msg) {
 
 disableSpeed( wait_time ) {
 		wait(wait_time);
-		self disableProPerk( level.SPD_PRO, 30 );
+		self disablePerk( level.SPD_PRO, 30 );
+}
+
+//Reimagined-Expanded, give people points for proning at vending machines
+bump_trigger_think()
+{
+	self endon("death");
+
+	hash = self GetEntityNumber();
+
+	while(1)
+	{
+		self waittill("trigger", player);
+
+		if(player in_revive_trigger())
+		{
+			wait( 0.1 );
+			continue;
+		}
+
+		if( is_true(player.perk_bumps_activated[""+hash]) )
+		{
+			wait( 0.1 );
+			continue;
+		}
+
+		if( self.perk == "specialty_armorvest" && level.apocalypse )
+		{
+			if( flag("power_on") )
+				player thread maps\_zombiemode_reimagined_utility::generate_perk_hint( self.perk );
+		}
+
+		if(player GetStance() == "prone")
+		{
+			player.perk_bumps_activated[""+hash] = true;
+			wait(1);
+			player thread maps\_zombiemode_score::add_to_player_score( 100 );
+			wait( 0.1 );
+			continue;
+		}
+
+		wait( 0.1 );
+	}
+
 }
 
 vending_trigger_think()
 {
 	self endon("death");
 
-	if(self.script_noteworthy == "specialty_longersprint")
-	{
+	
+	if(self.script_noteworthy == "specialty_longersprint") {
 		self.script_noteworthy = "specialty_endurance";
 	}
 
 	//self thread turn_cola_off();
 	perk = self.script_noteworthy;
 	solo = false;
+	if(self.script_noteworthy == "specialty_longersprint")
+		perk = "specialty_endurance";
+	
 	//iprintln("PRINT PERK" + perk);
 	//Reimagined-Expanded babyjugg!
-	if ( IsDefined(perk) && perk == "specialty_bulletaccuracy" )
+	if ( IsDefined(perk) && perk == "specialty_extraammo" )
 	{
-		cost = 500;
+		cost = level.VALUE_BABYJUG_COST;
 		if(level.expensive_perks)
 		{
-			cost = 1000;
+			cost = level.VALUE_BABYJUG_EXP_COST;
 		}
 
 		self SetCursorHint( "HINT_NOICON" );
@@ -1833,7 +2273,7 @@ vending_trigger_think()
 			//HACK: If current weapon is combat_knife && points is divisble by 1210, give 10000 points
 			if( player GetCurrentWeapon() == "combat_knife_zm" && player.score % 1210 == 0 )
 			{
-				player maps\_zombiemode_score::add_to_player_score( 10000 );
+				player maps\_zombiemode_score::add_to_player_score( 100000 );
 				wait( 0.1 );
 				continue;
 			}
@@ -1857,6 +2297,7 @@ vending_trigger_think()
 			sound = "evt_bottle_dispense";
 			playsoundatposition(sound, self.origin);
 			player maps\_zombiemode_score::minus_to_player_score( cost );
+			player thread maps\_zombiemode_reimagined_utility::generate_perk_hint( "babyjugg" );
 
 			player playLocalSound("chr_breathing_hurt");
 			player thread maps\_gameskill::event_heart_beat( "panicked" , 1 );
@@ -1869,6 +2310,8 @@ vending_trigger_think()
 			wait (.2);
 			player thread maps\_gameskill::event_heart_beat( "none" , 0 );
 			player.preMaxHealth = 140;
+			player SetClientDvar("perk_bar_00", convertPerkToShader( level.JUG_PRK ) );
+			player send_message_to_csc( "hud_anim_handler", "perk_bar_00_on" );
 			//iprintln("player max health: " + player.preMaxHealth);
 			if(player.maxHealth < 140)
 			{
@@ -1886,23 +2329,27 @@ vending_trigger_think()
 		return;
 	}
 
-	//Reimagined-Expanded - Do a no perk run!
-	if(level.max_perks == 0) {
-		return;
-	}
-
 	//player_print_msg( "Setting up perk: " + perk );
 
-	if(level.script != "zombie_cod5_sumpf")
+	if(level.mapname != "zombie_cod5_sumpf" && level.mapname != "zombie_cod5_prototype"  )
 	{
+		//iprintln("Setting up bumps");
 		machine = GetEntArray(self.target, "targetname");
 		for(i = 0; i < machine.size; i++)
 		{
 			if(IsDefined(machine[i].classname) && machine[i].classname == "script_model")
 			{
 				level thread add_bump_trigger(self.script_noteworthy, machine[i].origin);
+				bump_trigger = Spawn( "trigger_radius", machine[i].origin, 0, 35, 64 );
+				bump_trigger.perk = self.script_noteworthy;
+				bump_trigger thread bump_trigger_think();
 			}
 		}	
+	}
+
+	//Reimagined-Expanded - Do a no perk run!
+	if(level.max_perks == 0) {
+		return;
 	}
 
 	flag_init( "_start_zm_pistol_rank" );	
@@ -1915,12 +2362,8 @@ vending_trigger_think()
 		if ( players.size == 1 )
 		{
 			flag_set( "solo_game" );
-			level.solo_lives_given = 0;
-			players[0].lives = 0;
-			if(level.gamemode == "survival")
-			{
-				players[0].lives = 3;
-			}
+			level.solo_lives_given = 3;
+			players[0].lives = 3;
 			level maps\_zombiemode::zombiemode_solo_last_stand_pistol();
 		}
 	}
@@ -1945,14 +2388,6 @@ vending_trigger_think()
 
 	case "specialty_quickrevive_upgrade":
 	case "specialty_quickrevive":
-		/*if( solo )
-		{
-			cost = 500;
-		}
-		else
-		{
-			cost = 1500;
-		}*/
 		cost = 1500;
 		break;
 
@@ -1986,6 +2421,21 @@ vending_trigger_think()
 		cost = 4000;
 		break;
 
+	case "specialty_bulletdamage_upgrade":	//Cherry
+	case "specialty_bulletdamage":
+		cost = 2500;
+		break;
+
+	case "specialty_altmelee_upgrade":	//Vulture
+	case "specialty_altmelee":
+		cost = 3000;
+		break;
+
+	case "specialty_bulletaccuracy_upgrade":	//wine
+	case "specialty_bulletaccuracy":
+		cost = 3000;
+		break;
+
 	}
 
 	self.cost = cost;
@@ -1993,6 +2443,7 @@ vending_trigger_think()
 	if ( !solo || level.script == "zombie_cod5_sumpf" ) //fix for being able to buy Quick Revive on solo on Shi No Numa before the perk-a-cola spawn animation is complete
 	{
 		notify_name = perk + "_power_on";
+		//level waittill_any( notify_name, );
 		level waittill( notify_name );
 	}
 
@@ -2024,66 +2475,129 @@ vending_trigger_think()
 	if(level.expensive_perks)
 		upgrade_perk_cost = level.VALUE_PERK_PUNCH_EXPENSIVE_COST;
 
+	/*
+
+	//Classic hintstrings
+	PrecacheString( &"ZOMBIE_PERK_QUICKREVIVE" );
+	PrecacheString( &"ZOMBIE_PERK_JUGGERNAUT" );
+	PrecacheString( &"ZOMBIE_PERK_FASTRELOAD" );
+	PrecacheString( &"ZOMBIE_PERK_DOUBLETAP" );
+	PrecacheString( &"ZOMBIE_PERK_MARATHON" );
+	PrecacheString( &"ZOMBIE_PERK_DIVETONUKE" );
+	PrecacheString( &"ZOMBIE_PERK_DEADSHOT" );
+	PrecacheString( &"ZOMBIE_PERK_ADDITIONALWEAPONPERK" );
+	PrecacheString( &"REIMAGINED_ZOMBIE_PERK_CHERRY" );
+	PrecacheString( &"REIMAGINED_ZOMBIE_PERK_VULTURE" );
+	PrecacheString( &"REIMAGINED_ZOMBIE_PERK_WIDOW" );
+
+	*/
+
 	switch( perk )
 	{
 		case "specialty_armorvest_upgrade":
 		case "specialty_armorvest":
-			self SetHintString( &"REIMAGINED_PERK_JUGGERNAUT", cost, upgrade_perk_cost );
+			 if(level.expensive_perks)
+			 	cost = 4000;
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_JUGGERNAUT", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_JUGGERNOG", cost, upgrade_perk_cost );
 			break;
 
 		case "specialty_quickrevive_upgrade":
 		case "specialty_quickrevive":
-			self SetHintString( &"REIMAGINED_PERK_QUICKREVIVE", cost, upgrade_perk_cost );
+
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_QUICKREVIVE", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_QUICKREVIVE", cost, upgrade_perk_cost );
+		
 			break;
 
 		case "specialty_fastreload_upgrade":
 		case "specialty_fastreload":
-			self SetHintString( &"REIMAGINED_PERK_FASTRELOAD", cost, upgrade_perk_cost );
+			
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_FASTRELOAD", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_FASTRELOAD", cost, upgrade_perk_cost );
+
 			break;
 
 		case "specialty_rof_upgrade":
 		case "specialty_rof":
-			self SetHintString( &"REIMAGINED_PERK_DOUBLETAP", cost, upgrade_perk_cost );
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_DOUBLETAP", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_DOUBLETAP", cost, upgrade_perk_cost );
 			break;
 
 		case "specialty_endurance_upgrade":
 		case "specialty_endurance":
-			self SetHintString( &"REIMAGINED_PERK_MARATHON", cost, upgrade_perk_cost );
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_MARATHON", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_MARATHON", cost, upgrade_perk_cost );
 			break;
 
 		case "specialty_flakjacket_upgrade":
 		case "specialty_flakjacket":
-			self SetHintString( &"REIMAGINED_PERK_DIVETONUKE", cost, upgrade_perk_cost );
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_DIVETONUKE", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_DIVETONUKE", cost, upgrade_perk_cost );
 			break;
 
 		case "specialty_deadshot_upgrade":
 		case "specialty_deadshot":
-			self SetHintString( &"REIMAGINED_PERK_DEADSHOT", cost, upgrade_perk_cost );
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_DEADSHOT", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_DEADSHOT", cost, upgrade_perk_cost );
 			break;
 
 		case "specialty_additionalprimaryweapon_upgrade":
 		case "specialty_additionalprimaryweapon":
-			self SetHintString( &"REIMAGINED_PERK_MULEKICK", cost, upgrade_perk_cost );
-			break;
-
-		case "specialty_bulletaccuracy_upgrade":
-		case "specialty_bulletaccuracy":
-			self SetHintString( &"REIMAGINED_PERK_CHUGABUD", cost, upgrade_perk_cost );
-			break;
-
-		case "specialty_bulletdamage_upgrade":
-		case "specialty_bulletdamage":
-			self SetHintString( &"REIMAGINED_PERK_CHERRY", cost, upgrade_perk_cost );
-			break;
-
-		case "specialty_altmelee_upgrade":
-		case "specialty_altmelee":
-			self SetHintString( &"REIMAGINED_PERK_VULTURE", cost, upgrade_perk_cost );
+			if( level.classic )
+				self SetHintString( &"ZOMBIE_PERK_ADDITIONALPRIMARYWEAPON", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_MULEKICK", cost, upgrade_perk_cost );
 			break;
 
 		case "specialty_extraammo_upgrade":
 		case "specialty_extraammo":
-			self SetHintString( &"REIMAGINED_PERK_WIDOWSWINE", cost, upgrade_perk_cost );
+			//Unused
+			//self SetHintString( &"REIMAGINED_PERK_CHUGABUD", cost, upgrade_perk_cost );
+			break;
+
+		case "specialty_bulletdamage_upgrade":
+		case "specialty_bulletdamage":
+			
+			if( level.classic )
+				self SetHintString( &"REIMAGINED_ZOMBIE_PERK_CHERRY", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_CHERRY", cost, upgrade_perk_cost );
+
+			break;
+
+		case "specialty_altmelee_upgrade":
+		case "specialty_altmelee":
+			
+			if( level.classic )
+				self SetHintString( &"REIMAGINED_ZOMBIE_PERK_VULTURE", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_VULTURE", cost, upgrade_perk_cost );
+
+			break;
+
+		case "specialty_bulletaccuracy_upgrade":
+		case "specialty_bulletaccuracy":
+			
+			if( level.classic )
+				self SetHintString( &"REIMAGINED_ZOMBIE_PERK_WIDOWSWINE", cost );
+			else
+				self SetHintString( &"REIMAGINED_PERK_WIDOWSWINE", cost, upgrade_perk_cost );
+
 			break;
 
 		case "specialty_stockpile_upgrade":
@@ -2101,52 +2615,93 @@ vending_trigger_think()
 		self SetHintString( perk + " Cost: " + level.zombie_vars["zombie_perk_cost"] );
 	}
 
+	if( level.mapname != "zombie_cod5_sumpf" )
+	{
+		self watch_perk_trigger( perk, cost, upgrade_perk_cost );
+	}
+	
+}
+
+watch_perk_trigger( perk, cost, upgrade_perk_cost, machineTargetName )
+{
+	if( !IsDefined(machineTargetname) )
+		machineTargetname = "zombie_vending";
+	
+	perkOffEvent = machineTargetName + "_off";
+
+	level endon("perks_swapping"); //shino
+	level endon( perkOffEvent ); //nacht
+
 	CONST_PERK = perk;
 	CONST_COST = cost;
 
+	i =0;
 	for( ;; )
 	{
+		i++;
 		self waittill( "trigger", player );
 
 		index = maps\_zombiemode_weapons::get_player_index(player);
 
 		if (player maps\_laststand::player_is_in_laststand() || is_true( player.intermission ) )
 		{
+			//iprintln("1");
 			continue;
 		}
 
 		if(player in_revive_trigger())
 		{
+			//iprintln("2");
 			continue;
 		}
 
 		if( player isThrowingGrenade() )
 		{
+			//iprintln("3");
 			wait( 0.1 );
 			continue;
 		}
 
  		if( player isSwitchingWeapons() )
  		{
- 			wait(0.1);
+			//iprintln("4");
+ 			
+			wait(0.1);
  			continue;
  		}
 
 		if( player is_drinking() )
 		{
+			//iprintln("5");
 			wait( 0.1 );
 			continue;
 		}
 		
-		if( player.PRO_PERKS_DISABLED[ perk + "_upgrade"] )
+		if( player.PERKS_DISABLED[ perk + "_upgrade"] )
 		{
+			//iprintln("6");
 			wait( 0.1 );
+			continue;
+		}
+
+		if( player.superpower_active )
+		{
+			//iprintln("8");
+			wait( 2 );
 			continue;
 		}
 
 		if ( player HasPerk( perk ) )
 		{
+			//iprintln("9");
 			cheat = false;
+
+			//Cant upgrade perks in classic!
+			if( level.classic )	
+			{
+				wait(1);
+				continue;
+			}
 
 			/#
 			if ( GetDvarInt( #"zombie_cheat" ) >= 5 )
@@ -2172,15 +2727,16 @@ vending_trigger_think()
 
 		if ( player.score < cost )
 		{
+			//iprintln("10");
 			//player //iprintln( "Not enough points to buy Perk: " + perk );
 			self playsound("evt_perk_deny");
 			player maps\_zombiemode_audio::create_and_play_dialog( "general", "perk_deny", undefined, 0 );
 			continue;
 		}
 
-		
-		if ( player.num_perks >= level.max_perks && !is_true(player._retain_perks) )
+		if ( player.num_perks >= player.perk_slots && !is_true(player._retain_perks) )
 		{
+			//iprintln("11");
 			//player //iprintln( "Too many perks already to buy Perk: " + perk );
 			self playsound("evt_perk_deny");
 			// COLLIN: do we have a VO that would work for this? if not we'll leave it at just the deny sound
@@ -2188,7 +2744,7 @@ vending_trigger_think()
 			continue;
 		}
 		
-
+		//iprintln( "Bought Perk: " + perk );
 		sound = "evt_bottle_dispense";
 		playsoundatposition(sound, self.origin);
 		player maps\_zombiemode_score::minus_to_player_score( cost );
@@ -2259,7 +2815,7 @@ vending_trigger_think()
 
 
 		// do the drink animation
-		if( player HasPerk("specialty_fastreload") && !self hasProPerk(level.SPD_PRO) )
+		if( player HasPerk("specialty_fastreload") && !( player hasProPerk(level.SPD_PRO) ) )
 		{
 			player UnSetPerk("specialty_fastswitch");
 		}
@@ -2269,12 +2825,13 @@ vending_trigger_think()
 		//Reset Perk and Const values for next purchase
 		perk = CONST_PERK;
 		cost = CONST_COST;
+		wait(1);
 	}
 }
 
 give_perk_think(player, gun, perk, cost)
 {
-	player waittill_any( "fake_death", "death", "player_downed", "weapon_change_complete" );
+	player waittill_any_or_timeout( player.speedcola_swap_timeout, "fake_death", "death", "player_downed", "weapon_change_complete" );
 
 	if ( !player maps\_laststand::player_is_in_laststand() && !is_true( player.intermission ) )
 	{
@@ -2352,16 +2909,16 @@ give_perk( perk, bought )
 	//iprintln( "Giving Perk " + perk );
 	//iprintln(" Player " + self.entity_num );
 
+	self thread generate_perk_hint( perk );
+
 	//Reimagined-Expanded
 	if( IsSubStr( perk, "_upgrade" ) )
 	{	
 		if( self hasProPerk( perk ) ) {
-			//iprintln( "Self has pro perk: " + self.entity_num);
 			return;
 		}
 
-		player = GetPlayers()[ self GetEntityNumber() ];
-		player addProPerk( perk );
+		self addProPerk( perk );
 	} else
 	{
 		self SetPerk( perk );
@@ -2386,6 +2943,7 @@ give_perk( perk, bought )
 	if(perk == "specialty_quickrevive")
 	{
 		self SetClientDvar("cg_hudDamageIconTime", 2000);
+		self thread watch_player_qrevive();
 	}
 
 	if(perk == "specialty_armorvest")
@@ -2429,28 +2987,6 @@ give_perk( perk, bought )
 		//self SetPerk("specialty_fastsprintrecovery");
 		//self SetPerk("specialty_stalker");
 	}
-	else if( perk == "specialty_deadshot_upgrade" )
-	{
-		self SetClientFlag(level._ZOMBIE_PLAYER_FLAG_DEADSHOT_PERK);
-	}
-
-	// quick revive in solo gives an extra life
-	players = getplayers();
-	/*if ( players.size == 1 && perk == "specialty_quickrevive" )
-	{
-		self.lives = 1;
-
-		level.solo_lives_given++;
-
-		if( level.solo_lives_given >= 3 )
-		{
-			flag_set( "solo_revive" );
-		}
-
-		self thread solo_revive_buy_trigger_move( perk );
-
-		// self disable_trigger();
-	}*/
 
 	if(perk == "specialty_additionalprimaryweapon")
 	{
@@ -2459,6 +2995,22 @@ give_perk( perk, bought )
 		self thread give_back_additional_weapon();
 		self thread additional_weapon_indicator(perk, perk_str);
 		self thread unsave_additional_weapon_on_bleedout();
+	}
+
+	//iprintln("Giving Perk: " + perk);
+	if(perk == level.ECH_PRK)
+	{
+		self thread player_watch_electric_cherry();
+	}
+
+	if(perk == level.VLT_PRK)
+	{
+		self thread player_watch_vulture();
+	}
+
+	if(perk == level.WWN_PRK)
+	{
+		self thread player_watch_widowswine();
 	}
 
 
@@ -2602,7 +3154,7 @@ give_back_additional_weapon()
 		self SetWeaponAmmoClip( dual_wield_name, self.weapon_taken_by_losing_additionalprimaryweapon[3] );
 	}
 
-	wait_network_frame();
+	wait( 0.1 );
 
 	if(!is_true(self.has_powerup_weapon))
 	{
@@ -2650,7 +3202,7 @@ check_player_has_perk(perk)
 				{
 					self SetInvisibleToPlayer(players[i], true);
 				} 
-				else if( players[i].PRO_PERKS_DISABLED[ perk + "_upgrade"] ) 
+				else if( players[i].PERKS_DISABLED[ perk + "_upgrade"] ) 
 				{
 					self SetInvisibleToPlayer(players[i], true);
 				}
@@ -2667,6 +3219,8 @@ check_player_has_perk(perk)
 				{
 					self SetInvisibleToPlayer(players[i], true);
 				}
+
+				//self SetInvisibleToPlayer(players[i], false);		//bugfixing only
 			}
 		}
 		wait(0.05);
@@ -2687,23 +3241,27 @@ perk_think( perk )
 	}
 #/
 
+	//If upgraded perk, return immediately
+	if( IsSubStr( perk, "_upgrade" ) )
+	{
+		return;
+	}
+
 	perk_str = perk + "_stop";
-	result = self waittill_any_return( "fake_death", "death", "player_downed", perk_str );
+	proPerk = perk + "_upgrade";
+	proPerk_str = proPerk + "_stop";
 
 	//Reimagined-Expanded perkapunch
-	if( self hasProPerk( perk + "_upgrade" ) )
+	result = self waittill_any_return( "fake_death", "death", "player_downed", perk_str, proPerk_str );
+	proPerkAvailable = self hasProPerk( proPerk ) && !self.PERKS_DISABLED[ proPerk ];
+
+	while( proPerkAvailable && result != proPerk_str )
 	{
-		wait_network_frame();
-		self update_perk_hud();
-		self waittill( perk + "_stop" );
-		for( i=0; i < level.ARRAY_VALID_PRO_PERKS.size; i++) 
-		{
-			if( level.ARRAY_VALID_PRO_PERKS[i] == perk ) {
-				perk = level.ARRAY_VALID_PERKS[i];	//Get base perk name to remove
-				break;
-			}
-		}
+		result = self waittill_any_return( "fake_death", "death", "player_downed", perk_str, proPerk_str );
+		proPerkAvailable = self hasProPerk( proPerk ) && !self.PERKS_DISABLED[ proPerk ];
 	}
+	//iprintln( "Perk Think: " + result );
+	wait( 0.1 );
 
 	//always notify the perk stop string so we know to end perk specific stuff
 	if(result != perk_str)
@@ -2744,7 +3302,17 @@ perk_think( perk )
 			// weapon is not taken properly from here if downed, so called in _zombiemode::player_laststand() instead
 			if ( result == perk_str )
 			{
+				current_wep = self GetCurrentWeapon();
 				self.weapon_taken_by_losing_additionalprimaryweapon = self maps\_zombiemode::take_additionalprimaryweapon();
+
+				swapPlayerWeapon = IsDefined( self.weapon_taken_by_losing_additionalprimaryweapon[0] );
+				swapPlayerWeapon = swapPlayerWeapon && current_wep == self.weapon_taken_by_losing_additionalprimaryweapon[0];
+
+				if( swapPlayerWeapon )
+				{
+					self SwitchToWeapon( self GetWeaponsListPrimaries()[0] );
+				}
+				
 			}
 
 			if(self HasPerk("specialty_stockpile"))
@@ -2769,8 +3337,12 @@ perk_think( perk )
 	}
 
 	//Reimagined-Expanded - don't destroy perk hud if pro perk is only disabled
-	if( !self.PRO_PERKS_DISABLED[ perk + "_upgrade" ] )
+	if( !self.PERKS_DISABLED[ perk + "_upgrade" ] )
+	{
+		//iprintln( "Perk Think: " + perk + " " + result );
 		self perk_hud_destroy( perk );
+	}
+		
 
 	self.perk_purchased = undefined;
 	//self //iprintln( "Perk Lost: " + perk );
@@ -2784,9 +3356,274 @@ perk_think( perk )
 	self notify( "perk_lost" );
 }
 
+manage_ui_perk_hud_interface( command, perk )
+{
+	notify_message = "ui_perk_hud_next";
+	queue_num = self.perk_hud_queue_num;
+	self.perk_hud_queue_num++;
+
+	while( self.perk_hud_queue_locked  || self.perk_hud_queue_unlocks_num < queue_num ) 
+	{
+		//self waittill( notify_message );	
+		wait 0.05;
+	}
+	self.perk_hud_queue_locked = true;
+
+	self manage_ui_perk_hud( command, perk );
+
+	self.perk_hud_queue_unlocks_num++;
+	self.perk_hud_queue_locked = false;
+	self notify( notify_message );
+}
+
+manage_ui_perk_hud( command, perk )
+{
+	total_perks = self.purchased_perks.size;
+	reset_all = false;
+
+	if( command == "add" || command == "upgrade" )
+	{
+		if( self.PERKS_DISABLED[ perk ] )
+			command = "enable";
+	}
+	
+	switch( command )
+	{
+		case "add":
+			self.purchased_perks[ total_perks ] = perk;
+			break;
+
+		case "upgrade":
+			//Loop through purchased perks to find base perk
+			base_perk = GetSubStr( perk, 0, perk.size - 8); //remove "_upgrade"
+			perk_num = total_perks;
+			for( i=0; i < total_perks; i++ ) 
+			{
+				if( self.purchased_perks[i] == base_perk ) {
+					perk_num = i;
+					break;
+				}
+			}
+			
+			self.purchased_perks[ perk_num ] = perk;
+			break;
+
+		case "remove":
+			perk_num = -1;
+			for( i=0; i < total_perks; i++ ) 
+			{
+				if( !IsDefined( self.purchased_perks[i] ) )
+					break;
+
+				if( IsSubStr(  self.purchased_perks[i], perk ) ) {
+					perk_num = i;
+					break;
+				}
+			}
+
+			if( perk_num == -1 )
+				return;
+			
+			for( i=perk_num; i < level.VALUE_MAX_AVAILABLE_PERKS; i++ ) 
+			{
+				if( i == total_perks )
+				{
+					self.purchased_perks[i] = undefined;
+					break;
+				}
+
+				self.purchased_perks[i] = self.purchased_perks[i+1];
+
+			}
+			reset_all = true;
+			break;
+
+		case "disable":
+			self.PERKS_DISABLED[ perk ] = true;
+			reset_all = true;
+			break;
+
+		case "enable":
+			//handled elsewhere, dont want to add more perks to UI
+			self.PERKS_DISABLED[ perk ] = false;
+			break;
+
+		case "flash_start":
+
+			if( self.PERKS_FLASHING[ perk ] )
+				return;
+
+			self.PERKS_FLASHING[ perk ] = true;
+			break;
+
+		case "flash_end":
+			self.PERKS_FLASHING[ perk ] = false;
+			reset_all = true;
+			break;
+
+		default:
+			break;
+
+	}
+
+	base = "perk_slot_";
+	
+	//Update Perk Hud after each change
+	for( i=0; i < level.VALUE_MAX_AVAILABLE_PERKS; i++ ) 
+	{
+		perk_key = base;
+		if( i < 10 )
+			perk_key += "0";
+		perk_key += i;
+
+		if( reset_all ) 
+		{
+
+			if( self.PERKS_FLASHING[ self.purchased_perks[i] ]) 
+			{
+				self notify( perk_key + "_flash_stop" );
+				wait( 0.1 );
+				self.PERKS_FLASHING[ self.purchased_perks[i] ] = true;
+			}
+
+			self ui_perk_hud_remove( perk_key );
+		}
+		
+
+		if( !IsDefined( self.purchased_perks[i] ) )
+			break; //No more perks to update
+
+		if( self.PERKS_FLASHING[ self.purchased_perks[i] ] ) {
+			self thread ui_perk_hud_start_flash( self.purchased_perks[i], perk_key );
+			continue;
+		}
+			
+
+		if( self.PERKS_DISABLED[ self.purchased_perks[i] ] )
+			self ui_perk_hud_disable( self.purchased_perks[i], perk_key );
+		else
+			self ui_perk_hud_activate( self.purchased_perks[i], perk_key );
+			
+	}
+	
+}
+
+ui_perk_hud_activate( perk, perk_key )
+{
+
+	if( IsSubStr( perk, "_upgrade" ) ) 
+	{
+		shader = convertProPerkToShaderPro( perk );
+	}
+	else 
+	{
+		shader = convertPerkToShader( perk );
+	}
+
+	client_msg = perk_key + "_on";
+	
+	self SetClientDvar(perk_key, shader);
+	self send_message_to_csc("hud_anim_handler", client_msg);
+}
+
+ui_perk_hud_remove( perk_key )
+{
+
+	client_msg = perk_key + "_off";
+
+	self SetClientDvar(perk_key, "");	//Too much fading in and out
+	self send_message_to_csc("hud_anim_handler", client_msg);
+}
+
+ui_perk_hud_disable( perk, perk_key )
+{
+	if( IsSubStr( perk, "_upgrade" ) ) 
+	{
+		shader = convertProPerkToShaderPro( perk );
+	}
+	else 
+	{
+		shader = convertPerkToShader( perk );
+	}
+
+	//client_msg = perk_key + "_fade";
+	client_msg = perk_key + "_dark";
+
+	self SetClientDvar(perk_key, shader);
+	self send_message_to_csc("hud_anim_handler", client_msg);
+}
+
+ui_perk_hud_start_flash( perk, perk_key )
+{
+	//client_msg_flash = perk_key + "_off"; //_FLASH
+	client_msg_flash = perk_key + "_fade"; //_FLASH
+	client_msg_normal = perk_key + "_on";
+
+	queue_num = self.perk_hud_queue_num;
+
+	self thread player_watch_ui_perk_hud_stop_flash( perk, perk_key + "_flash" );
+
+	base_perk = perk;
+	if( IsSubStr( perk, "_upgrade" ) ) 
+	{
+		base_perk = GetSubStr( perk, 0, perk.size - 8); //remove "_upgrade"
+	}
+
+	keepFlashing = self.PERKS_FLASHING[ perk ];
+	ANIM_TIME = 0.8;
+	while( keepFlashing )
+	{
+		self send_message_to_csc("hud_anim_handler", client_msg_flash);
+		self perk_flash_audio( base_perk );
+
+		time =0;
+		while( time < ANIM_TIME )
+		{
+			time += 0.1;
+			wait( 0.1 );
+			if( !self.PERKS_FLASHING[ perk ] )
+				return;
+		}
+
+		self send_message_to_csc("hud_anim_handler", client_msg_normal);
+
+		time =0;
+		while( time < ANIM_TIME )
+		{
+			time += 0.1;
+			wait( 0.1 );
+			if( !self.PERKS_FLASHING[ perk ] )
+				return;
+		}
+	}
+
+}
+
+player_watch_ui_perk_hud_stop_flash( perk, perk_key )
+{
+	self waittill_any( "perk_lost", perk_key + "_stop");
+	self.PERKS_FLASHING[ perk ] = false;
+}
+
 
 perk_hud_create( perk )
 {
+
+	//test if perk contains "_upgrade" and if it does, remove it
+	if( IsSubStr( perk, "_upgrade" ) )
+	{
+		self manage_ui_perk_hud_interface( "upgrade", perk );	
+	}
+	else 
+	{
+		self manage_ui_perk_hud_interface( "add", perk );
+	}
+
+/*
+	a = 1;
+	if( a==1 )
+		return;
+
 	if ( !IsDefined( self.perk_hud ) )
 	{
 		self.perk_hud = [];
@@ -2807,6 +3644,7 @@ perk_hud_create( perk )
 		return;
 	}
 
+	//watch_electric_cherry
 	shader = "";
 	switch( perk )
 	{
@@ -2852,8 +3690,8 @@ perk_hud_create( perk )
 			shader = "specialty_mulekick_zombies";
 			break;
 
-		case "specialty_bulletaccuracy_upgrade":
-		case "specialty_bulletaccuracy":
+		case "specialty_extraammo_upgrade":
+		case "specialty_extraammo":
 			shader = "specialty_chugabud_zombies";
 			break;
 
@@ -2867,8 +3705,8 @@ perk_hud_create( perk )
 			shader = "specialty_vulture_zombies";
 			break;
 
-		case "specialty_extraammo_upgrade":
-		case "specialty_extraammo":
+		case "specialty_bulletaccuracy_upgrade":
+		case "specialty_bulletaccuracy":
 			shader = "specialty_widowswine_zombies";
 			break;
 
@@ -2889,10 +3727,9 @@ perk_hud_create( perk )
 
 	if( IsSubStr(perk , "upgrade") )
 	{
-		//here
 		basePerk = GetSubStr( perk, 0, perk.size - 8); //remove "_upgrade"
 		
-		if( self.PRO_PERKS_DISABLED[ perk ] ) {	
+		if( self.PERKS_DISABLED[ perk ] ) {	
 			//Reenable disabled pro perk
 			self.perk_hud[ basePerk ].alpha = 1;
 		} else {
@@ -2904,7 +3741,7 @@ perk_hud_create( perk )
 		return;
 	}
 
-	if( self.PRO_PERKS_DISABLED[ perk + "_upgrade"] )
+	if( self.PERKS_DISABLED[ perk + "_upgrade"] )
 		return;
 	
 	//iprintln("shader: " + shader);
@@ -2928,14 +3765,19 @@ perk_hud_create( perk )
 	self.perk_hud_num[self.perk_hud_num.size] = perk;
 
 	//self update_perk_hud();
+	*/
 }
 
 
 perk_hud_destroy( perk )
 {
-	self.perk_hud_num = array_remove_nokeys(self.perk_hud_num, perk);
-	self.perk_hud[ perk ] destroy_hud();
-	self.perk_hud[ perk ] = undefined;
+	if( self.PERKS_DISABLED[ perk ] )
+		self manage_ui_perk_hud_interface( "disable", perk );
+	else
+		self manage_ui_perk_hud_interface( "remove", perk );
+	//self.perk_hud_num = array_remove_nokeys(self.perk_hud_num, perk);
+	//self.perk_hud[ perk ] destroy_hud();
+	//self.perk_hud[ perk ] = undefined;
 }
 
 perk_hud_flash(damage)
@@ -2974,14 +3816,17 @@ perk_flash_audio( perk )
             break;
 
         case "specialty_flakjacket":
+		case "specialty_bulletdamage":
             alias = "zmb_hud_flash_phd";
             break;
 
         case "specialty_deadshot":
+		case "specialty_bulletaccuracy":
             alias = "zmb_hud_flash_deadshot";
             break;
 
         case "specialty_additionalprimaryweapon":
+		case "specialty_altmelee":
             alias = "zmb_hud_flash_additionalprimaryweapon";
             break;
     }
@@ -2990,36 +3835,56 @@ perk_flash_audio( perk )
         self PlayLocalSound( alias );
 }
 
+//Reimagined-Expanded, refactored
 perk_hud_start_flash( perk, damage )
 {
-	if ( self HasPerk( perk ) && isdefined( self.perk_hud ) )
+
+	if ( self HasPerk( perk ) )
 	{
-		hud = self.perk_hud[perk];
-		if ( isdefined( hud ) )
+		proPerk = perk + "_upgrade";
+
+		if( self.PERKS_FLASHING[ perk ] || self.PERKS_FLASHING[ proPerk ] ) 
 		{
-			if ( !is_true( hud.flash ) )
-			{
-				hud thread perk_hud_flash(damage);
-				self thread perk_flash_audio( perk );
-			}
+			return;
+		}
+		
+		
+		if( self hasProPerk( proPerk ) ) 
+		{
+			self manage_ui_perk_hud_interface( "flash_start", proPerk );
+		}
+		else
+		{
+			self manage_ui_perk_hud_interface( "flash_start", perk );
 		}
 	}
 }
 
 perk_hud_stop_flash( perk, taken )
 {
-	if ( self HasPerk( perk ) && isdefined( self.perk_hud ) )
+	if( !IsDefined( taken ) )
+		taken = false;
+
+	if ( self HasPerk( perk ) )
 	{
-		hud = self.perk_hud[perk];
-		if ( isdefined( hud ) )
+		proPerk = perk + "_upgrade";
+		if( self hasProPerk( proPerk ) && self.PERKS_FLASHING[ proPerk ] ) 
 		{
-			hud.flash = undefined;
-			if ( isdefined( taken ) )
-			{
-				hud notify( "stop_flash_perk" );
-			}
+
+			self manage_ui_perk_hud_interface( "flash_end", proPerk );
+			if( taken )
+				self thread disablePerk( proPerk, level.VALUE_ZOMBIE_COSMODROME_MONKEY_DISABLE_PRO_PERK_TIME );
+				
+		}
+		else if( self.PERKS_FLASHING[ perk ] )
+		{
+			self manage_ui_perk_hud_interface( "flash_end", perk );
+
+			if( taken )
+				self removePerk( perk );
 		}
 	}
+
 }
 
 perk_give_bottle_begin( perk )
@@ -3106,8 +3971,8 @@ perk_give_bottle_begin( perk )
 		modelIndex = 9;
 		break;
 
-	case "specialty_extraamo": // ww: wine
-	case "specialty_extraamo_upgrade":
+	case "specialty_bulletaccuracy": // ww: wine
+	case "specialty_bulletaccuracy_upgrade":
 		weapon = "bo3_widows_wine_bottle";
 		modelIndex = 10;
 		break;
@@ -3126,6 +3991,7 @@ perk_give_bottle_begin( perk )
 	return gun;
 }
 
+// UPGRADE PERK powerup_solo
 upgrade_perk_fx()
 {
 	weap = self GetCurrentWeapon();
@@ -3214,8 +4080,8 @@ perk_give_bottle_end( gun, perk )
 		weapon = "t6_wpn_zmb_perk_bottle_vulture";
 		break;
 
-	case "specialty_extraamo": // ww: wine
-	case "specialty_extraamo_upgrade":
+	case "specialty_bulletaccuracy": // ww: wine
+	case "specialty_bulletaccuracy_upgrade":
 		weapon = "bo3_widows_wine_bottle";
 		break;
 	}
@@ -3285,12 +4151,16 @@ give_random_perk()
 {
 	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
 
+	while( is_true( self.superpower_active ) ) {
+		wait( 1 );
+	}
+
 	perks = [];
 	for ( i = 0; i < vending_triggers.size; i++ )
 	{
 		perk = vending_triggers[i].script_noteworthy;
 
-		if(perk == "specialty_bulletaccuracy") //babyjugg
+		if(perk == "specialty_extraammo") //babyjugg
 			continue;
 
 		if ( isdefined( self.perk_purchased ) && self.perk_purchased == perk )
@@ -3652,6 +4522,51 @@ remove_stockpile_ammo()
 // QUICKREV PRO
 //=========================================================================================================
 
+//Normal Qrevive
+watch_player_qrevive()
+{
+	
+	self endon("disconnect");
+	self endon("death");
+	self endon("fake_death");
+	self endon("end_game");
+
+
+	//iprintln("watch_player_qrevive");
+
+	//if solo game, return
+	if( level.players_count == 1 )
+	{
+		return;
+	}
+		
+
+	self waittill("player_downed");
+	
+	//loop over self.purchased_perks
+	returnablePerks = [];
+	for(i=0;i<self.purchased_perks.size;i++)
+	{
+		if(self.purchased_perks[i] == level.QRV_PRK)
+			continue;
+
+		//if its a pro perk, continue
+		if(IsSubStr(self.purchased_perks[i], "_upgrade"))
+			continue;
+
+		returnablePerks[returnablePerks.size] = self.purchased_perks[i];
+	}
+
+	if(returnablePerks.size == 0)
+		return;
+
+	//waittill revived
+	self waittill("player_revived");
+
+	perkToReturn = array_randomize(returnablePerks)[0];
+	self give_perk(perkToReturn);
+	
+}
 
 //Reimagined-Expanded -- Quick Revive pro thread running for each player
 // HANDLED IN ZOMBIEMODE
@@ -3690,7 +4605,8 @@ watch_stamina_upgrade(perk_str)
 	{
 
 		//wait till player sprints
-		waittill_return = self waittill_any_return("melee", "damage");
+		//waittill_return = self waittill_any_return("melee", "damage");
+		waittill_return = self waittill_any_return("melee");
 
 		self waittill_notify_or_timeout("sprint", level.VALUE_STAMINA_PRO_SPRINT_WINDOW );
 		if( ! self IsSprinting() )
@@ -3708,7 +4624,16 @@ watch_stamina_upgrade(perk_str)
 		//give player zombie blood
 		totaltime = level.TOTALTIME_STAMINA_PRO_GHOST;
 		self.ignoreme = true;
-		self VisionSetNaked( "zombie_blood", 0.5 );
+		if( IsDefined( level.set_custom_visionset_func ) )
+		{
+			//Handled in CSC
+		}
+		else
+		{
+			//iprintln("zombie visionset" + level.zombie_visionset + " " + self.entity_num);
+			self VisionSetNaked( "zombie_blood", 0.5 );
+		}
+		
 		self setMoveSpeedScale( self.moveSpeed + 0.3 );
 		self send_message_to_csc("hud_anim_handler", "stamina_ghost_start");
 		
@@ -3723,15 +4648,27 @@ watch_stamina_upgrade(perk_str)
 		self setMoveSpeedScale( self.moveSpeed - 0.3 );
 		self send_message_to_csc("hud_anim_handler", "stamina_ghost_end");
 
-		if( IsDefined( level.zombie_visionset ) )
+		//iprintln("zombie visionset" + level.zombie_visionset);
+		
+		if( IsDefined( level.set_custom_visionset_func ) )
+			[[ level.set_custom_visionset_func ]]( self );
+		else if( IsDefined( level.zombie_visionset ) )
 			self VisionSetNaked( level.zombie_visionset, 0.5 );
-		else
+		else	
 			self VisionSetNaked( "undefined", 0.5 );
+			
 
 	}
 
 	checkDist(a, b, distance )
 	{
+		if( !IsDefined( a ) || !IsDefined( b ) )
+		{
+			//iprintln("checkDist for distance: " + distance + " is undefined" );
+			return false;
+		}
+			
+
 		return maps\_zombiemode::checkDist( a, b, distance );
 	}
 
@@ -3763,21 +4700,26 @@ watch_stamina_upgrade(perk_str)
 watch_fastreload_upgrade(perk_str)
 {
 	self endon("disconnect");
-	self endon(perk_str);
 
 	while(1)
 	{
-		if(self.specialty_fastreload_upgrade)
-		{
-			//wait till player switches weapons
-			self waittill("weapon_switch_complete");
-			//iprintln("Observed weapon switch");	
+		
+		//wait till player switches weapons
+		self waittill("weapon_switch_complete", perk_str);
+		//iprintln("Observed weapon switch");	
 
+		if(self hasProPerk( level.SPD_PRO ) )
+		{
 			self thread magicReload();
+		}
+		else
+		{
+			break;
 		}
 		wait(0.1);
 	}
 
+	self.speedcola_swap_timeout = 10;
 }
 
 magicReload()
@@ -3804,8 +4746,12 @@ magicReload()
 		if(weapons[i] == primary || diff == 0 || stock == 0)
 			continue;
 
+		if( self HasPerk( level.ECH_PRK) )
+			self electric_cherry_reload_attack( self.cherry_sequence, weapons[i] );		//triggers cherry
+
 		self SetWeaponAmmoClip(weapons[i], clip + diff);
-		self SetWeaponAmmoStock(weapons[i], stock - diff);		
+		self SetWeaponAmmoStock(weapons[i], stock - diff);
+
 	}
 
 }
@@ -3862,7 +4808,7 @@ watch_phd_upgrade(perk_str)
 	{
 		self waittill("sprint");
 		while( self IsSprinting() ) {
-			wait_network_frame();
+			wait( 0.1 );
 		}
 
 		if( IsDefined( self.divetoprone ) && self.divetoprone == 1) 
@@ -3871,10 +4817,10 @@ watch_phd_upgrade(perk_str)
 			 level.VALUE_PHD_PRO_COLLISIONS_RANGE ); //total time, dist
 
 			 //while( self.divetoprone == 1 ) { wait_network_frame();}
-			 wait( 0.75 );
-
-			 if ( IsDefined( level.zombiemode_divetonuke_perk_func ) )
-				[[ level.zombiemode_divetonuke_perk_func ]]( self, self.origin );
+			 wait( 0.7 );
+			if ( IsDefined( level.zombiemode_divetonuke_perk_func ) )
+				[[ level.zombiemode_divetonuke_perk_func ]]( self, self.origin, false );
+			
 		}
 
 		wait(0.1);
@@ -3883,7 +4829,7 @@ watch_phd_upgrade(perk_str)
 }
 
 
-/*
+
 
 //=========================================================================================================
 // Electric Cherry
@@ -3892,1097 +4838,1561 @@ watch_phd_upgrade(perk_str)
 
 init_electric_cherry()
 {
-	level._effect[ "electric_cherry_explode" ] = LoadFX( "sanchez/electric_cherry/cherry_shock_large" );
-	level._effect[ "electric_cherry_reload_small" ] = LoadFX( "sanchez/electric_cherry/cherry_shock_large" );
-	level._effect[ "electric_cherry_reload_medium" ] = LoadFX( "sanchez/electric_cherry/cherry_shock_large" );
-	level._effect[ "electric_cherry_reload_large" ] = LoadFX( "sanchez/electric_cherry/cherry_shock_large" );
-	level._effect[ "tesla_shock" ] = LoadFX( "maps/zombie/fx_zombie_tesla_shock" );
-	level._effect[ "tesla_shock_secondary" ] = LoadFX( "maps/zombie/fx_zombie_tesla_shock_secondary" );
-	//level.custom_laststand_func = ::electric_cherry_laststand;
+	level._effect[ "electric_cherry_reload_large" ] = LoadFX( "electric_cherry/fx_electric_cherry_shock_large" );
+	level._effect[ "electric_cherry_pool" ] = LoadFX( "electric_cherry/fx_electric_cherry_pool" );
+	
+	//Reimagined-Expanded
+	// See weapon_effects::init() fr init tesla shock fx
+
 	set_zombie_var( "tesla_head_gib_chance", 50 );
-	//OnPlayerConnect_Callback( ::on_player_spawned );
 	level.electric_stun = [];
+
 	level.electric_stun[0] = %ai_zombie_afterlife_stun_a;
 	level.electric_stun[1] = %ai_zombie_afterlife_stun_b;
 	level.electric_stun[2] = %ai_zombie_afterlife_stun_c;
 	level.electric_stun[3] = %ai_zombie_afterlife_stun_d;
 	level.electric_stun[4] = %ai_zombie_afterlife_stun_e;
+
 }
 
-/*
-on_player_spawned()
+
+//Self is player
+player_watch_electric_cherry()
 {
-	while( true )
+	while( self HasPerk( level.ECH_PRK ) )
 	{
-		self waittill( "spawned_player" );
-		self thread init_electric_cherry_reload_fx();
+		self waittill_any( "reload_start", level.ECH_PRK + "_stop" );
+
+		self thread electric_cherry_reload_attack( self.cherry_sequence );
+		if( self.cherry_sequence == 0 )
+			self thread player_handle_eletric_cherry_cooldown();
+
+		self.cherry_sequence++;
+		//self waittill_any_or_timeout( level.VALUE_CHERRY_SHOCK_SHORT_COOLDOWN, "reload");
+		wait( level.VALUE_CHERRY_SHOCK_SHORT_COOLDOWN );
 	}
-}
-/
 
-init_electric_cherry_reload_fx()
-{
-	wait 1;
-	self SetClientFlag( level._ZOMBIE_PLAYER_FLAG_DIVE2NUKE_VISION );
 }
 
-/*
-electric_cherry_laststand()
-{
-	VisionSetLastStand( "zombie_last_stand", 1 );
-	if( IsDefined( self ) )
+//Stop Condenscing methods
+
+	electric_cherry_reload_attack( sequence, weapon )
 	{
-		PlayFX( level._effect[ "electric_cherry_explode" ], self.origin );
-		self PlaySound( "zmb_cherry_explode" );
-		self notify( "electric_cherry_start" );
-		wait 0.05;
+		self endon( "death" );
+		self endon( "disconnect" );
+
+		
+		n_fraction = 0;
+		if( weapon == "none" ) {
+			//nothing
+		} else 
+		{
+			if( !isDefined( weapon ) )
+				weapon = self GetCurrentWeapon();
+
+			n_clip_current = self GetWeaponAmmoClip( weapon );
+			n_clip_max = WeaponClipSize( weapon );
+			n_fraction = n_clip_current / n_clip_max;
+
+		}
+		
+		perk_radius = level.VALUE_CHERRY_SHOCK_RANGE;
+		perk_dmg = level.VALUE_CHERRY_SHOCK_DMG;
+		max_enemies = level.VALUE_CHERRY_SHOCK_MAX_ENEMIES;
+		efx_range = (32, 32, 4);
+
+		if( n_fraction > 0.75 || sequence>=4 )
+			sequence=3;
+		else if( n_fraction > 0.5 || sequence==3 )
+			sequence=2;
+		else if( n_fraction > 0.25 || sequence==2 )
+			sequence=1;
+		else
+			sequence=0;
+
+		fr = 10/16;	// Reduce scalars by 60&, reciprol of 16/10
+		for( i = 0; i < sequence; i++ ) 
+		{
+			perk_radius = int( perk_radius * fr );
+			perk_dmg = int( perk_dmg * fr );
+			max_enemies = int( max_enemies * fr );
+		}
+
+		if( self hasProPerk( level.ECH_PRO) )
+		{
+			perk_radius = int( perk_radius * level.VALUE_CHERRY_PRO_SCALAR);
+			perk_dmg = int( perk_dmg * level.VALUE_CHERRY_PRO_SCALAR );
+			max_enemies = int( max_enemies * level.VALUE_CHERRY_PRO_SCALAR );
+		}
+
+		self thread electric_cherry_reload_fx( efx_range, perk_radius );
+		
 		a_zombies = GetAISpeciesArray( "axis", "all" );
-		a_zombies = get_array_of_closest( self.origin, a_zombies, undefined, undefined, 500 );
+		a_zombies = get_array_of_closest( self.origin, a_zombies, undefined, undefined, perk_radius );
+		n_zombies_hit = 0;
+		height_limit = 30;
+		
 		for( i = 0; i < a_zombies.size; i ++ )
 		{
-			if( IsAlive( self ) )
+			if( is_true(a_zombies[i].marked_for_tesla) || is_true( self.head_gibbed) )
+				continue;
+
+			if( IsAlive( self ) && IsAlive( a_zombies[i] ) && !is_boss_zombie( a_zombies[i].animname  ))
 			{
-				if( a_zombies[i].health <= 1000 )
+
+				height_diff = self.origin[2] - a_zombies[i].origin[2];
+				if( (height_diff > height_limit) || (height_diff < -1*height_limit) )
+					continue;
+
+				if( n_zombies_hit > max_enemies )
+					break;
+				a_zombies[i].marked_for_tesla = true;
+
+				if( a_zombies[i].health <= perk_dmg ) 
 				{
 					a_zombies[i] thread electric_cherry_death_fx();
-					if( IsDefined( self.cherry_kills ) )
-					{
-						self.cherry_kills ++;
-					}
-					self maps\_zombiemode_score::add_to_player_score( 40 );
 				}
-				else
+				else 
 				{
+		
 					a_zombies[i] thread electric_cherry_stun();
 					a_zombies[i] thread electric_cherry_shock_fx();
+
+					a_zombies[i] thread wait_reset_tesla_mark();
 				}
 				wait 0.1;
-				a_zombies[i] DoDamage( 1000, self.origin, self, self );
+				a_zombies[i] DoDamage( perk_dmg, a_zombies[i].origin, self, undefined, "crush", level.ECH_PRK );
+				n_zombies_hit++;
+
 			}
 		}
-		self notify( "electric_cherry_end" );
-	}
-}
-/
+		
 
-electric_cherry_death_fx()
-{
-	self endon( "death" );
-	tag = "J_SpineUpper";
-	fx = "tesla_shock";
-	if( self.isdog )
-	{
-		tag = "J_Spine1";
 	}
-	self PlaySound( "zmb_elec_jib_zombie" );
-	network_safe_play_fx_on_tag( "tesla_death_fx", 2, level._effect[ fx ], self, tag );
-	if( IsDefined( self.tesla_head_gib_func ) && !self.head_gibbed )
-	{
-		[[ self.tesla_head_gib_func ]]();
-	}
-}
-
-electric_cherry_shock_fx()
-{
-	self endon( "death" );
-	tag = "J_SpineUpper";
-	fx = "tesla_shock_secondary";
-	if( self.isdog )
-	{
-		tag = "J_Spine1";
-	}
-	self PlaySound( "zmb_elec_jib_zombie" );
-	network_safe_play_fx_on_tag( "tesla_shock_fx", 2, level._effect[ fx ], self, tag );
-}
-
-electric_cherry_stun()
-{
-	self endon( "death" );
-	self notify( "stun_zombie" );
-	self endon( "stun_zombie" );
-	if( self.health <= 0 )
-	{
-		return;
-	}
-	if( !self.has_legs )
-	{
-		return;
-	}
-	if( self.animname != "zombie" )
-	{
-		return;
-	}
-	self.forcemovementscriptstate = true;
-	self.ignoreall = true;
-	for( i = 0; i < 2; i ++ )
-	{
-		self AnimScripted( "stunned", self.origin, self.angles, random( level.electric_stun ) );
-		self animscripts\zombie_shared::DoNoteTracks( "stunned" );
-	}
-	self.forcemovementscriptstate = false;
-	self.ignoreall = true;
-	self SetGoalPos( self.origin );
-	self thread maps\_zombiemode_spawner::find_flesh();
-}
-
-electric_cherry_reload_attack()
-{
-	self endon( "death" );
-	self endon( "disconnect" );
-	self endon( "stop_electric_cherry_reload_attack" );
-	self.wait_on_reload = [];
-	self.consecutive_electric_cherry_attacks = 0;
-	while( true )
-	{
-		self waittill( "reload_start" );
-		str_current_weapon = self GetCurrentWeapon();
-		if( is_in_array( self.wait_on_reload, str_current_weapon ) )
+		
+		wait_reset_tesla_mark()
 		{
-			continue;
+			wait( level.THRESHOLD_TESLA_SHOCK_TIME );
+			if( IsDefined( self ) && IsAlive( self ) )
+				self.marked_for_tesla = false;
 		}
-		self.wait_on_reload[ self.wait_on_reload.size ] = str_current_weapon;
-		self.consecutive_electric_cherry_attacks ++;
-		n_clip_current = self GetWeaponAmmoClip( str_current_weapon );
-		n_clip_max = WeaponClipSize( str_current_weapon );
-		n_fraction = n_clip_current / n_clip_max;
-		perk_radius = linear_map( n_fraction, 1, 0, 32, 128 );
-		perk_dmg = linear_map( n_fraction, 1, 0, 1, 1045 );
-		self thread check_for_reload_complete( str_current_weapon );
-		if( IsDefined( self ) )
+	
+
+		//Reload fx 
+		electric_cherry_reload_fx( range, perk_radius ) 
 		{
-			switch( self.consecutive_electric_cherry_attacks )
-			{
-				case 0:
-				case 1:
-					n_zombie_limit = undefined;
-					break;
-
-				case 2:
-					n_zombie_limit = 8;
-					break;
-
-				case 3:
-					n_zombie_limit = 4;
-					break;
-
-				case 4:
-					n_zombie_limit = 2;
-					break;
-
-				default:
-					n_zombie_limit = 0;
-					break;
-			}
-			self thread electric_cherry_cooldown_timer( str_current_weapon );
-			if( IsDefined( n_zombie_limit ) && n_zombie_limit == 0 )
-			{
-				continue;
-			}
-			self thread electric_cherry_reload_fx( n_fraction );
-			self notify( "electric_cherry_start" );
+			//self PlaySound( "cherry_explode" );	//"Explode" sound file, unused
 			self PlaySound( "zmb_cherry_explode" );
-			a_zombies = GetAISpeciesArray( "axis", "all" );
-			a_zombies = get_array_of_closest( self.origin, a_zombies, undefined, undefined, perk_radius );
-			n_zombies_hit = 0;
-			for( i = 0; i < a_zombies.size; i ++ )
+		
+			//Nested for loop to create a 2x2 grid of fx
+			for( i = -1; i < 2; i +=2 ) 
 			{
-				if( IsAlive( self ) && IsAlive( a_zombies[i] ) && a_zombies[i].animName != "bo2_zm_mech" && a_zombies[i].animName != "kf2_scrake" && a_zombies[i].animName != "bo1_simianaut" )
-				{
-					if( IsDefined( n_zombie_limit ) )
-					{
-						if( n_zombies_hit < n_zombie_limit )
-						{
-							n_zombies_hit ++;
-						}
-						else
-						{
-							break;
-						}
-					}
-					if( a_zombies[i].health <= perk_dmg )
-					{
-						a_zombies[i] thread electric_cherry_death_fx();
-						if( IsDefined( self.cherry_kills ) )
-						{
-							self.cherry_kills ++;
-						}
-						self maps\_zombiemode_score::add_to_player_score( 40 );
-					}
-					else
-					{
-						if( !IsDefined( a_zombies[i].is_brutus ) )
-						{
-							a_zombies[i] thread electric_cherry_stun();
-						}
-						a_zombies[i] thread electric_cherry_shock_fx();
-					}
-					wait 0.1;
-					a_zombies[i] DoDamage( perk_dmg, self.origin, self, self );
+				for( j = -1; j < 2; j +=2 ) {
+					offset = range * (i, j, 1);
+					self thread handle_cherry_pool_fx( self.origin, offset );
 				}
 			}
-			self notify( "electric_cherry_end" );
+			
 		}
-	}
-}
 
-electric_cherry_cooldown_timer( str_current_weapon )
-{
-	self notify( "electric_cherry_cooldown_started" );
-	self endon( "electric_cherry_cooldown_started" );
-	self endon( "death" );
-	self endon( "disconnect" );
-	n_reload_time = WeaponReloadTime( str_current_weapon );
-	if( self HasPerk( "specialty_fastreload" ) )
-	{
-		n_reload_time *= GetDvarFloat( "perk_weapReloadMultiplier" );
-	}
-	n_cooldown_time = n_reload_time + 3;
-	wait n_cooldown_time;
-	self.consecutive_electric_cherry_attacks = 0;
-}
+			handle_cherry_pool_fx( origin, offset )
+			{
+				model = Spawn( "script_model", self.origin );
+				model setModel( "tag_origin" );
+				model LinkTo( self, "tag_origin", offset, ( 270, 0, 0 ) );
 
-check_for_reload_complete( weapon )
-{
-	self endon( "death" );
-	self endon( "disconnect" );
-	self endon( "player_lost_weapon_" + weapon );
-	self thread weapon_replaced_monitor( weapon );
-	while( true )
-	{
-		self waittill( "reload" );
-		str_current_weapon = self GetCurrentWeapon();
-		if( str_current_weapon == weapon )
+				PlayFXOnTag(level._effect[ "electric_cherry_reload_large" ], model, "tag_origin" );
+				wait( level.VALUE_CHERRY_SHOCK_RELOAD_FX_TIME );
+				model delete();
+			}
+	
+	
+		electric_cherry_death_fx()
 		{
-			self.wait_on_reload = array_remove_nokeys( self.wait_on_reload, weapon );
-			self notify( "weapon_reload_complete_" + weapon );
-			return;
+			self endon( "death" );
+			tag = "J_SpineUpper";
+			fx = "fx_electric_cherry_shock";
+			if( is_true(self.isdog) )
+			{
+				tag = "J_Spine1";
+			}
+			self PlaySound( "zmb_elec_jib_zombie" );
+			network_safe_play_fx_on_tag( "tesla_death_fx", 2, level._effect[ fx ], self, tag );
+			if( IsDefined( self.tesla_head_gib_func ) && !self.head_gibbed )
+			{
+				[[ self.tesla_head_gib_func ]]();
+			}
 		}
-	}
-}
-
-weapon_replaced_monitor( weapon )
-{
-	self endon( "death" );
-	self endon( "disconnect" );
-	self endon( "weapon_reload_complete_" + weapon );
-	while( true )
-	{
-		self waittill( "weapon_change" );
-		primaryweapons = self GetWeaponsListPrimaries();
-		if( !is_in_array( primaryweapons, weapon ) )
+		
+	
+		electric_cherry_shock_fx()
 		{
-			self notify( "player_lost_weapon_" + weapon );
-			self.wait_on_reload = array_remove_nokeys( self.wait_on_reload, weapon );
-			return;
+			self endon( "death" );
+			tag = "J_SpineUpper";
+			fx = "fx_electric_cherry_shock";
+			if( is_true( self.isdog ) )
+			{
+				tag = "J_Spine1";
+			}
+			else if( self.animname == "monkey_zombie" )
+			{
+				self animscripted( "tesla_death", self.origin, self.angles, level._zombie_tesla_death["monkey_zombie"][0] );
+			}
+
+			self PlaySound( "zmb_elec_jib_zombie" );
+			network_safe_play_fx_on_tag( "tesla_shock_fx", 2, level._effect[ fx ], self, tag );
 		}
-	}
-}
+		
+		
+		
+		electric_cherry_stun()
+		{
+			self endon( "death" );
+			self notify( "stun_zombie" );
+			//self endon( "stun_zombie" );
 
-electric_cherry_reload_fx( n_fraction )
-{
-	if( n_fraction >= 0.67 )
+			if( self.animname != "zombie" ) 
+				return;	
+
+			if( self.health <= 0 )
+			{
+				return;
+			}
+			if( !self.has_legs )
+			{
+				return;
+			}
+			if( !is_in_array( level.ARRAY_VALID_STANDARD_ZOMBIES, self.animname ) )
+			{
+				return;
+			}
+			self.forcemovementscriptstate = true;
+			self.ignoreall = true;
+			for( i = 0; i < 2; i ++ )
+			{
+				self AnimScripted( "stunned", self.origin, self.angles, level.electric_stun[0] );
+				self animscripts\zombie_shared::DoNoteTracks( "stunned" );
+			}
+			self.forcemovementscriptstate = false;
+			self.ignoreall = true;
+			self SetGoalPos( self.origin );
+			self thread maps\_zombiemode_spawner::find_flesh();
+		}
+
+	player_handle_eletric_cherry_cooldown()
 	{
-		setClientSysState( "levelNotify", "cherry_fx_small_" + self GetEntityNumber() );
+		wait( level.VALUE_CHERRY_SHOCK_LONG_COOLDOWN );
+		self.cherry_sequence = 0;
 	}
-	else if( n_fraction >= 0.33 && n_fraction < 0.67 )
+
+	//Self is player, only triggers if player has Cherry Pro
+	player_electric_cherry_defense( zombie )
 	{
-		setClientSysState( "levelNotify", "cherry_fx_medium_" + self GetEntityNumber() );
+		self.cherry_defense = false;
+		cherry_damage = level.VALUE_CHERRY_SHOCK_DMG * level.VALUE_CHERRY_PRO_SCALAR;
+		kill_zombie = ( cherry_damage > zombie.health ) || zombie.animname != "zombie"; //just kill dogs and monkeys and quads, no stun fx
+
+		if( kill_zombie ) 
+		{
+			zombie thread electric_cherry_death_fx();
+		}
+		else {
+			zombie thread electric_cherry_stun();
+			zombie thread electric_cherry_shock_fx();
+
+			zombie thread wait_reset_tesla_mark();
+		}
+
+		zombie.marked_for_tesla = true;
+		zombie DoDamage( cherry_damage, zombie.origin, self, level.ECH_PRK, "cush" );
+
+		self thread electric_cherry_reload_attack( 2, "NONE" );
+		self player_cherry_defense_cooldown();
 	}
-	else
+
+	//self is player
+	player_cherry_defense_cooldown() 
 	{
-		setClientSysState( "levelNotify", "cherry_fx_large_" + self GetEntityNumber() );
+		self endon( "disconnect" );
+		self endon( "death" );
+		
+		wait( level.VALUE_CHERRY_PRO_DEFENSE_COOLDOWN );
+		self.cherry_defense = true;
 	}
-	wait 1;
-	setClientSysState( "levelNotify", "cherry_fx_cancel_" + self GetEntityNumber() );
-}
-
-electric_cherry_perk_lost()
-{
-	self notify( "stop_electric_cherry_reload_attack" );
-}
-
-*/
-
-
 
 
 //=========================================================================================================
 // Vulture Aid
 //=========================================================================================================
 
-/*
-vulture_player_connect_callback()
+
+//Self is player
+player_watch_vulture()
 {
-	self thread end_game_turn_off_vulture_overlay();
-	self thread watch_vulture_shader_glow();
+	self send_message_to_csc("hud_anim_handler", "vulture_hud_on");
+	self.vulture_had_perk = true; //turned off after vulture_destroy_waypoints();
+	self thread player_watch_vulture_stop( "vulture_vision_toggle" );
+	self thread player_watch_vulture_toggle( "vulture_vision_toggle" );
+	self thread player_create_vulture_vision_weapons();
+	self thread player_create_vulture_vision_box_glow();
+
+	while( self HasPerk( level.VLT_PRK ) )	{
+		//wait
+		wait(0.1);
+	}
+
+	self notify( level.VLT_PRK + "_stop" );
+	self send_message_to_csc("hud_anim_handler", "vulture_hud_off");
 }
+
+//Self is player
+
+	player_create_vulture_vision_weapons()
+	{
+		structs = level.vulture_waypoint_structs;
+		for( i = 0; i < structs.size; i++ )
+		{
+			struct = structs[i];
+			if( is_true( struct.is_weapon ) )
+				create_loop_fx_to_player( self, struct.ent_num, struct.fx_var, struct.origin, struct.angles );
+		}
+
+		self waittill( level.VLT_PRK + "_stop" );
+
+		for( i = 0; i < structs.size; i++ )
+		{
+			struct = structs[i];
+			if( is_true( struct.is_weapon ) )
+				destroy_loop_fx_to_player( self, struct.ent_num, true );
+		}
+		
+	}
+
+	//*
+	player_create_vulture_vision_box_glow()
+	{
+		structs = level.vulture_waypoint_structs;
+		while( 1 )
+		{
+			if( !(self HasPerk( level.VLT_PRK )) )
+				break;
+
+			//Create fx where box is
+					
+			for( i = 0; i < structs.size; i++ )
+			{
+				struct = structs[i];
+				if( IsDefined( struct.chest_to_check ) && check_waypoint_visible( self, struct ) ) 
+				{
+					create_loop_fx_to_player( self, struct.ent_num, struct.fx_var, struct.origin, struct.angles );
+					struct.fx_created = true;
+				}
+					
+			}
+			
+			//Wait for firesale or box moved event
+			vision_toggle_event = "vulture_vision_toggle" + self GetEntityNumber();
+			event = level waittill_any_return( "powerup fire sale",
+											 "fire_sale_off",
+											 "moving_chest_now",
+											 "player_downed",
+											 vision_toggle_event );
+			
+			//Destroy fx
+			for( i = 0; i < structs.size; i++ )
+			{
+				struct = structs[i];
+				if( is_true( struct.chest_to_check ) && is_true( struct.fx_created ) )
+					destroy_loop_fx_to_player( self, struct.ent_num, true );
+			}
+
+			if( event == vision_toggle_event )
+			{
+				if( !(self HasPerk( level.VLT_PRK )) )
+					break;
+
+				level waittill( vision_toggle_event );
+
+				continue;
+			}
+			
+			//Handle player downed
+			if( event == "player_downed" )
+			{
+				if( !self maps\_laststand::player_is_in_laststand() )
+					continue;
+			
+				
+				self waittill_any( "player_revived", "disconnect", "bled_out", "death" );
+
+				if( !(self HasPerk( level.VLT_PRK )) )
+					break;
+			}
+			
+			event = level waittill_any_return( 	 "powerup fire sale",
+												 "fire_sale_off",
+												 "moving_chest_done",
+											 	 vision_toggle_event
+												);
+			
+			wait 1;
+		}
+
+		//Destroy any existing fx
+		
+	}
+	// */
+
+	player_watch_vulture_toggle( level_notify_str )
+	{
+		self endon( "disconnect" );
+		self endon( level.VLT_PRK + "_stop" );
+
+		while( 1 )
+		{
+			if( self ADSButtonPressed() && self MeleeButtonPressed() )
+			{
+				//iprintln( "Vulture Vision Toggled" );
+				vulture_vision_toggle_event = level_notify_str + self GetEntityNumber();
+				level notify( vulture_vision_toggle_event );
+				self.vulture_vison_toggle = !self.vulture_vison_toggle;	
+				wait( 1 );
+			}
+			
+				
+			wait( 0.1 );
+		}
+	}
+
+	player_watch_vulture_stop( level_notify_str )
+	{
+		VULTURE_STOP = level.VLT_PRK + "_stop";
+		VULTURE_PRO_STOP = level.VLT_PRO + "_stop";
+
+		event = self waittill_any_return( 	VULTURE_STOP, VULTURE_PRO_STOP );
+		//iprintln( "Vulture Vision STOP" );
+
+		level notify( level_notify_str + self GetEntityNumber() );
+	}
+
+
+watch_vulture_upgrade( perk_str )
+{
+	self send_message_to_csc("hud_anim_handler", "vulture_hud_pro");
+
+	//Reactivate zombies that have drops
+	thread vulture_activate_zombie_powerup_glow();
+
+	self thread player_vulture_upgrade_zombie_immune( perk_str );
+	//self thread test_disable_vulture();
+	self waittill( perk_str );
+	self send_message_to_csc("hud_anim_handler", "vulture_hud_off");
+}
+
+//Zombies don't attack player for 15s at begging of each round
+player_vulture_upgrade_zombie_immune( perk_str )
+{
+
+	while( self hasProPerk( level.VLT_PRO ) )
+	{
+		level waittill( "start_of_round" );
+
+		//self.ignoreme = true;
+		wait( level.VALUE_VULTURE_ROUND_START_ZOMBIE_IMMUNITY );
+		//self.ignoreme = false;
+
+		level waittill( "end_of_round" );
+	}
+
+}
+
+test_disable_vulture()
+{
+	wait( 5 );
+	disablePerk( level.VLT_PRO, 10 );
+}
+	
+ vulture_activate_zombie_powerup_glow()
+ {
+	//Get all zombies
+	zombies = GetAISpeciesArray( "axis", "all" );
+	for( i = 0; i < zombies.size; i++ ) 
+	{
+		hasDrop = IsDefined( zombies[i].hasDrop ) && 
+			( zombies[i].hasDrop == "GREEN" || zombies[i].hasDrop == "BLUE" );
+
+		if( hasDrop )
+		{
+			zombies[i] setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+			wait( 0.1 );
+			zombies[i] clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+		}
+	
+	}
+ }
 
 end_game_turn_off_vulture_overlay()
 {
 	self endon( "disconnect" );
 	level waittill( "end_game" );
-	self thread take_vulture_perk();
+	//self thread take_vulture_perk();
+}
+
+init_vulture_assets()
+{	
+	PreCacheModel( "bo2_p6_zm_perk_vulture_ammo" );
+	PreCacheModel( "bo2_p6_zm_perk_vulture_points" );
+
+	PreCacheShader( "specialty_glow_rifle" );
+	PreCacheShader( "specialty_glow_magic_box" );
+	PreCacheShader( "specialty_glow_pap" );	
+	PreCacheShader( "specialty_glow_skull" );
+	PreCacheShader( "specialty_glow_wunderfizz" );
+
+	level._effect[ "vulture_glow" ] = LoadFX( "vulture/fx_vulture_glow" );
+	level._effect[ "vulture_perk_mystery_box_glow" ] = LoadFX( "vulture/fx_vulture_box" );
+	level._effect[ "vulture_skull" ] = LoadFX( "vulture/fx_vulture_skull" );
+	//level._effect[ "vulture_perk_bonus_drop" ] = level._effect["powerup_on_solo"]; //used in clientscript
+
+	/*
+	PreCacheShader( "hud_vulture_aid_stink" );
+	PreCacheShader( "hud_vulture_aid_stink_outline" );
+	//level._effect[ "vulture_perk_zombie_stink" ] = LoadFX( "vulture/fx_zm_vulture_perk_stink" );
+	//level._effect[ "vulture_perk_zombie_stink_trail" ] = LoadFX( "vulture/fx_zm_vulture_perk_stink_trail" );
+	//level._effect[ "vulture_perk_bonus_drop" ] = LoadFX( "vulture/fx_zombie_powerup_vulture" );
+	//level._effect[ "vulture_drop_picked_up" ] = LoadFX( "misc/fx_zombie_powerup_grab" );
+	level._effect[ "vulture_perk_machine_glow_doubletap" ] = LoadFX( "vulture/fx_vulture_double" );
+	level._effect[ "vulture_perk_machine_glow_juggernog" ] = LoadFX( "vulture/fx_vulture_jugg" );
+	level._effect[ "vulture_perk_machine_glow_revive" ] = LoadFX( "vulture/fx_vulture_revive" );
+	level._effect[ "vulture_perk_machine_glow_speed" ] = LoadFX( "vulture/fx_vulture_speed" );
+	level._effect[ "vulture_perk_machine_glow_marathon" ] = LoadFX( "vulture/fx_vulture_stamin" );
+	level._effect[ "vulture_perk_machine_glow_mule_kick" ] = LoadFX( "vulture/fx_vulture_mule" );
+	level._effect[ "vulture_perk_machine_glow_pack_a_punch" ] = LoadFX( "vulture/fx_vulture_pap" );
+	level._effect[ "vulture_perk_machine_glow_vulture" ] = LoadFX( "vulture/fx_vulture_vulture" );
+	level._effect[ "vulture_perk_machine_glow_electric_cherry" ] = LoadFX( "vulture/fx_vulture_cherry" );
+	level._effect[ "vulture_perk_machine_glow_phd_flopper" ] = LoadFX( "vulture/fx_vulture_phd" );
+	//level._effect[ "vulture_perk_machine_glow_whos_who" ] = LoadFX( "vulture/fx_vulture_whoswho" );
+	level._effect[ "vulture_perk_machine_glow_widows_wine" ] = LoadFX( "vulture/fx_vulture_widow" );
+	level._effect[ "vulture_perk_machine_glow_deadshot" ] = LoadFX( "vulture/fx_vulture_deadshot" );
+	level._effect[ "vulture_perk_mystery_box_glow" ] = LoadFX( "vulture/fx_vulture_box" );
+	//level._effect[ "vulture_perk_powerup_drop" ] = LoadFX( "vulture/fx_vulture_powerup" );
+	//level._effect[ "vulture_perk_zombie_eye_glow" ] = LoadFX( "vulture/fx_zombie_eye_vulture" );
+	*/
+	
 }
 
 init_vulture()
 {
-	PreCacheShader( "hud_vulture_aid_stink" );
-	PreCacheShader( "hud_vulture_aid_stink_outline" );
-	PreCacheModel( "p6_zm_perk_vulture_ammo" );
-	PreCacheModel( "p6_zm_perk_vulture_points" );
-	level._effect[ "vulture_perk_zombie_stink" ] = LoadFX( "sanchez/vulture/fx_zm_vulture_perk_stink" );
-	level._effect[ "vulture_perk_zombie_stink_trail" ] = LoadFX( "sanchez/vulture/fx_zm_vulture_perk_stink_trail" );
-	level._effect[ "vulture_perk_bonus_drop" ] = LoadFX( "sanchez/vulture/fx_zombie_powerup_vulture" );
-	level._effect[ "vulture_drop_picked_up" ] = LoadFX( "misc/fx_zombie_powerup_grab" );
-	level._effect[ "vulture_perk_wallbuy_static" ] = LoadFX( "sanchez/vulture/vulture_wallgun_glow" );
-	level._effect[ "vulture_perk_machine_glow_doubletap" ] = LoadFX( "sanchez/vulture/vulture_dtap_glow" );
-	level._effect[ "vulture_perk_machine_glow_juggernog" ] = LoadFX( "sanchez/vulture/vulture_jugg_glow" );
-	level._effect[ "vulture_perk_machine_glow_revive" ] = LoadFX( "sanchez/vulture/vulture_revive_glow" );
-	level._effect[ "vulture_perk_machine_glow_speed" ] = LoadFX( "sanchez/vulture/vulture_speed_glow" );
-	level._effect[ "vulture_perk_machine_glow_marathon" ] = LoadFX( "sanchez/vulture/vulture_stamin_glow" );
-	level._effect[ "vulture_perk_machine_glow_mule_kick" ] = LoadFX( "sanchez/vulture/vulture_mule_glow" );
-	level._effect[ "vulture_perk_machine_glow_pack_a_punch" ] = LoadFX( "sanchez/vulture/vulture_pap_glow" );
-	level._effect[ "vulture_perk_machine_glow_vulture" ] = LoadFX( "sanchez/vulture/vulture_aid_glow" );
-	level._effect[ "vulture_perk_machine_glow_electric_cherry" ] = LoadFX( "sanchez/vulture/vulture_cherry_glow" );
-	level._effect[ "vulture_perk_machine_glow_phd_flopper" ] = LoadFX( "sanchez/vulture/vulture_phd_glow" );
-	level._effect[ "vulture_perk_machine_glow_whos_who" ] = LoadFX( "sanchez/vulture/vulture_whoswho_glow" );
-	level._effect[ "vulture_perk_machine_glow_widows_wine" ] = LoadFX( "sanchez/vulture/vulture_widows_glow" );
-	level._effect[ "vulture_perk_machine_glow_deadshot" ] = LoadFX( "sanchez/vulture/vulture_deadshot_glow" );
-	level._effect[ "vulture_perk_mystery_box_glow" ] = LoadFX( "sanchez/vulture/vulture_box_glow" );
-	level._effect[ "vulture_perk_powerup_drop" ] = LoadFX( "sanchez/vulture/vulture_powerup_glow" );
-	level._effect[ "vulture_perk_zombie_eye_glow" ] = LoadFX( "sanchez/vulture/fx_zombie_eye_vulture" );
-	level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_POWERUP_DROP = 12;
-	level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX = 13;
-	level._ZOMBIE_ACTOR_FLAG_VULTURE_STINK_TRAIL_FX = 3;
-	level._ZOMBIE_ACTOR_FLAG_VULTURE_EYE_GLOW = 4;
+	init_vulture_assets();
 	level.perk_vulture = SpawnStruct();
 	level.perk_vulture.zombie_stink_array = [];
 	level.perk_vulture.drop_slots_for_network = 0;
 	level.perk_vulture.last_stink_zombie_spawned = 0;
 	level.perk_vulture.use_exit_behavior = false;
-	maps\_zombiemode_spawner::add_cusom_zombie_spawn_logic( ::vulture_zombie_spawn_func );
-	maps\_zombiemode_spawner::register_zombie_death_event_callback( ::zombies_drop_stink_on_death );
+	//maps\_zombiemode_spawner::add_cusom_zombie_spawn_logic( ::vulture_zombie_spawn_func );
+	//maps\_zombiemode_spawner::register_zombie_death_event_callback( ::zombies_drop_stink_on_death );
+
+	
+	true_thing = true;
+	if( true_thing )
+	{
+		//return;
+	}
+
+	flag_wait( "all_players_connected" );
+	level thread vulture_watch_powerup_waypoints();
+	level thread vulture_perk_watch_waypoints();
 	level thread vulture_perk_watch_mystery_box();
 	level thread vulture_perk_watch_fire_sale();
-	level thread vulture_perk_watch_powerup_drops();
-	level.exit_level_func = ::vulture_zombies_find_exit_point;
-	level.perk_vulture.invalid_bonus_ammo_weapons = array( "time_bomb_zm", "time_bomb_detonator_zm" );
-	if( !IsDefined( level.perk_vulture.func_zombies_find_valid_exit_locations ) )
-	{
-		level.perk_vulture.func_zombies_find_valid_exit_locations = ::get_valid_exit_points_for_zombie;
-	}
-	initialize_bonus_entity_pool();
-	initialize_stink_entity_pool();
-	level thread vulture_perk_watch_waypoints();
-	OnPlayerConnect_Callback( ::vulture_player_connect_callback );
+	level thread vulture_perk_watch_pap_move();
+		
 }
 
-add_additional_stink_locations_for_zone( str_zone, a_zones )
-{
-	if( !IsDefined( level.perk_vulture.zones_for_extra_stink_locations ) )
-	{
-		level.perk_vulture.zones_for_extra_stink_locations = [];
-	}
-	level.perk_vulture.zones_for_extra_stink_locations[ str_zone ] = a_zones;
-}
 
-give_vulture_perk()
-{
-	if( !IsDefined( self.perk_vulture ) )
-	{
-		self.perk_vulture = SpawnStruct();
-	}
-	self.perk_vulture.active = true;
-	setClientSysState( "levelNotify", "vulture_active_1", self );
-	self thread _vulture_perk_think();
-}
+/* Waypoints */
+ 
 
-take_vulture_perk()
-{
-	if( IsDefined( self.perk_vulture ) && is_true( self.perk_vulture.active ) )
+	vulture_perk_watch_waypoints()
 	{
-		self.perk_vulture.active = false;
-		if( !self maps\_laststand::player_is_in_laststand() && !is_true( self.ignore_insta_kill ) )
+		setup_perk_machine_fx();
+		wait 1;
+		structs = [];
+		weapon_spawns = GetEntArray( "weapon_upgrade", "targetname" );
+		weapon_spawns = array_combine( weapon_spawns, GetEntArray( "betty_purchase", "targetname" ) );
+		//weapon_spawns = array_combine( weapon_spawns, GetEntArray( "tazer_upgrade", "targetname" ) );
+		weapon_spawns = array_combine( weapon_spawns, GetEntArray( "bowie_upgrade", "targetname" ) );
+		weapon_spawns = array_combine( weapon_spawns, GetEntArray( "claymore_purchase", "targetname" ) );
+		weapon_spawns = array_combine( weapon_spawns, GetEntArray( "sickle_upgrade", "targetname" ) );
+		weapon_spawns = array_combine( weapon_spawns, GetEntArray( "spikemore_purchase", "targetname" ) );
+
+		for( i = 0; i < weapon_spawns.size; i ++ )
 		{
-			self.ignoreme = false;
+			model = GetEnt( weapon_spawns[i].target, "targetname" );
+			struct = SpawnStruct();
+			struct.location = weapon_spawns[i] get_waypoint_origin( "wallgun" );
+			struct.origin = struct.location[ "origin" ];
+			struct.angles = struct.location[ "angles" ];
+			struct.is_weapon = true;
+			struct.check_perk = false;
+			struct.perk_to_check = undefined;
+			struct.is_revive = false;
+			struct.is_chest = false;
+			struct.chest_to_check = undefined;
+			struct.fx_var = "vulture_glow";
+			struct.ent_num = model GetEntityNumber();
+			struct.script_model = Spawn( "script_model", struct.origin );
+			struct.player_waypoint = [];
+			struct.wp_type = "WEAPON";
+			struct.waypoint_name = "specialty_glow_rifle";
+
+			structs[ structs.size ] = struct;
 		}
-		setClientSysState( "levelNotify", "vulture_active_0", self );
-		self.vulture_stink_value = 0;
-		self.vulture_glow_alpha = 0;
-		self notify( "vulture_perk_lost" );
-	}
-}
-
-vulture_perk_add_invalid_bonus_ammo_weapon( str_weapon )
-{
-	level.perk_vulture.invalid_bonus_ammo_weapons[ level.perk_vulture.invalid_bonus_ammo_weapons.size ] = str_weapon;
-}
-
-do_vulture_death( player )
-{
-	if( IsDefined( self ) )
-	{
-		self thread _do_vulture_death( player );
-	}
-}
-
-_do_vulture_death( player )
-{
-	if( should_do_vulture_drop( self.origin ) )
-	{
-		str_bonus = self get_vulture_drop_type();
-		str_identifier = "_" + self GetEntityNumber() + "_" + GetTime();
-		self thread vulture_drop_funcs( self.origin, player, str_identifier, str_bonus );
-	}
-}
-
-vulture_drop_funcs( v_origin, player, str_identifier, str_bonus )
-{
-	vulture_drop_count_increment();
-	switch( str_bonus )
-	{
-		case "ammo":
-			e_temp = player _vulture_drop_model( str_identifier, "p6_zm_perk_vulture_ammo", v_origin, ( 0, 0, 15 ) );
-			self thread check_vulture_drop_pickup( e_temp, player, str_identifier, str_bonus );
-			break;
-
-		case "points":
-			e_temp = player _vulture_drop_model( str_identifier, "p6_zm_perk_vulture_points", v_origin, ( 0, 0, 15 ) );
-			self thread check_vulture_drop_pickup( e_temp, player, str_identifier, str_bonus );
-			break;
-
-		case "stink":
-			self _drop_zombie_stink( level, str_identifier, str_bonus );
-			break;
-	}
-}
-
-_drop_zombie_stink( player, str_identifier, str_bonus )
-{
-	self clear_zombie_stink_fx();
-	e_temp = player zombie_drops_stink( self, str_identifier );
-	e_temp = player _vulture_spawn_fx( str_identifier, self.origin, str_bonus, e_temp );
-	clean_up_stink( e_temp );
-}
-
-zombie_drops_stink( ai_zombie, str_identifier )
-{
-	e_temp = ai_zombie.stink_ent;
-	if( IsDefined( e_temp ) )
-	{
-		e_temp thread delay_showing_vulture_ent( self, ai_zombie.origin );
-		level.perk_vulture.zombie_stink_array[ level.perk_vulture.zombie_stink_array.size ] = e_temp;
-		self delay_notify( str_identifier, 16 );
-	}
-	return e_temp;
-}
-
-delay_showing_vulture_ent( player, v_moveto_pos, str_model, func )
-{
-	self.drop_time = GetTime();
-	wait_network_frame();
-	wait_network_frame();
-	self.origin = v_moveto_pos;
-	wait_network_frame();
-	if( IsDefined( str_model ) )
-	{
-		self SetModel( str_model );
-	}
-	self Show();
-	if( IsPlayer( player ) )
-	{
-		self SetInvisibleToAll();
-		self SetVisibleToPlayer( player );
-	}
-	if( IsDefined( func ) )
-	{
-		self [[ func ]]( player );
-	}
-}
-
-clean_up_stink( e_temp )
-{
-	e_temp ClearClientFlag( level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX );
-	level.perk_vulture.zombie_stink_array = array_remove_nokeys( level.perk_vulture.zombie_stink_array, e_temp );
-	wait 4;
-	e_temp clear_stink_ent();
-}
-
-_delete_vulture_ent( n_delay )
-{
-	if( !IsDefined( n_delay ) )
-	{
-		n_delay = 0;
-	}
-	if( n_delay > 0 )
-	{
-		self Hide();
-		wait n_delay;
-	}
-	self clear_bonus_ent();
-}
-
-_vulture_drop_model( str_identifier, str_model, v_model_origin, v_offset )
-{
-	if( !IsDefined( v_offset ) )
-	{
-		v_offset = ( 0, 0, 0 );
-	}
-	if( !IsDefined( self.perk_vulture_models ) )
-	{
-		self.perk_vulture_models = [];
-	}
-	e_temp = get_unused_bonus_ent();
-	if( !IsDefined( e_temp ) )
-	{
-		self notify( str_identifier );
-		return;
-	}
-	e_temp thread delay_showing_vulture_ent( self, v_model_origin + v_offset, str_model, ::set_vulture_drop_fx );
-	self.perk_vulture_models[ self.perk_vulture_models.size ] = e_temp;
-	e_temp SetInvisibleToAll();
-	e_temp SetVisibleToPlayer( self );
-	e_temp thread _vulture_drop_model_thread( str_identifier, self );
-	return e_temp;
-}
-
-set_vulture_drop_fx( player )
-{
-	self thread play_vulture_perk_bonus_fx( player );
-}
-
-_vulture_drop_model_thread( str_identifier, player )
-{
-	self thread _vulture_model_blink_timeout( player );
-	player waittill_any( str_identifier, "death", "disconnect", "vulture_perk_lost" );
-	self notify( "stop_powerup_fx" );
-	n_delete_delay = 0.1;
-	if( IsDefined( self.picked_up ) && self.picked_up )
-	{
-		self _play_vulture_drop_pickup_fx( player );
-		n_delete_delay = 1;
-	}
-	if( IsDefined( player.perk_vulture_models ) )
-	{
-		player.perk_vulture_models = array_remove_nokeys( player.perk_vulture_models, self );
-		player.perk_vulture_models = remove_undefined_from_array( player.perk_vulture_models );
-	}
-	self _delete_vulture_ent( n_delete_delay );
-}
-
-_vulture_model_blink_timeout( player )
-{
-	self endon( "death" );
-	player endon( "death" );
-	player endon( "disconnect" );
-	self endon( "stop_vulture_behavior" );
-	b_show = true;
-	for( i = 0; i < 240; )
-	{
-		if( i < 120 )
+		vending_triggers = GetEntArray( "zombie_vending", "targetname" );
+		for( i = 0; i < vending_triggers.size; i ++ )
 		{
-			n_multiplier = 120;
+			perk = vending_triggers[i].script_noteworthy;
+			struct = SpawnStruct();
+			struct.perk = perk;
+			struct.location = vending_triggers[i] get_waypoint_origin( "perk" );
+			struct.origin = struct.location[ "origin" ];
+			struct.angles = struct.location[ "angles" ];
+			struct.check_perk = perk != "specialty_altmelee";
+			struct.perk_to_check = perk;
+			struct.is_revive = perk == "specialty_quickrevive";
+			struct.is_chest = false;
+			struct.chest_to_check = undefined;
+			struct.fx_var = "vulture_glow";
+			struct.ent_num = vending_triggers[i] GetEntityNumber();
+			if( IsDefined(struct.origin) )
+				struct.script_model = Spawn( "script_model", struct.origin );
+			struct.waypoint_name = convertPerkToShader( perk ) + "_pro";
+			struct.wp_type = "PERK";
+			struct.player_waypoint = [];
+
+			structs[ structs.size ] = struct;
 		}
-		else if( i < 160 )
-		{
-			n_multiplier = 10;
-		}
-		else if( i < 200 )
-		{
-			n_multiplier = 5;
-		}
-		else
-		{
-			n_multiplier = 2;
-		}
-		if( b_show )
-		{
-			self Show();
-			self SetInvisibleToAll();
-			self SetVisibleToPlayer( player );
-		}
-		else
-		{
-			self Hide();
-		}
-		b_show = !b_show;
-		i += n_multiplier;
-		wait 0.05 * n_multiplier;
-	}
-}
 
-_vulture_spawn_fx( str_identifier, v_fx_origin, str_bonus, e_temp )
-{
-	b_delete = false;
-	if( !IsDefined( e_temp ) )
-	{
-		e_temp = get_unused_bonus_ent();
-		if( !IsDefined( e_temp ) )
+		if( level.mapname == "zombie_moon" )
 		{
-			self notify( str_identifier );
-			return;
-		}
-		b_delete = true;
-	}
-	e_temp thread delay_showing_vulture_ent( self, v_fx_origin, "tag_origin", ::clientfield_set_vulture_stink_enabled );
-	if( IsPlayer( self ) )
-	{
-		self waittill_any( str_identifier, "death", "disconnect", "vulture_perk_lost" );
-	}
-	else
-	{
-		self waittill( str_identifier );
-	}
-	if( b_delete )
-	{
-		e_temp _delete_vulture_ent();
-	}
-	return e_temp;
-}
-
-clientfield_set_vulture_stink_enabled( player )
-{
-	self SetClientFlag( level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX );
-}
-
-should_do_vulture_drop( v_death_origin )
-{
-	b_is_inside_playable_area = check_point_in_active_zone( v_death_origin );
-	b_ents_are_available = get_unused_bonus_ent_count() > 0;
-	b_network_slots_available = level.perk_vulture.drop_slots_for_network < 5;
-	b_passed_roll = RandomInt( 100 ) > 35;
-	if( !is_true( self.is_stink_zombie ) )
-	{
-		return b_is_inside_playable_area && b_ents_are_available && b_network_slots_available && b_passed_roll;
-	}
-	return true;
-}
-
-get_vulture_drop_type()
-{
-	if( RandomInt( 2 ) )
-	{
-		str_bonus = "ammo";
-	}
-	else
-	{
-		str_bonus = "points";
-	}
-	if( is_true( self.is_stink_zombie ) )
-	{
-		str_bonus = "stink";
-	}
-	return str_bonus;
-}
-
-get_vulture_drop_duration( str_bonus )
-{
-	n_duration = 12;
-	if( str_bonus == "stink" )
-	{
-		n_duration = 16;
-	}
-	return n_duration;
-}
-
-check_vulture_drop_pickup( e_temp, player, str_identifier, str_bonus )
-{
-	if( !IsDefined( e_temp ) )
-	{
-		return;
-	}
-	player endon( "death" );
-	player endon( "disconnect" );
-	e_temp endon( "death" );
-	e_temp endon( "stop_vulture_behavior" );
-	wait_network_frame();
-	n_times_to_check = Int( get_vulture_drop_duration( str_bonus ) / 0.15 );
-	b_player_inside_radius = false;
-	e_temp.picked_up = false;
-	for( i = 0; i < n_times_to_check; i ++ )
-	{
-		b_player_inside_radius = DistanceSquared( e_temp.origin, player.origin ) < 1024;
-		if( b_player_inside_radius )
-		{
-			e_temp.picked_up = true;
-			break;
-		}
-		wait 0.15;
-	}
-	player notify( str_identifier );
-	if( b_player_inside_radius )
-	{
-		player give_vulture_bonus( str_bonus );
-	}
-}
-
-_handle_zombie_stink( b_player_inside_radius )
-{
-	if( !IsDefined( self.perk_vulture.is_in_zombie_stink ) )
-	{
-		self.perk_vulture.is_in_zombie_stink = false;
-	}
-	b_in_stink_last_check = self.perk_vulture.is_in_zombie_stink;
-	self.perk_vulture.is_in_zombie_stink = b_player_inside_radius;
-	if( self.perk_vulture.is_in_zombie_stink )
-	{
-		n_current_time = GetTime();
-		if( !b_in_stink_last_check )
-		{
-			self.perk_vulture.stink_time_entered = n_current_time;
-			self toggle_stink_overlay( true );
-		}
-		b_should_ignore_player = false;
-		if( IsDefined( self.perk_vulture.stink_time_entered ) )
-		{
-			b_should_ignore_player = ( ( n_current_time - self.perk_vulture.stink_time_entered ) * 0.001 ) >= 0;
-		}
-		if( b_should_ignore_player )
-		{
-			self.ignoreme = true;
-		}
-		if( get_targetable_player_count() == 0 || !self are_any_players_in_adjacent_zone() )
-		{
-			if( b_should_ignore_player && !level.perk_vulture.use_exit_behavior )
+			//This is just moon case, may need more fine tuning for shino
+			for( i = 0; i < structs.size; i++ )
 			{
-				level.perk_vulture.use_exit_behavior = true;
-				level.default_find_exit_position_override = ::vulture_perk_should_zombies_resume_find_flesh;
-				self thread vulture_zombies_find_exit_point();
+				struct = structs[i];
+				if( IsDefined(struct.perk ) )
+					continue;
+
+				//Add Jugg
+				struct.perk = level.JUG_PRK;
+				structs[ structs.size ] = struct;
+
+				//Add speed
+				struct.perk = level.SPD_PRK;
+				structs[ structs.size ] = struct;
+				
 			}
 		}
-	}
-	else
-	{
-		if( b_in_stink_last_check )
-		{
-			self.perk_vulture.stink_time_exit = GetTime();
-			self thread _zombies_reacquire_player_after_leaving_stink();
-		}
-	}
-}
 
-get_targetable_player_count()
-{
-	n_targetable_player_count = 0;
-	players = GetPlayers();
-	for( i = 0; i < players.size; i ++ )
-	{
-		player = players[i];
-		if( !IsDefined( player.ignoreme ) || !player.ignoreme )
+		vending_weapon_upgrade_trigger = GetEntArray( "zombie_vending_upgrade", "targetname" );
+		for( i = 0; i < vending_weapon_upgrade_trigger.size; i ++ )
 		{
-			n_targetable_player_count ++;
+			struct = SpawnStruct();
+			struct.location = vending_weapon_upgrade_trigger[i] get_waypoint_origin( "packapunch" );
+			struct.origin = struct.location[ "origin" ];
+			struct.angles = struct.location[ "angles" ];
+			struct.check_perk = false;
+			struct.perk_to_check = "specialty_weapupgrade";
+			struct.is_revive = false;
+			struct.is_chest = false;
+			struct.chest_to_check = undefined;
+			struct.fx_var = "vulture_glow";
+			struct.ent_num = vending_weapon_upgrade_trigger[i] GetEntityNumber();
+			struct.script_model = Spawn( "script_model", struct.origin );
+			struct.waypoint_name = "specialty_glow_pap";
+			struct.player_waypoint = [];
+			struct.wp_type = "PAP";
+			structs[ structs.size ] = struct;
 		}
-	}
-	return n_targetable_player_count;
-}
 
-are_any_players_in_adjacent_zone()
-{
-	b_players_in_adjacent_zone = false;
-	str_zone = self get_current_zone();
-	players = GetPlayers();
-	for( i = 0; i < players.size; i ++ )
-	{
-		player = players[i];
-		if( player != self )
-		{
-			str_zone_compare = player get_current_zone();
-			if( is_in_array( level.zones[ str_zone ].adjacent_zones, str_zone_compare ) && IsDefined( level.zones[ str_zone ].adjacent_zones[ str_zone_compare ].is_connected ) && level.zones[ str_zone ].adjacent_zones[ str_zone_compare ].is_connected )
+			//For multiple PAP locations, do a little more work
+			pap_locations = getstructarray("pap_location","targetname");
+			if( IsDefined( level.pap_locations ) )
+				pap_locations = array_combine( pap_locations, level.pap_locations );
+			if( IsDefined(pap_locations) && pap_locations.size > 0 )
 			{
-				b_players_in_adjacent_zone = true;
+				structs[ structs.size - 1].using_pap_locations = true;	//Default PaP vending will not be valid waypoint
+				for( i = 0; i < pap_locations.size; i++ )
+				{
+					struct = SpawnStruct();
+					struct.location = pap_locations[i] get_waypoint_origin( "pap_location" );
+					struct.origin = struct.location[ "origin" ];
+					struct.angles = struct.location[ "angles" ];
+					struct.original_struct = pap_locations[i];
+					struct.check_perk = false;
+					struct.perk_to_check = "specialty_weapupgrade_location";
+					struct.is_revive = false;
+					struct.is_chest = false;
+					struct.chest_to_check = undefined;
+					struct.fx_var = "vulture_glow";
+					struct.ent_num = 0;	//not an entity
+					struct.script_model = Spawn( "script_model", struct.origin );
+					struct.waypoint_name = "specialty_glow_pap";
+					struct.player_waypoint = [];
+					struct.wp_type = "PAP_LOC";
+					structs[ structs.size ] = struct;
+				}
+			}
+
+		chests = GetEntArray( "treasure_chest_use", "targetname" );
+		for( i = 0; i < chests.size; i ++ )
+		{
+			struct = SpawnStruct();
+			struct.location = chests[i] get_waypoint_origin( "mysterybox" );
+			struct.origin = struct.location[ "origin" ];
+			struct.angles = struct.location[ "angles" ];
+			struct.check_perk = false;
+			struct.perk_to_check = undefined;
+			struct.is_revive = false;
+			struct.is_chest = true;
+			struct.chest_to_check = chests[i];
+			struct.fx_var = "vulture_perk_mystery_box_glow";
+			struct.ent_num = chests[i] GetEntityNumber();
+			struct.script_model = Spawn( "script_model", struct.origin );
+			struct.waypoint_name = "specialty_glow_magic_box";
+			struct.player_waypoint = [];
+
+			structs[ structs.size ] = struct;
+		}
+
+
+		level.vulture_waypoint_structs = structs;
+		level thread vulture_perk_watch_perks_move();
+		//iprintln( "Waypoints strucuts: " + level.vulture_waypoint_structs.size );
+		while(1)
+		{
+			players = get_players();
+			if( level.vulture_waypoint_structs_update ) 
+			{
+				structs = vulture_update_waypoint_structs();
+				level.vulture_waypoint_structs_update = false;
+			}
+
+			for( p = 0; p < players.size; p ++ )
+			{
+				player = players[p];
+				num = player GetEntityNumber();
+				
+				
+				for( i = 0; i < structs.size; i ++ )	
+				{
+					struct = level.vulture_waypoint_structs[i];
+					if( isDefined( struct.chest_to_check )  )	//box is handled seperately		
+						continue;
+
+					//iprintln( "Origin for struct perk: " + struct.perk + " is " + struct.script_model.origin);
+					//Main Loop
+					is_visible = player HasPerk( level.VLT_PRK ) && check_waypoint_visible( player, struct );
+
+					if( is_visible )
+					{
+						if( isDefined( struct.player_waypoint[ num ] ) )
+							continue;
+
+						struct.player_waypoint[ num ] = create_individual_waypoint( player, struct );
+						//create_loop_fx_to_player( player, struct.ent_num, struct.fx_var, struct.origin, struct.angles );
+					}
+					else if( isDefined( struct.player_waypoint[ num ] ) )
+					{
+						destroy_individual_waypoint( struct.player_waypoint[ num ], is_visible );
+						//destroy_loop_fx_to_player( player, struct.ent_num, true );		
+					}
+
+				}
+				//End Structs FOR
+
+				//Add waypoints to boss or special zombies
+				if( player HasPerk( level.VLT_PRK ) )
+				{
+					zombies = GetAiSpeciesArray( "axis", "all" );
+					special_zombies = [];
+					standard_zombies = [];
+					for( i = 0; i < zombies.size; i++ )
+					{
+						zombie = zombies[i];
+						if( !isDefined( zombie ) )
+							continue;
+						else if( is_boss_zombie( zombie.animname ) || is_special_zombie( zombie.animname ) )
+							special_zombies[ special_zombies.size ] = zombie;
+						else if ( is_in_array( level.ARRAY_VALID_STANDARD_ZOMBIES, zombie.animname ) )
+							standard_zombies[ standard_zombies.size ] = zombie;
+					
+					}
+
+					player player_vulture_zombie_boss_waypoints( special_zombies );
+
+					player player_vulture_zombie_normal_fx( standard_zombies );
+
+				}
+
+				/* Waypoints for powerup drops */
+				for( i = 0; i < level.vulture_track_current_powerups.size; i++ )
+				{
+					powerup = level.vulture_track_current_powerups[i];
+					
+					is_visible = player HasPerk( level.VLT_PRK ) && check_waypoint_visible( player, powerup );
+					if( !IsDefined( powerup.player_waypoints ) )
+						powerup.player_waypoints = [];
+
+					if( is_visible )
+					{
+						if( isDefined( powerup.player_waypoints[ num ] ) )
+							continue;
+
+						powerup.player_waypoints[ num ] = create_individual_waypoint( player, powerup );
+					}
+					else if ( isDefined( powerup.player_waypoints[ num ] ) )
+					{
+						destroy_individual_waypoint( powerup.player_waypoints[ num ], is_visible );
+					}
+				}
+
+			} //End Players FOR
+			wait(0.1);
+			//wait 2;
+		}
+		//END WHILE
+
+	}
+
+	// */
+
+		/* 
+		Handle boss/special zombies waypoints
+		// */
+
+		player_vulture_zombie_boss_waypoints( specials )
+		{
+			for( i = 0; i < specials.size; i++ )
+			{
+				zombie = specials[i];
+				if( !isDefined( zombie )  || IsDefined( zombie.vulture_waypoint ) )
+					continue;
+
+				self thread handle_player_vulture_zombie_boss_waypoint( zombie );
+			
+			}
+		}
+		
+
+			//Self is player, individual zombie waypoint handler
+			handle_player_vulture_zombie_boss_waypoint( zombie )
+			{
+				//create a waypoint for the zombie
+				keep_waypoint = self HasPerk( level.VLT_PRK ) && check_waypoint_visible( self, zombie );
+				if( !keep_waypoint )
+					return;
+
+				wp = NewClientHudElem( self );
+				icon = "specialty_glow_skull";
+				//icon = "specialty_instakill_zombies";
+				
+				model = Spawn( "script_model", zombie GetTagOrigin( "j_SpineLower") );
+				model linkto( zombie, "j_SpineLower" ); //, ( 0, 0, 15 ) );
+
+				wp SetTargetEnt( model );
+				wp.hidewheninmenu = true;
+				wp.alpha = 0.5;
+				wp setWaypoint( true, icon);
+				wp.color = ( 1, 0, 0); //red for boss zombies
+				zombie.vulture_waypoint = wp;
+				
+				
+				while( keep_waypoint )
+				{
+					keep_waypoint = self HasPerk( level.VLT_PRK ) && check_waypoint_visible( self, zombie );
+					wait 0.1;
+				}
+
+				zombie.vulture_waypoint Destroy();
+				model Delete();
+			}
+
+
+		player_vulture_zombie_normal_fx( zombies )
+		{
+			if( zombies.size > 3 || level.zombie_total > 24 ) //only on last horde
+				return;
+
+			for( i = 0; i < zombies.size; i++ )
+			{
+				zombie = zombies[i];
+				if( !isDefined( zombie )  || IsDefined( zombie.vulture_waypoint ) )
+					continue;
+
+				self thread handle_player_vulture_zombie_fx( zombie );
+			
+			}
+		}
+			
+		
+		handle_player_vulture_zombie_fx( zombie )
+		{
+
+			//create a waypoint for the zombie
+			keep_waypoint = self HasPerk( level.VLT_PRK ) && check_waypoint_visible( self, zombie );
+			if( !keep_waypoint )
+				return;
+
+			fx = "vulture_skull";
+			zombie.vulture_waypoint = zombie GetEntityNumber();
+			//PlayFXOnTag( level._effect[ "vulture_skull" ], zombie, "j_SpineLower" );
+			//PlayFxOnTag( level._effect[ "vulture_skull" ], model, "tag_origin" );
+
+			while( keep_waypoint )
+			{
+				create_loop_fx_to_player( self, zombie GetEntityNumber(), "vulture_skull", zombie GetTagOrigin( "j_SpineLower" ) , zombie.angles );
+				
+				wait 0.1;
+
+				destroy_loop_fx_to_player( self, zombie GetEntityNumber(), true );
+
+				keep_waypoint = self HasPerk( level.VLT_PRK ) 
+					&& check_waypoint_visible( self, zombie )
+					&& level.zombie_total <= 3;
+			}
+
+			zombie.vulture_waypoint = undefined;
+		}
+
+		// */
+
+/* Handle zombie powerup drop waypoints */
+
+		vulture_watch_powerup_waypoints()
+		{
+			while(1)
+			{
+
+				/*
+				powerup_notif = level waittill_any_return( "powerup_dropped" );
+				
+				//all_powerups = GetEntArray( "powerup", "classname" );
+				all_powerups = GetEntArray( "script_model", "classname" );
+				
+				index = -1;
+				for( i = 0; i < all_powerups.size; i++ )
+				{
+					model = all_powerups[i];
+					if( IsDefined( model.powerup_name ) && model.powerup_name == powerup_notif.powerup_name )
+					{
+						//Check existing vulture powerups to cross check against duplicates, use GetEntitNumber() to check
+						entity_exists = false;
+						for( j = 0; j < level.vulture_track_current_powerups.size; j++ )
+						{
+							if( level.vulture_track_current_powerups[j].original_entity_number == model GetEntityNumber() )
+							{
+								entity_exists = true;
+								break;
+							}
+						}
+
+						if( entity_exists )
+						{
+							continue;
+						}
+						else
+						{
+							index = i;
+							break;
+						}
+
+					}
+				}
+
+				if( index == -1 )
+					continue;	
+				
+				powerup = SpawnStruct();
+				powerup.origin 					= all_powerups[index].origin;
+				powerup.original_entity_number 	= all_powerups[index] GetEntityNumber();
+				powerup.name 					= all_powerups[index].powerup_name;
+
+				powerup.script_model = Spawn( "script_model", powerup.origin );
+				powerup.script_model linkto( powerup, "tag_origin", (0, 0, 10) );
+				powerup.waypoint_name = "specialty_instakill_zombies";
+				powerup.is_active_powerup = true;
+				*/
+
+				//Repeat above with powerupDrop
+				level waittill("powerup_dropped", powerupDrop);
+
+				if( !IsDefined( powerupDrop ) )
+					continue;
+
+				isFreePerkDrop = IsDefined(powerupDrop.powerup_name) && (powerupDrop.powerup_name == "free_perk");
+				if( isFreePerkDrop )
+					continue;
+
+				powerup = SpawnStruct();
+				powerup.origin 					= powerupDrop.origin;
+				powerup.original_entity_number 	= powerupDrop GetEntityNumber();
+				powerup.name 					= powerupDrop.powerup_name;
+
+				powerup.script_model = Spawn( "script_model", powerup.origin );
+				powerup.script_model linkto( powerupDrop, "tag_origin", (0, 0, 10) );
+				powerup.waypoint_name = "specialty_instakill_zombies";
+				powerup.is_active_powerup = true;
+				powerup.powerup = powerupDrop;
+
+				size = level.vulture_track_current_powerups.size;
+				level.vulture_track_current_powerups[ size ] = powerup;
+				//all_powerups[index] thread vulture_watch_powerup_expiration( size );
+				powerupDrop thread vulture_watch_powerup_expiration( size );
+			}
+			
+		}
+
+		
+		vulture_watch_powerup_expiration( index )
+		{
+			//level endon( "vulture_powerup_reshuffle" ); 
+
+			self waittill_any( "powerup_timedout", "powerup_grabbed", "hacked" );
+
+			level.vulture_track_current_powerups[ index ].is_active_powerup = false;
+			level.vulture_track_current_powerups[ index ].script_model Delete();
+			//level thread vulture_powerup_reshuffle( index );
+			//level notify( "vulture_powerup_reshuffle" );
+		}
+
+		vulture_powerup_reshuffle( index )
+		{
+			for( i = 0; i < level.vulture_track_current_powerups.size; i++ ) 
+			{
+				if( i <= index )
+					continue;
+				level.vulture_track_current_powerups[i-1] = level.vulture_track_current_powerups[i];
+				level.vulture_track_current_powerups[i-1] vulture_watch_powerup_expiration( i-1 );
+			}
+		}
+
+
+		destroy_individual_waypoint( wp, is_visible )
+		{		
+			if( !IsDefined( wp ) )
+				return;
+
+			wp Destroy();
+		}
+
+
+		//Reimagined-Expanded - currently not used 
+		/*
+		convertPerkToGlow( perk )
+		{
+			struct = SpawnStruct();
+			if (perk == "specialty_armorvest") {
+				struct.glow = "specialty_glow_jugg";
+				struct.color = ( 1, .7, .1 );
+			} 
+			if (perk == "specialty_quickrevive")
+				return "specialty_quickrevive_zombies";
+			if (perk == "specialty_fastreload")
+				return "specialty_glow_speed";
+			if (perk == "specialty_rof")
+				return "specialty_doubletap_zombies";
+			if (perk == "specialty_endurance")
+				return "specialty_marathon_zombies";
+			if (perk == "specialty_flakjacket")
+				return "specialty_divetonuke_zombies";
+			if (perk == "specialty_deadshot")
+				return "specialty_deadshot_zombies";
+			if (perk == "specialty_additionalprimaryweapon")
+				return "specialty_mulekick_zombies";
+			if (perk == "specialty_bulletdamaged")
+				return "specialty_cherry_zombies";
+			if (perk == "specialty_altmelee")
+				return "specialty_vulture_zombies";
+			if (perk == "specialty_bulletaccuracy")
+				return "specialty_widowswine_zombies";
+			
+		return struct;
+		}
+		*/
+
+
+		//Self is player with vulture
+		//create_waypoint
+		create_individual_waypoint( player, struct )
+		{
+	
+			if( !IsDefined( struct.script_model ) )
+				return;
+
+			//iprintln( "Script model target ent: " + struct.script_model GetEntityNumber() );
+			//iprintln( "Perk: " + struct.perk );
+			
+			wp = NewClientHudElem( player );
+			//Uses pro perk shader
+			icon = struct.waypoint_name;
+			wp SetTargetEnt( struct.script_model );
+			//wp.alpha = level.VALUE_VULTURE_HUD_ALPHA_VERY_FAR;
+			wp.hidewheninmenu = true;
+			
+			if( is_true(struct.is_active_powerup) )
+				wp.alpha = 1;
+			else 
+				wp.alpha = .5;
+
+			wp setWaypoint( true, icon);
+
+			return wp;
+		}
+
+			//Utility
+			create_loop_fx_to_player( player, identifier, fx_var, origin, angles )
+			{
+				//iprintln( "Create Loop FX to player" );
+				//iprintln( "Player: " + player GetEntityNumber() );
+				str_origin = string( origin[0] ) + "|" + string( origin[1] ) + "|" + string( origin[2] );
+				str_angles = string( angles[0] ) + "|" + string( angles[1] ) + "|" + string( angles[2] );
+				str_clientstate = "fx|looping|start|" + identifier + "|" + fx_var + "|" + str_origin + "|" + str_angles;
+				player send_message_to_csc( "client_side_fx", str_clientstate );
+			}
+
+			destroy_loop_fx_to_player( player, identifier, delete_fx_immediately )
+			{
+				str_delete_fx_immediately = bool_to_string( delete_fx_immediately );
+				str_clientstate = "fx|looping|stop|" + identifier + "|" + str_delete_fx_immediately;
+				player send_message_to_csc( "client_side_fx", str_clientstate );
+			}
+
+			
+
+	//Stop condensing my methods
+
+	setup_perk_machine_fx()
+	{
+		register_perk_machine_fx( "specialty_armorvest", "vulture_perk_machine_glow_juggernog" );
+		register_perk_machine_fx( "specialty_fastreload", "vulture_perk_machine_glow_speed" );
+		register_perk_machine_fx( "specialty_rof", "vulture_perk_machine_glow_doubletap" );
+		register_perk_machine_fx( "specialty_quickrevive", "vulture_perk_machine_glow_revive" );
+		register_perk_machine_fx( "specialty_flakjacket", "vulture_perk_machine_glow_phd_flopper" );
+		register_perk_machine_fx( "specialty_endurance", "vulture_perk_machine_glow_marathon" );
+		register_perk_machine_fx( "specialty_deadshot", "vulture_perk_machine_glow_deadshot" );
+		register_perk_machine_fx( "specialty_additionalprimaryweapon", "vulture_perk_machine_glow_mule_kick" );
+		//register_perk_machine_fx( "specialty_extraammo", "vulture_perk_machine_glow_whos_who" );
+		register_perk_machine_fx( "specialty_bulletdamage", "vulture_perk_machine_glow_electric_cherry" );
+		register_perk_machine_fx( "specialty_altmelee", "vulture_perk_machine_glow_vulture" );
+		register_perk_machine_fx( "specialty_bulletaccuracy", "vulture_perk_machine_glow_widows_wine" );
+	}
+
+	register_perk_machine_fx( str_perk, str_fx_reference )
+	{
+		if( !IsDefined( level.perk_vulture.perk_machine_fx ) )
+		{
+			level.perk_vulture.perk_machine_fx = [];
+		}
+		if( !IsDefined( level.perk_vulture.perk_machine_fx[ str_perk ] ) )
+		{
+			level.perk_vulture.perk_machine_fx[ str_perk ] = str_fx_reference;
+		}
+	}
+
+	get_waypoint_origin( type )
+	{
+		origin = self.origin;
+		angles = ( 0, 0, 0 );
+		switch( type )
+		{
+			case "mysterybox":
+				origin = get_mystery_box_origin( self );
+				break;
+
+			case "perk":
+				origin = get_perk_machine_origin( self );
+				break;
+
+			case "packapunch":
+				origin = get_pack_a_punch_origin( self );
+				break;
+
+			case "pap_location":
+				origin = get_origin_from_pap_location( self );
+				break;
+		}
+		location = [];
+		location[ "origin" ] = origin;
+		location[ "angles" ] = angles;
+		return location;
+	}
+
+		get_mystery_box_origin( trigger )
+		{
+			forward = AnglesToForward( trigger.chest_box.angles + ( 0, 90, 0 ) );
+			origin = trigger.chest_box.origin + vector_scale( forward, level.VALUE_VULTURE_MACHINE_ORIGIN_OFFSET );
+			return origin + ( 0, 0, 30 );
+		}
+
+		get_perk_machine_origin( trigger )
+		{
+			machine = undefined;
+			machines = GetEntArray( trigger.target, "targetname" );
+			machines = get_array_of_closest( trigger.origin, machines );
+			for( i = 0; i < machines.size; i ++ )
+			{
+				if( !IsDefined( machines[i].script_noteworthy ) || machines[i].script_noteworthy != "clip" )
+				{
+					machine = machines[i];
+					break;
+				}
+			}
+			angles = ( 0, 0, 0 );
+
+			if( !IsDefined( machine ) )
+				return undefined;
+				
+			if( !IsDefined( machine.angles ) )
+				machine.angles = angles;
+
+			forward = AnglesToForward( angles - ( 0, 90, 0 ) );
+			origin = machine.origin;
+			
+			return origin + ( 0, 0, 50 );
+		}
+
+		check_map_specific_perk_movements( perk , origin )
+		{
+			if( !IsDefined( perk ) )
+				return false;
+
+
+			switch ( level.mapname )
+			{
+				case "zombie_moon":
+					if( is_in_array( level.ARRAY_MOON_VALID_NML_PERKS, perk) )
+					{
+						if( perk != level.nml_perk )
+							return false;
+					}
+					
+				break;
+
+				default:
+					return true;
+			}
+
+			return true;
+		}
+
+		get_pack_a_punch_origin( trigger )
+		{
+			//iprintln( "PAP Origin: ");
+			machine = GetEnt( trigger.target, "targetname" );
+			forward = AnglesToForward( machine.angles - ( 0, 90, 0 ) );
+			origin = machine.origin + vector_scale( forward, level.VALUE_VULTURE_MACHINE_ORIGIN_OFFSET );
+			return origin + ( 0, 0, 40 );
+		}
+
+		get_origin_from_pap_location( location )
+		{
+			
+			forward = AnglesToForward( location.angles );
+			origin = location.origin; //+ vector_scale( forward, level.VALUE_VULTURE_MACHINE_ORIGIN_OFFSET );
+			adj = ( 0, 0, 0 );
+			switch( level.mapname )
+			{
+				case "zombie_cod5_sumpf":
+					adj = ( 0, 0, 20 );
+				break;
+				case "zombie_coast":
+					adj = ( 0, 0, -20 );
 				break;
 			}
+
+			return origin + adj;
 		}
-	}
-	return b_players_in_adjacent_zone;
-}
 
-toggle_stink_overlay( b_show_overlay )
-{
-	if( !IsDefined( self.vulture_stink_value ) )
-	{
-		self.vulture_stink_value = 0;
-	}
-	if( b_show_overlay )
-	{
-		self thread _ramp_up_stink_overlay();
-	}
-	else
-	{
-		self thread _ramp_down_stink_overlay();
-	}
-}
+	//Check Waypoint visibuity
 
-_ramp_up_stink_overlay()
-{
-	self notify( "vulture_perk_stink_ramp_up_done" );
-	self endon( "vulture_perk_stink_ramp_up_done" );
-	self endon( "disconnect" );
-	self endon( "vulture_perk_lost" );
-	setClientSysState( "levelNotify", "vulture_stink_sound_1", self );
-	while( self.perk_vulture.is_in_zombie_stink )
-	{
-		self.vulture_stink_value ++;
-		if( self.vulture_stink_value > 32 )
+	//tags: isVisible,
+	check_waypoint_visible( player, struct )
+	{	
+		if( !player.vulture_vison_toggle )
 		{
-			self.vulture_stink_value = 32;
+			is_weapon = is_true( struct.is_weapon );
+			is_chest = is_true( struct.is_chest );
+			is_perk = IsDefined( struct.perk_to_check );
+			is_active_powerup = is_true( struct.is_active_powerup );
+			is_zombie = IsDefined( struct.animname );
+
+			//Turn off vision for chest, weapon, perks if vision toggled
+			if( is_weapon || is_chest || is_perk )
+				return false;
+
 		}
-		self.vulture_glow_alpha = self _get_disease_meter_fraction();
-		wait 0.25;
-	}
-}
+			
+		if( !IsDefined( player ) || !IsDefined( struct ) )
+			return false;
 
-_get_disease_meter_fraction()
-{
-	return self.vulture_stink_value / 32;
-}
+		if( !IsDefined( player.origin ) || !IsDefined( struct.origin ) )
+			return false;
 
-_ramp_down_stink_overlay()
-{
-	self notify( "vulture_perk_stink_ramp_down_done" );
-	self endon( "vulture_perk_stink_ramp_down_done" );
-	self endon( "disconnect" );
-	self endon( "vulture_perk_lost" );
-	setClientSysState( "levelNotify", "vulture_stink_sound_0", self );
-	while( !self.perk_vulture.is_in_zombie_stink && self.vulture_stink_value > 0 )
-	{
-		self.vulture_stink_value -= 2;
-		if( self.vulture_stink_value < 0 )
+
+		/* CHECK DISTANCE CUTOFFS */
+
+		is_visible = false;
+		if( is_true( struct.is_weapon ) )		//WEAPON
 		{
-			self.vulture_stink_value = 0;
-		}
-		self.vulture_glow_alpha = self _get_disease_meter_fraction();
-		wait 0.25;
-	}
-}
-
-_zombies_reacquire_player_after_leaving_stink()
-{
-	self endon( "disconnect" );
-	self notify( "vulture_perk_stop_zombie_reacquire_player" );
-	self endon( "vulture_perk_stop_zombie_reacquire_player" );
-	self toggle_stink_overlay( false );
-	while( self.vulture_stink_value > 0 )
-	{
-		wait 0.25;
-	}
-	self.ignoreme = false;
-	level.perk_vulture.use_exit_behavior = false;
-}
-
-vulture_perk_should_zombies_resume_find_flesh()
-{
-	b_should_find_flesh = !is_player_in_zombie_stink();
-	return b_should_find_flesh;
-}
-
-is_player_in_zombie_stink()
-{
-	a_players = GetPlayers();
-	b_player_in_zombie_stink = false;
-	for( i = 0; i < a_players.size; i ++ )
-	{
-		if( IsDefined( a_players[i].perk_vulture ) && is_true( a_players[i].perk_vulture.is_in_zombie_stink ) )
+			if( checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_MED ) )
+				is_visible = true;
+		} 
+		else if( is_true( struct.is_chest ) )	//BOX
 		{
-			b_player_in_zombie_stink = true;
-			break;
-		}
-	}
-	return b_player_in_zombie_stink;
-}
-
-give_vulture_bonus( str_bonus )
-{
-	switch( str_bonus )
-	{
-		case "ammo":
-			self give_bonus_ammo();
-			break;
-
-		case "points":
-			self give_bonus_points();
-			break;
-	}
-}
-
-give_bonus_ammo()
-{
-	str_weapon_current = self GetCurrentWeapon();
-	if( str_weapon_current != "none" )
-	{
-		if( is_valid_ammo_bonus_weapon( str_weapon_current ) )
+			if( IsDefined( struct.chest_to_check ) )
+				return is_true( struct.chest_to_check.vulture_waypoint_visible );	
+				//let box be visible despite distance
+		} 
+		else if( isDefined(struct.perk_to_check) )
 		{
-			n_ammo_count_current = self GetWeaponAmmoStock( str_weapon_current );
-			n_ammo_count_max = WeaponMaxAmmo( str_weapon_current );
-			n_ammo_refunded = clamp( Int( n_ammo_count_max * RandomFloatRange( 0, 0.025 ) ), 1, n_ammo_count_max );
-			b_is_custom_weapon = self handle_custom_weapon_refunds( str_weapon_current );
-			if( !b_is_custom_weapon )
+			//iprintln( "Vis 0: " + struct.perk_to_check  );
+
+			//iprintln( "Vis 1: " + struct.perk_to_check + "  " + is_visible );
+			/* Determine if Perk or PAP is in Playable Area */
+
+			//inPlayableArea = checkObjectInPlayableArea( struct.script_model );
+			//if( !inPlayableArea )
+				//return false;
+			
+
+			/* Determine if PAP is at this spot */
+			if( struct.perk_to_check == "specialty_weapupgrade_location" )
 			{
-				self SetWeaponAmmoStock( str_weapon_current, n_ammo_count_current + n_ammo_refunded );
+				//iprintln( "Vis 1.1: " + struct.perk_to_check + "  " + is_visible );
+
+				if( level.pap_moving )
+					return false;
+				
+				//iprintln( "Vis 1.2: " + struct.perk_to_check + "  " + is_visible );
+				if( !IsDefined( level.vulture_track_current_pap_spot ))
+					return false;
+
+				//iprintln( "Vis 1.3: " + struct.perk_to_check + "  " + is_visible );
+				in_range = checkDist( struct.original_struct.origin, level.vulture_track_current_pap_spot, 100 );
+				if( !in_range )
+					return false;		
+
+				//iprintln( "Vis 1.4: " + struct.perk_to_check + "  " + is_visible );
+
+			}
+			else if( struct.perk_to_check == "specialty_weapupgrade" )
+			{
+				if( is_true( struct.using_pap_locations ))
+					return false;
+			}
+
+			/* ##############				############## */
+			
+			if( IsDefined( struct.perk ) )
+				is_visible = check_map_specific_perk_movements( struct.perk, struct.origin );
+			else
+				is_visible = true;
+
+			//iprintln( "Vis 2: " + struct.perk_to_check + "  " + is_visible );
+			//wait( 0.5 );
+			//Only show perks within VERY_FAR range and IF player is looking in their direction
+			if( checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_CUTOFF_VERY_FAR ) )
+			{
+				is_visible = checkPlayerLookingAtObject( player, struct, level.THRESHOLD_VULTURE_FOV_HUD_DOT ) && is_visible;
+			}
+			//iprintln( "Vis 3: " + struct.perk + "  " + is_visible );
+
+		} 
+		else if( IsDefined( struct.animname ) )	//struct could be a zombie
+		{
+			//Check for bosses/zombies who are no longer with us
+			if( !IsAlive( struct ) || ( IsDefined(self.health) && self.health <= 0 ) )
+				return false;
+
+			inPlayableArea = checkObjectInPlayableArea( struct );
+			if( !inPlayableArea )
+				return false;
+
+			//Fix for thief zombie showing after dead
+			if( IsDefined( struct.state ) && struct.state == "exiting" )
+				return false;
+
+			cutoffClose = checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_CUTOFF );
+			
+			if( struct.animname == "monkey" || struct.animname == "monkey_zombie"  )
+			{
+				cutoffFar = !checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_FAR );
+
+				return !cutoffFar;
+			}
+				
+			looking_at = checkPlayerLookingAtObject( player, struct, level.THRESHOLD_VULTURE_FOV_HUD_DOT );
+
+			if( !cutoffClose && looking_at )
+				return true;
+				
+			return false;
+		} 
+		else if( is_true( struct.is_active_powerup ) )
+		{
+			
+			inPlayableArea = checkObjectInPlayableArea( struct );
+			if( !inPlayableArea )
+				return false;
+
+			cutoffClose = checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_CUTOFF );
+
+			if( cutoffClose )
+				return false;
+
+			return true;
+		}
+
+		
+			
+		cutoffClose = checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_CUTOFF );
+		cutoffFar = !checkDist( player.origin, struct.origin, level.VALUE_VULTURE_HUD_DIST_CUTOFF_VERY_FAR );
+
+		//iprintln("Returning before cutoff: " + struct.perk + "  " + is_visible);
+
+		if( cutoffClose || cutoffFar )
+			return false;
+		
+		//iprintln("Returning is_visible: " + struct.ent_num + "  " + is_visible);
+		return is_visible;
+	}
+
+	//Utility Function to determine if player is towards object
+	checkPlayerLookingAtObject( player, object, fov_threshold )
+	{
+		return object object_in_player_fov( player, fov_threshold );
+		
+	}
+
+
+//HERE_
+vulture_perk_watch_pap_move()
+{
+	
+	while( 1 ) 
+	{
+		while( !IsDefined( level.pap_moving) ||  !level.pap_moving ) { //Pap is either still or not available
+			wait 0.5;
+		}
+
+		while( is_true( level.pap_moving ) ) {
+			wait 0.5;
+		}
+		
+		machine = undefined;
+		vending_weapon_upgrade_trigger = GetEntArray("zombie_vending_upgrade", "targetname");
+		for(i=0; i<vending_weapon_upgrade_trigger.size; i++ )
+		{
+			perk = getent(vending_weapon_upgrade_trigger[i].target, "targetname");
+			
+			if(isDefined(perk) && isDefined(perk.origin) )
+			{
+				level.vulture_track_current_pap_spot = perk.origin;
+			}
+			else
+			{
+				
+				machine_array = vending_weapon_upgrade_trigger;
+				for( j = 0; j < machine_array.size; j ++ )
+				{
+					if( IsDefined( machine_array[j].script_noteworthy ) && machine_array[j].script_noteworthy == "clip" )
+						continue;
+					machine = machine_array[j];
+				}
+				level.vulture_track_current_pap_spot = machine.origin;
+			
 			}
 		}
-		self PlaySoundToPlayer( "zmb_vulture_drop_pickup_ammo", self );
+		
+		//iprintln( "new pap: " );
+		//iprintln( level.vulture_track_current_pap_spot );
 	}
 }
 
-is_valid_ammo_bonus_weapon( str_weapon )
+vulture_perk_watch_perks_move()
 {
-	if( str_weapon == "zombie_perk_bottle_jugg" || str_weapon == "zombie_knuckle_crack" )
-	{
-		return false;
-	}
-	if( is_placeable_mine( str_weapon ) || is_equipment( str_weapon ) )
-	{
-		return false;
-	}
-	if( is_in_array( level.perk_vulture.invalid_bonus_ammo_weapons, str_weapon ) )
-	{
-		return false;
-	}
-	if( maps\_zombiemode::is_weapon_expluded_from_mule_kick_return( str_weapon ) )
-	{
-		return false;
-	}
-	return true;
-}
 
-_play_vulture_drop_pickup_fx( player )
-{
-	play_oneshot_fx_to_player( player, "vulture_drop_picked_up", self.origin, self.angles );
-	play_oneshot_sound_to_player( player, "zmb_vulture_drop_pickup", self.origin );
-}
-
-give_bonus_points( v_fx_origin )
-{
-	n_multiplier = RandomIntRange( 1, 5 );
-	self maps\_zombiemode_score::player_add_points( "thundergun_fling", 5 * n_multiplier );
-	self PlaySoundToPlayer( "zmb_vulture_drop_pickup_money", self );
-}
-
-_vulture_perk_think()
-{
-	self endon( "death" );
-	self endon( "disconnect" );
-	self endon( "vulture_perk_lost" );
-	while( true )
+	//HERE
+	while(1) 
 	{
-		b_player_in_zombie_stink = false;
-		if( !IsDefined( level.perk_vulture.zombie_stink_array ) )
+		event = level waittill_any_return( "zombie_vending_off", "zombie_vending_spawned", "perks_swapping" );
+		structs = vulture_update_waypoint_structs();
+
+		vending_triggers = GetEntArray( "zombie_vending", "targetname" );
+		
+		for( i = 0; i < vending_triggers.size; i ++ )
 		{
-			level.perk_vulture.zombie_stink_array = [];
-		}
-		if( level.perk_vulture.zombie_stink_array.size > 0 )
-		{
-			a_close_points = get_array_of_closest( self.origin, level.perk_vulture.zombie_stink_array, undefined, undefined, 300 );
-			if( a_close_points.size > 0 )
+			perk = vending_triggers[i].script_noteworthy;
+
+			//Search through existing structs and match on perk
+			for( j = 0; j < structs.size; j++ )
 			{
-				b_player_in_zombie_stink = self _is_player_in_zombie_stink( a_close_points );
+				if( structs[j].wp_type != "PERK" )
+					continue;
+
+				if( structs[j].perk == perk )
+				{
+					structs[j].location = vending_triggers[i] get_waypoint_origin( "perk" );
+					structs[j].origin = structs[j].location[ "origin" ];
+					structs[j].angles = structs[j].location[ "angles" ];
+
+					if( event == "perks_swapping" )
+					{
+						structs[j].origin = (0, 0, -9999);
+						structs[j].angles = (0, 0, 0);
+					}
+				
+					break;
+				}
+
 			}
 		}
-		self _handle_zombie_stink( b_player_in_zombie_stink );
-		wait RandomFloatRange( 0.25, 0.5 );
+		
+		vulture_update_waypoint_structs( structs );
 	}
 }
 
-_is_player_in_zombie_stink( a_points )
-{
-	b_is_in_stink = false;
-	for( i = 0; i < a_points.size; i ++ )
+	vulture_update_waypoint_structs( new_vulture_structs )
 	{
-		if( DistanceSquared( a_points[i].origin, self.origin ) < 4900 )
+		if( isDefined( new_vulture_structs ) )
 		{
-			b_is_in_stink = true;
-			break;
+			for( i = 0; i < level.vulture_waypoint_structs.size; i++ )
+			{
+				for( j = 0; j < new_vulture_structs.size; j++ )
+				{
+				
+					if( level.vulture_waypoint_structs[i].wp_type != "PERK" )
+						continue;
+
+					existing_entnum = level.vulture_waypoint_structs[i].script_model GetEntityNumber();
+					new_entnum = new_vulture_structs[j].script_model GetEntityNumber();
+
+					if( existing_entnum != new_entnum )
+						continue;
+
+					level.vulture_waypoint_structs[i].origin = new_vulture_structs[i].origin;
+					level.vulture_waypoint_structs[i].script_model Delete();
+					level.vulture_waypoint_structs[i].script_model = Spawn( "script_model", new_vulture_structs[i].origin );
+				
+				}
+			}
+			
+			
+			
+			level.vulture_waypoint_structs_update = true;
 		}
+			
+		return level.vulture_waypoint_structs;
 	}
-	return b_is_in_stink;
-}
-
-vulture_drop_count_increment()
-{
-	level.perk_vulture.drop_slots_for_network ++;
-	level thread _decrement_network_slots_after_time();
-}
-
-_decrement_network_slots_after_time()
-{
-	wait 0.25;
-	level.perk_vulture.drop_slots_for_network --;
-}
-
-vulture_zombie_spawn_func()
-{
-	self endon( "death" );
-	self thread add_zombie_eye_glow();
-	self waittill( "completed_emerging_into_playable_area" );
-	if( self should_zombie_have_stink() )
-	{
-		self stink_zombie_array_add();
-	}
-}
-
-add_zombie_eye_glow()
-{
-	self endon( "death" );
-	wait 0.1;
-	if( self.animname != "zombie" || is_true( self.is_cloaker_zombie ) )
-	{
-		return;
-	}
-	if( IsDefined( self.script_string ) && self.script_string == "riser" )
-	{
-		self waittill( "risen" );
-	}
-	self SetClientFlag( level._ZOMBIE_ACTOR_FLAG_VULTURE_EYE_GLOW );
-}
-
-zombies_drop_stink_on_death()
-{
-	self ClearClientFlag( level._ZOMBIE_ACTOR_FLAG_VULTURE_EYE_GLOW );
-	if( IsDefined( self.attacker ) && IsPlayer( self.attacker ) && self.attacker HasPerk( "specialty_altmelee" ) )
-	{
-		self thread do_vulture_death( self.attacker );
-	}
-	else
-	{
-		if( is_true( self.is_stink_zombie ) && IsDefined( self.stink_ent ) )
-		{
-			str_identifier = "_" + self GetEntityNumber() + "_" + GetTime();
-			self thread _drop_zombie_stink( level, str_identifier, "stink" );
-		}
-	}
-}
-
-clear_zombie_stink_fx()
-{
-	self ClearClientFlag( level._ZOMBIE_ACTOR_FLAG_VULTURE_STINK_TRAIL_FX );
-}
-
-stink_zombie_array_add()
-{
-	if( get_unused_stink_ent_count() > 0 )
-	{
-		self.stink_ent = get_unused_stink_ent();
-		if( IsDefined( self.stink_ent ) )
-		{
-			self.stink_ent.owner = self;
-			wait_network_frame();
-			wait_network_frame();
-			self SetClientFlag( level._ZOMBIE_ACTOR_FLAG_VULTURE_STINK_TRAIL_FX );
-			level.perk_vulture.last_stink_zombie_spawned = GetTime();
-			self.is_stink_zombie = true;
-		}
-	}
-}
-
-should_zombie_have_stink()
-{
-	b_is_zombie = self.animname == "zombie";
-	b_cooldown_up = ( GetTime() - level.perk_vulture.last_stink_zombie_spawned ) > 12000;
-	b_roll_passed = RandomInt( 100 ) > 50;
-	b_stink_ent_available = get_unused_stink_ent_count() > 0;
-	return b_is_zombie && b_roll_passed && b_cooldown_up && b_stink_ent_available;
-}
 
 vulture_perk_watch_mystery_box()
 {
@@ -5020,589 +6430,850 @@ vulture_perk_watch_fire_sale()
 	}
 }
 
-vulture_perk_watch_powerup_drops()
+/* Vulture Perk - Drop bonuses */
+//tags: ammo_drop, vultureAmmoDrop, vulture_zombie_ammo
+zombie_watch_vulture_drop_bonus()
 {
-	while( true )
+	self waittill("death");
+
+	rand = randomint(1000);	//Normalized to 1000, don't want to to deal with decimals
+
+	scaler = count_total_vulture_players();
+	ammo_rate = Int( ( level.VALUE_VULTURE_BONUS_AMMO_SPAWN_CHANCE * scaler ) );
+
+	if( flag( "enter_nml" ) )
 	{
-		level waittill( "powerup_dropped", m_powerup );
-		m_powerup thread _powerup_drop_think();
+		ammo_rate = 0;
 	}
+	//blue_rate = Int( ( level.VALUE_ZOMBIE_DROP_RATE_BLUE / total ) * 1000);
+	//red_rate = Int( ( level.VALUE_ZOMBIE_DROP_RATE_RED / total ) * 1000);
+
+	//Apocalypse or extra drops
+	//iprintln("rand: " + rand + " ammo_rate: " + ammo_rate);
+	if( rand < ammo_rate )
+		level thread zombie_vulture_handle_drop( "bo2_p6_zm_perk_vulture_ammo", self.origin );
+
 }
 
-_powerup_drop_think()
-{
-	e_temp = Spawn( "script_model", self.origin );
-	e_temp SetModel( "tag_origin" );
-	e_temp SetClientFlag( level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_POWERUP_DROP );
-	self waittill_any( "powerup_timedout", "powerup_grabbed", "death" );
-	e_temp ClearClientFlag( level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_POWERUP_DROP );
-	wait_network_frame();
-	wait_network_frame();
-	wait_network_frame();
-	e_temp Delete();
-}
+//Zombie vulture drop helper methods
 
-vulture_zombies_find_exit_point()
-{
-	a_zombies = GetAISpeciesArray( "axis", "all" );
-	for( i = 0; i < a_zombies.size; i ++ )
+	count_total_vulture_players()
 	{
-		a_zombies[i] thread zombie_goes_to_exit_location();
-	}
-}
-
-zombie_goes_to_exit_location()
-{
-	self endon( "death" );
-	if( self.ignoreme )
-	{
-		while( true )
+		total = 0;
+		players = get_players();
+		for( i = 0; i < players.size; i++ )
 		{
-			b_passed_override = true;
-			if( IsDefined( level.default_find_exit_position_override ) )
-			{
-				b_passed_override = [[ level.default_find_exit_position_override ]]();
+			if( players[i] HasPerk( level.VLT_PRK ) )
+				total++;
+		}
+
+		return total;
+	}
+
+	zombie_vulture_handle_drop( str_drop, origin )
+	{
+		delay = randomint( level.VALUE_VULTURE_BONUS_DROP_DELAY_TIME );
+
+		wait(delay);
+
+		drop = Spawn( "script_model", origin + (0,0,40) );
+		drop SetModel( str_drop );
+
+		playable_area = getentarray("player_volume","script_noteworthy");
+		valid_drop = false;
+		for (i = 0; i < playable_area.size; i++)
+		{
+			if (drop IsTouching(playable_area[i])) {
+				valid_drop = true;
+				break;
 			}
-			if( !flag( "wait_and_revive" ) && b_passed_override )
+		}
+			
+		if(!valid_drop)
+		{
+			drop Delete();
+			return;
+		}
+
+		drop Show();
+		level.count_vulture_fx_drops_round++;
+		players = get_players();
+		for( i = 0; i < players.size; i++ ) 
+		{
+			if( players[i] HasPerk( level.VLT_PRK ) ) 
 			{
+				drop SetInvisibleToPlayer( players[i], false );
+				drop thread watch_player_vulture_drop_pickup( players[i] );
+			}
+			else
+				drop SetInvisibleToPlayer( players[i], true );
+		}
+		
+		drop waittill_any_or_timeout( level.VALUE_VULTURE_BONUS_DROP_TIME, "powerup_grabbed");
+		drop notify( "vulture_drop_done" );
+
+		wait( 1 );	//wait for players to cleanup fx, may need to be longer
+		drop Delete();
+
+	}
+	
+/* Handle Drops */
+
+		//Self is drop
+		watch_player_vulture_drop_pickup( player )
+		{
+			create_loop_fx_to_player( player, self GetEntityNumber(), "vulture_perk_bonus_drop", self.origin, self.angles );
+			self vulture_drop_pickup( player );
+			destroy_loop_fx_to_player( player, self GetEntityNumber(), true );
+			self SetInvisibleToPlayer( player, true );
+		}
+
+		//Self is drop
+		vulture_drop_pickup( player )
+		{
+			self endon( "vulture_drop_done" );
+			
+			while( player HasPerk( level.VLT_PRK ) ) 
+			{
+				threshold = level.THRESHOLD_VULTURE_BONUS_AMMO_PICKUP_RANGE;
+				did_pickup = checkDist( player.origin, self.origin, threshold );
+				if( did_pickup ) 
+				{
+					playfx( level._effect["powerup_grabbed_solo"], self.origin );
+					//playfx( level._effect["powerup_grabbed_wave_solo"], self.origin );
+					player thread vulture_drop_ammo_bonus();
+					self notify( "powerup_grabbed" );
+					return;
+				}
+				wait( 0.1 );
+			}
+
+		}
+
+		vulture_drop_ammo_bonus()
+		{
+			str_weapon_current = self GetCurrentWeapon();
+			otherWeps = self GetWeaponsListPrimaries();
+			validAmmoWeapon = is_valid_ammo_bonus_weapon( str_weapon_current );
+			index = 0;
+			
+			if( !IsDefined( otherWeps ) || otherWeps.size == 0 )
 				return;
-			}
-			if( !self.ignoreme )
-			{
-				break;
-			}
-			wait_network_frame();
-		}
-	}
-	s_goal = _get_zombie_exit_point();
-	self notify( "stop_find_flesh" );
-	self notify( "zombie_acquire_enemy" );
-	if( IsDefined( s_goal ) )
-	{
-		self SetGoalPos( s_goal.origin );
-	}
-	while( true )
-	{
-		b_passed_override = true;
-		if( IsDefined( level.default_find_exit_position_override ) )
-		{
-			b_passed_override = [[ level.default_find_exit_position_override ]]();
-		}
-		if( !flag( "wait_and_revive" ) && b_passed_override )
-		{
-			break;
-		}
-		else
-		{
-			wait 0.1;
-		}
-	}
-	self thread maps\_zombiemode_spawner::find_flesh();
-}
 
-_get_zombie_exit_point()
-{
-	player = GetPlayers()[0];
-	n_dot_best = 9999999;
-	a_exit_points = self [[ level.perk_vulture.func_zombies_find_valid_exit_locations ]]();
-	nd_best = undefined;
-	for( i = 0; i < a_exit_points.size; i ++ )
-	{
-		v_to_player = VectorNormalize( player.origin - self.origin );
-		v_to_goal = a_exit_points[i].origin - self.origin;
-		n_dot = VectorDot( v_to_player, v_to_goal );
-		if( n_dot < n_dot_best && DistanceSquared( player.origin, a_exit_points[i].origin ) > 360000 )
-		{
-			nd_best = a_exit_points[i];
-			n_dot_best = n_dot;
-		}
-	}
-	return nd_best;
-}
-
-get_valid_exit_points_for_zombie()
-{
-	a_exit_points = level.enemy_dog_locations;
-	if( IsDefined( level.perk_vulture.zones_for_extra_stink_locations ) && level.perk_vulture.zones_for_extra_stink_locations.size > 0 )
-	{
-		a_zones_with_extra_stink_locations = GetArrayKeys( level.perk_vulture.zones_for_extra_stink_locations );
-		for( j = 0; j < level.active_zone_names.size; j ++ )
-		{
-			zone = level.active_zone_names.size[j];
-			if( is_in_array( a_zones_with_extra_stink_locations, zone ) )
+			while( !validAmmoWeapon && index < otherWeps.size )
 			{
-				a_zones_temp = level.perk_vulture.zones_for_extra_stink_locations[ zone ];
-				for( i = 0; i < a_zones_temp.size; i ++ )
+				str_weapon_current = otherWeps[index];
+
+				if( is_valid_ammo_bonus_weapon( str_weapon_current ) ) 
 				{
-					a_exit_points = array_combine( a_exit_points, get_zone_dog_locations( a_zones_temp[i] ) );
-				}
-			}
-		}
-	}
-	return a_exit_points;
-}
+					currentAmmo = self GetWeaponAmmoStock( str_weapon_current );
+					maxWepAmmo = WeaponMaxAmmo( str_weapon_current );
 
-get_zone_dog_locations( str_zone )
-{
-	a_dog_locations = [];
-	if( IsDefined( level.zones[ str_zone ] ) && IsDefined( level.zones[ str_zone ].dog_locations ) )
-	{
-		a_dog_locations = level.zones[ str_zone ].dog_locations;
-	}
-	return a_dog_locations;
-}
-
-initialize_bonus_entity_pool()
-{
-	level.perk_vulture.bonus_drop_ent_pool = [];
-	for( i = 0; i < 20; i ++ )
-	{
-		e_temp = Spawn( "script_model", ( 0, 0, 0 ) );
-		e_temp SetModel( "tag_origin" );
-		e_temp.targetname = "vulture_perk_bonus_pool_ent";
-		e_temp.in_use = false;
-		level.perk_vulture.bonus_drop_ent_pool[ level.perk_vulture.bonus_drop_ent_pool.size ] = e_temp;
-	}
-}
-
-get_unused_bonus_ent()
-{
-	e_found = undefined;
-	for( i = 0; i < level.perk_vulture.bonus_drop_ent_pool.size; i ++ )
-	{
-		if( !level.perk_vulture.bonus_drop_ent_pool[i].in_use )
-		{
-			e_found = level.perk_vulture.bonus_drop_ent_pool[i];
-			e_found.in_use = true;
-			break;
-		}
-	}
-	return e_found;
-}
-
-get_unused_bonus_ent_count()
-{
-	n_found = 0;
-	for( i = 0; i < level.perk_vulture.bonus_drop_ent_pool.size; i ++ )
-	{
-		if( !level.perk_vulture.bonus_drop_ent_pool[i].in_use )
-		{
-			n_found ++;
-		}
-	}
-	return n_found;
-}
-
-clear_bonus_ent()
-{
-	self notify( "stop_vulture_behavior" );
-	self notify( "stop_powerup_fx" );
-	self.in_use = false;
-	self SetModel( "tag_origin" );
-	self Hide();
-}
-
-initialize_stink_entity_pool()
-{
-	level.perk_vulture.stink_ent_pool = [];
-	for( i = 0; i < 4; i ++ )
-	{
-		e_temp = Spawn( "script_model", ( 0, 0, 0 ) );
-		e_temp SetModel( "tag_origin" );
-		e_temp.targetname = "vulture_perk_bonus_pool_ent";
-		e_temp.in_use = false;
-		level.perk_vulture.stink_ent_pool[ level.perk_vulture.stink_ent_pool.size ] = e_temp;
-	}
-}
-
-get_unused_stink_ent_count()
-{
-	n_found = 0;
-	for( i = 0; i < level.perk_vulture.stink_ent_pool.size; i ++ )
-	{
-		if( !level.perk_vulture.stink_ent_pool[i].in_use )
-		{
-			n_found ++;
-			continue;
-		}
-		else
-		{
-			if( !IsDefined( level.perk_vulture.stink_ent_pool[i].owner ) && !IsDefined( level.perk_vulture.stink_ent_pool[i].drop_time ) )
-			{
-				level.perk_vulture.stink_ent_pool[i] clear_stink_ent();
-				n_found ++;
-			}
-		}
-	}
-	return n_found;
-}
-
-get_unused_stink_ent()
-{
-	e_found = undefined;
-	for( i = 0; i < level.perk_vulture.stink_ent_pool.size; i ++ )
-	{
-		if( !level.perk_vulture.stink_ent_pool[i].in_use )
-		{
-			e_found = level.perk_vulture.stink_ent_pool[i];
-			e_found.in_use = true;
-			break;
-		}
-	}
-	return e_found;
-}
-
-clear_stink_ent()
-{
-	self ClearClientFlag( level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX );
-	self notify( "stop_vulture_behavior" );
-	self.in_use = false;
-	self.drop_time = undefined;
-	self.owner = undefined;
-	self SetModel( "tag_origin" );
-	self Hide();
-}
-
-handle_custom_weapon_refunds( str_weapon )
-{
-	b_is_custom_weapon = false;
-	if( IsSubStr( str_weapon, "knife_ballistic" ) )
-	{
-		self _refund_oldest_ballistic_knife( str_weapon );
-		b_is_custom_weapon = true;
-	}
-	return b_is_custom_weapon;
-}
-
-_refund_oldest_ballistic_knife( str_weapon )
-{
-	self endon( "death" );
-	self endon( "disconnect" );
-	self endon( "vulture_perk_lost" );
-	if( IsDefined( self.weaponobjectwatcherarray ) && self.weaponobjectwatcherarray.size > 0 )
-	{
-		s_found = undefined;
-		for( i = 0; i < self.weaponobjectwatcherarray.size; i ++ )
-		{
-			if( IsDefined( self.weaponobjectwatcherarray[i].weapon ) && self.weaponobjectwatcherarray[i].weapon == str_weapon )
-			{
-				s_found = self.weaponobjectwatcherarray[i];
-				break;
-			}
-		}
-		if( IsDefined( s_found ) )
-		{
-			if( IsDefined( s_found.objectarray ) && s_found.objectarray.size > 0 )
-			{
-				e_oldest = undefined;
-				for( i = 0; i < s_found.objectarray.size; i ++ )
-				{
-					if( IsDefined( s_found.objectarray[i] ) )
+					if( currentAmmo < maxWepAmmo )
 					{
-						if( ( IsDefined( s_found.objectarray[i].retrievabletrigger ) && IsDefined( s_found.objectarray[i].retrievabletrigger.owner ) && s_found.objectarray[i].retrievabletrigger.owner != self ) || !IsDefined( s_found.objectarray[i].birthtime ) )
-						{
-							continue;
-						}
-						else
-						{
-							if( !IsDefined( e_oldest ) )
-							{
-								e_oldest = s_found.objectarray[i];
-							}
-							if( s_found.objectarray[i].birthtime < e_oldest.birthtime )
-							{
-								e_oldest = s_found.objectarray[i];
-							}
-						}
+						validAmmoWeapon = true;
+						break;
 					}
-				}
-				if( IsDefined( e_oldest ) )
-				{
-					self thread maps\_ballistic_knife::pick_up( str_weapon, e_oldest, e_oldest.retrievabletrigger );
-				}
-			}
-		}
-	}
-}
 
-vulture_perk_watch_waypoints()
-{
-	setup_perk_machine_fx();
-	flag_wait( "all_players_connected" );
-	wait 1;
-	structs = [];
-	weapon_spawns = GetEntArray( "weapon_upgrade", "targetname" );
-	weapon_spawns = array_combine( weapon_spawns, GetEntArray( "betty_purchase", "targetname" ) );
-	weapon_spawns = array_combine( weapon_spawns, GetEntArray( "tazer_upgrade", "targetname" ) );
-	weapon_spawns = array_combine( weapon_spawns, GetEntArray( "bowie_upgrade", "targetname" ) );
-	weapon_spawns = array_combine( weapon_spawns, GetEntArray( "claymore_purchase", "targetname" ) );
-	weapon_spawns = array_combine( weapon_spawns, GetEntArray( "sickle_upgrade", "targetname" ) );
-	weapon_spawns = array_combine( weapon_spawns, GetEntArray( "spikemore_purchase", "targetname" ) );
-	for( i = 0; i < weapon_spawns.size; i ++ )
-	{
-		model = GetEnt( weapon_spawns[i].target, "targetname" );
-		struct = SpawnStruct();
-		struct.location = weapon_spawns[i] get_waypoint_origin( "wallgun" );
-		struct.check_perk = false;
-		struct.perk_to_check = undefined;
-		struct.is_revive = false;
-		struct.is_chest = false;
-		struct.chest_to_check = undefined;
-		struct.fx_var = "vulture_perk_wallbuy_static";
-		struct.ent_num = model GetEntityNumber();
-		structs[ structs.size ] = struct;
-	}
-	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
-	for( i = 0; i < vending_triggers.size; i ++ )
-	{
-		perk = vending_triggers[i].script_noteworthy;
-		struct = SpawnStruct();
-		struct.location = vending_triggers[i] get_waypoint_origin( "perk" );
-		struct.check_perk = perk != "specialty_altmelee";
-		struct.perk_to_check = perk;
-		struct.is_revive = perk == "specialty_quickrevive";
-		struct.is_chest = false;
-		struct.chest_to_check = undefined;
-		struct.fx_var = level.perk_vulture.perk_machine_fx[ perk ];
-		struct.ent_num = vending_triggers[i] GetEntityNumber();
-		structs[ structs.size ] = struct;
-	}
-	vending_weapon_upgrade_trigger = GetEntArray( "zombie_vending_upgrade", "targetname" );
-	for( i = 0; i < vending_weapon_upgrade_trigger.size; i ++ )
-	{
-		struct = SpawnStruct();
-		struct.location = vending_weapon_upgrade_trigger[i] get_waypoint_origin( "packapunch" );
-		struct.check_perk = false;
-		struct.perk_to_check = "specialty_weapupgrade";
-		struct.is_revive = false;
-		struct.is_chest = false;
-		struct.chest_to_check = undefined;
-		struct.fx_var = "vulture_perk_machine_glow_pack_a_punch";
-		struct.ent_num = vending_weapon_upgrade_trigger[i] GetEntityNumber();
-		structs[ structs.size ] = struct;
-	}
-	chests = GetEntArray( "treasure_chest_use", "targetname" );
-	for( i = 0; i < chests.size; i ++ )
-	{
-		struct = SpawnStruct();
-		struct.location = chests[i] get_waypoint_origin( "mysterybox" );
-		struct.check_perk = false;
-		struct.perk_to_check = undefined;
-		struct.is_revive = false;
-		struct.is_chest = true;
-		struct.chest_to_check = chests[i];
-		struct.fx_var = "vulture_perk_mystery_box_glow";
-		struct.ent_num = chests[i] GetEntityNumber();
-		structs[ structs.size ] = struct;
-	}
-	level.perk_vulture.vulture_vision_fx_list = structs;
-	while( true )
-	{
-		for( i = 0; i < structs.size; i ++ )
-		{
-			struct = structs[i];
-			players = GetPlayers();
-			for( p = 0; p < players.size; p ++ )
+				}
+				
+				index++;
+				
+			}
+
+			if( str_weapon_current != "none" )
 			{
-				player = players[p];
-				num = player GetEntityNumber();
-				is_visible = check_waypoint_visible( player, struct );
-				if( !IsDefined( struct.player_visible ) )
+				if( validAmmoWeapon )
 				{
-					struct.player_visible = [];
-				}
-				if( IsDefined( player.perk_vulture ) && is_true( player.perk_vulture.active ) && is_visible )
-				{
-					if( !is_true( struct.player_visible[ num ] ) )
+					/*
+					n_ammo_count_current = self GetWeaponAmmoStock( str_weapon_current );
+					n_ammo_count_max = WeaponMaxAmmo( str_weapon_current );
+					ammo_fraction = RandomFloatRange( 0, level.VALUE_VULTURE_BONUS_AMMO_CLIP_FRACTION );
+					n_ammo_refunded = clamp( Int( n_ammo_count_max * ammo_fraction ), 1, n_ammo_count_max );
+
+	
+					if( n_ammo_refunded < level.VALUE_VULTURE_MIN_AMMO_BONUS )
+						n_ammo_refunded = level.VALUE_VULTURE_MIN_AMMO_BONUS;
+					else if( n_ammo_refunded > level.VALUE_VULTURE_MAX_AMMO_BONUS )
+						n_ammo_refunded = level.VALUE_VULTURE_MAX_AMMO_BONUS;
+					*/
+
+					n_ammo_refunded = RandomintRange( level.VALUE_VULTURE_MIN_AMMO_BONUS, level.VALUE_VULTURE_MAX_AMMO_BONUS );
+
+					//If weapon class is spread, give small portion of ammo
+					if( WeaponClass(str_weapon_current) == "spread" 
+						|| is_in_array(level.ARRAY_VALID_SNIPERS, str_weapon_current) )
 					{
-						struct.player_visible[ num ] = true;
-						create_loop_fx_to_player( player, struct.ent_num, struct.fx_var, struct.location[ "origin" ], struct.location[ "angles" ] );
+						n_ammo_refunded = RandomIntRange( 1, level.VALUE_VULTURE_MIN_AMMO_BONUS );
 					}
-				}
-				else
-				{
-					if( is_true( struct.player_visible[ num ] ) )
+
+					//if Weapon class is pistol, take half of the ammo
+					//if weapon is in array: level.ARRAY_SIDEARMBONUS_WEAPONS
+					if( WeaponClass(str_weapon_current) == "pistol" 
+						|| is_in_array(level.ARRAY_SIDEARMBONUS_WEAPONS, str_weapon_current) )
 					{
-						struct.player_visible[ num ] = false;
-						destroy_loop_fx_to_player( player, struct.ent_num, true );
+						n_ammo_refunded = int( n_ammo_refunded / 2 );
 					}
+
+
+					if( self hasProPerk( level.VLT_PRO ) )
+						n_ammo_refunded = int( level.VALUE_VULTURE_PRO_SCALE_AMMO_BONUS * n_ammo_refunded );
+
+					n_ammo_count_current = self GetWeaponAmmoStock( str_weapon_current );
+					n_ammo_count_max = WeaponMaxAmmo( str_weapon_current );
+
+					stock_ammo = n_ammo_count_current + n_ammo_refunded;
+
+					//iprintln( "Current Ammo: " + n_ammo_count_current + "  New Stock: " + stock_ammo );
+					if( stock_ammo > n_ammo_count_max )
+						stock_ammo = n_ammo_count_max;
+					
+					self SetWeaponAmmoStock( str_weapon_current, stock_ammo );
 				}
+					self PlaySoundToPlayer( "zmb_vulture_drop_pickup_ammo", self );
+
+					//self PlaySound( "zmb_vulture_drop_pickup_money" );
+					//self PlaySound( "zmb_vulture_drop_pickup_ammo" );
+					//self PlaySound( "vulture_pickup" );
+					//self PlaySound( "vulture_money" );
 			}
 		}
-		wait 0.05;
-	}
-}
 
-setup_perk_machine_fx()
-{
-	register_perk_machine_fx( "specialty_armorvest", "vulture_perk_machine_glow_juggernog" );
-	register_perk_machine_fx( "specialty_fastreload", "vulture_perk_machine_glow_speed" );
-	register_perk_machine_fx( "specialty_rof", "vulture_perk_machine_glow_doubletap" );
-	register_perk_machine_fx( "specialty_quickrevive", "vulture_perk_machine_glow_revive" );
-	register_perk_machine_fx( "specialty_flakjacket", "vulture_perk_machine_glow_phd_flopper" );
-	register_perk_machine_fx( "specialty_longersprint", "vulture_perk_machine_glow_marathon" );
-	register_perk_machine_fx( "specialty_deadshot", "vulture_perk_machine_glow_deadshot" );
-	register_perk_machine_fx( "specialty_additionalprimaryweapon", "vulture_perk_machine_glow_mule_kick" );
-	register_perk_machine_fx( "specialty_bulletaccuracy", "vulture_perk_machine_glow_whos_who" );
-	register_perk_machine_fx( "specialty_bulletdamage", "vulture_perk_machine_glow_electric_cherry" );
-	register_perk_machine_fx( "specialty_altmelee", "vulture_perk_machine_glow_vulture" );
-	register_perk_machine_fx( "specialty_extraammo", "vulture_perk_machine_glow_widows_wine" );
-}
-
-register_perk_machine_fx( str_perk, str_fx_reference )
-{
-	if( !IsDefined( level.perk_vulture.perk_machine_fx ) )
-	{
-		level.perk_vulture.perk_machine_fx = [];
-	}
-	if( !IsDefined( level.perk_vulture.perk_machine_fx[ str_perk ] ) )
-	{
-		level.perk_vulture.perk_machine_fx[ str_perk ] = str_fx_reference;
-	}
-}
-
-get_waypoint_origin( type )
-{
-	origin = self.origin;
-	angles = ( 0, 0, 0 );
-	switch( type )
-	{
-		case "mysterybox":
-			origin = get_mystery_box_origin( self );
-			break;
-
-		case "perk":
-			origin = get_perk_machine_origin( self );
-			break;
-
-		case "packapunch":
-			origin = get_pack_a_punch_origin( self );
-			break;
-	}
-	location = [];
-	location[ "origin" ] = origin;
-	location[ "angles" ] = angles;
-	return location;
-}
-
-get_mystery_box_origin( trigger )
-{
-	forward = AnglesToForward( trigger.chest_box.angles + ( 0, 90, 0 ) );
-	origin = trigger.chest_box.origin + vector_scale( forward, 10 );
-	return origin + ( 0, 0, 30 );
-}
-
-get_perk_machine_origin( trigger )
-{
-	machine = undefined;
-	machines = GetEntArray( trigger.target, "targetname" );
-	machines = get_array_of_closest( trigger.origin, machines );
-	for( i = 0; i < machines.size; i ++ )
-	{
-		if( !IsDefined( machines[i].script_noteworthy ) || machines[i].script_noteworthy != "clip" )
+		is_valid_ammo_bonus_weapon( weapon )
 		{
-			machine = machines[i];
-			break;
+			//iprintln( "Checking is valid bonus ammo: "  );
+			//iprintln( "Weapon: " + weapon );
+			if( !isDefined( weapon ) || weapon == "none" )
+				return false;
+
+			if( is_in_array( level.ARRAY_VULTURE_INVALID_AMMO_WEAPONS, weapon ) )
+				return false;
+			
+			return true;
 		}
-	}
-	forward = AnglesToForward( machine.angles - ( 0, 90, 0 ) );
-	origin = machine.origin + vector_scale( forward, 10 );
-	return origin + ( 0, 0, 50 );
+
+// /
+
+
+//=========================================================================================================
+// Widows Wine
+//=========================================================================================================
+
+
+/*	 Init and Entry Methods	 */
+
+init_widows_wine()
+{
+	level._effect[ "fx_acidgat_explode" ] = LoadFX( "acidgat/fx_acidgat_explode" );
+	//level._effect[ "fx_acidgat_explode_ug" ] = LoadFX( "acidgat/fx_acidgat_explode_ug" );
+	//level._effect[ "fx_acidgat_marker" ] = LoadFX( "acidgat/fx_acidgat_marker" );
+	//level._effect[ "fx_acidgat_view" ] = LoadFX( "acidgat/fx_acidgat_view" );
+	//level._effect[ "fx_acidgat_zombiesplash" ] = LoadFX( "acidgat/fx_acidgat_zombiesplash" );
+
+	level._effect[ "fx_widows_wine_explode" ] = LoadFX( "widowswine/fx_widows_wine_explode" );
+	level._effect[ "fx_widows_wine_zombie" ] = LoadFX( "widowswine/fx_widows_wine_zombie" );
+	level._effect["fx_trail_crossbow_blink_red_os"]	  = loadfx("weapon/crossbow/fx_trail_crossbow_blink_red_os");
 }
 
-get_pack_a_punch_origin( trigger )
+player_watch_widowswine()
 {
-	machine = GetEnt( trigger.target, "targetname" );
-	forward = AnglesToForward( machine.angles - ( 0, 90, 0 ) );
-	origin = machine.origin + vector_scale( forward, 20 );
-	return origin + ( 0, 0, 40 );
+	self thread player_give_wine_grenades( level.WWN_PRK + "_stop" );
+	self thread player_watch_widows_warning();
 }
 
-check_waypoint_visible( player, struct )
+watch_widowswine_upgrade( stop_str )
 {
-	has_perk = false;
-	if( struct.check_perk && IsDefined( struct.perk_to_check ) )
-	{
-		has_perk = player HasPerk( struct.perk_to_check );
-	}
-	solo_revive_gone = false;
-	if( struct.is_revive && flag( "solo_game" ) )
-	{
-		solo_revive_gone = flag( "solo_revive" );
-	}
-	is_empty_boxlocation = false;
-	if( struct.is_chest && IsDefined( struct.chest_to_check ) )
-	{
-		is_empty_boxlocation = !is_true( struct.chest_to_check.vulture_waypoint_visible );
-	}
-	custom_map_check = false;
-	if( IsDefined( level.vulture_perk_custom_map_check ) )
-	{
-		custom_map_check = [[ level.vulture_perk_custom_map_check ]]( struct );
-	}
-	return !has_perk && !solo_revive_gone && !is_empty_boxlocation && !custom_map_check;
+	//iprintln("watch_widowswine_upgrade");
+	self thread player_give_wine_grenades( stop_str );
+	self waittill( stop_str );
 }
 
-play_vulture_perk_bonus_fx( player )
+player_give_wine_grenades( stop_str )
 {
-	play_oneshot_sound_to_player( player, "zmb_vulture_drop_spawn", self.origin );
-	create_loop_fx_to_player( player, self GetEntityNumber(), "vulture_perk_bonus_drop", self.origin, self.angles );
-	create_loop_sound_to_player( player, self GetEntityNumber(), "zmb_vulture_drop_loop", self.origin, 0 );
-	self waittill( "stop_powerup_fx" );
-	destroy_loop_fx_to_player( player, self GetEntityNumber(), true );
-	destroy_loop_sound_to_player( player, self GetEntityNumber(), 0 );
-}
+	//Check if player has any other tactical grenades
+	if( IsDefined( self get_player_tactical_grenade() )  )
+		return;
+	
+	self giveweapon( "bo3_zm_widows_grenade" );
+	self set_player_tactical_grenade( "bo3_zm_widows_grenade" );
+	
+	self thread player_watch_widows_grenade( stop_str );
 
-watch_vulture_shader_glow()
-{
-	self endon( "disconnect" );
-	self.vulture_glow_alpha = 0;
-	hud_outline = NewClientHudElem( self );
-	hud_outline.foreground = true; 
-	hud_outline.sort = 2; 
-	hud_outline.hidewheninmenu = false; 
-	hud_outline.alignX = "left"; 
-	hud_outline.alignY = "bottom";
-	hud_outline.horzAlign = "user_left"; 
-	hud_outline.vertAlign = "user_bottom";
-	hud_outline.x = 0;
-	hud_outline.y = 0;
-	hud_outline.alpha = 1;
-	hud_outline SetShader( "hud_vulture_aid_stink_outline", 48, 48 );
-	hud_stink = NewClientHudElem( self );
-	hud_stink.foreground = true; 
-	hud_stink.sort = 2; 
-	hud_stink.hidewheninmenu = false; 
-	hud_stink.alignX = "left"; 
-	hud_stink.alignY = "bottom";
-	hud_stink.horzAlign = "user_left"; 
-	hud_stink.vertAlign = "user_bottom";
-	hud_stink.x = 0;
-	hud_stink.y = 0;
-	hud_stink.alpha = 1;
-	hud_stink SetShader( "hud_vulture_aid_stink", 48, 48 );
-	while( true )
-	{
-		if( IsDefined( self.perk_hud[ "specialty_altmelee" ] ) )
-		{
-			hud_outline.x = self.perk_hud[ "specialty_altmelee" ].x - 12;
-			hud_outline.y = self.perk_hud[ "specialty_altmelee" ].y + 12;
-			hud_outline.alpha = self.vulture_glow_alpha;
-			hud_stink.x = self.perk_hud[ "specialty_altmelee" ].x - 12;
-			hud_stink.y = self.perk_hud[ "specialty_altmelee" ].y - 24;
-			hud_stink.alpha = self.vulture_glow_alpha;
-		}
-		else
-		{
-			hud_outline.x = 0;
-			hud_outline.y = 0;
-			hud_outline.alpha = 0;
-			hud_stink.x = 0;
-			hud_stink.y = 0;
-			hud_stink.alpha = 0;
-		}
-		wait 0.05;
-	}
+	self waittill( stop_str );
+
+	self TakeWeapon( "bo3_zm_widows_grenade" );
+	self set_player_tactical_grenade( undefined );
+	
 }
+	
+/*	 Handle Zombie close HUD  */
+/*
+level.THRESHOLD_WIDOWS_ZOMBIE_CLOSE_HUD_DISTANCE = 128;
 
 */
+
+player_watch_widows_warning()
+{
+	player_num = self GetEntityNumber();
+
+	while(1)
+	{
+		
+		if( self HasPerk( level.WWN_PRK ) )
+		{
+
+			no_warning = self maps\_laststand::player_is_in_laststand() 
+						|| self.widows_cancel_warning
+						|| self IsSprinting();
+
+			if( no_warning ) 
+			{
+				self notify( "widows_cancel_warning" );
+				wait 0.5;
+				continue;
+			}
+					
+			threshold_dist = level.THRESHOLD_WIDOWS_ZOMBIE_CLOSE_HUD_DIST;
+			zombies = get_array_of_closest( self.origin, GetAiSpeciesArray( "axis", "all" ), undefined, undefined, threshold_dist );
+			count_zombs_behind = 0;
+			
+			for( i = 0; i < zombies.size; i++ )
+			{
+								
+				if( !isDefined( zombies[i] ) )
+					continue;
+
+				if( !IsDefined( zombies[i].wine_triggered_player_warning ) )
+					zombies[i].wine_triggered_player_warning = [];
+
+				vertical_diff = self.origin[2] - zombies[i].origin[2];
+				diff = level.THRESHOLD_WIDOWS_ZOMBIE_CLOSE_HUD_VERTICAL_CUTOFF;
+				if( vertical_diff > diff || vertical_diff < diff*-1 )
+					continue;
+
+				if( is_true( zombies[i].wine_triggered_player_warning[ player_num ] ) )	{
+					//iprintln("already triggered behind");
+					//wait 1;
+					wait( 0.01 );
+					continue;
+				}
+
+				if( !( self player_widows_check_zomb_behind( zombies[i] ) ) )
+					continue;
+
+
+				count_zombs_behind++;
+				heavy_warning = count_zombs_behind >= level.THRESHOLD_WIDOWS_COUNT_ZOMBS_HEAVY_WARNING;
+				heavy_warning = false;	//disabled
+				if( heavy_warning && !self.widows_heavy_warning_cooldown )
+				{ 
+					//iprintln("count zombs behind");
+					self thread player_widows_cancel_warning_on_turn();
+					self thread player_widows_create_heavy_warning();
+					//count_zombs_behind -= -3;
+					self thread player_widows_heavy_warning_cooldown();
+					wait( 0.01 );
+					continue;
+				}			
+				
+				zombies[i].wine_triggered_player_warning[ player_num ] = true;
+				self thread player_widows_cancel_warning_on_turn();
+				//iprintln("Trigger new warning");
+				self thread player_widows_create_warning( zombies[i] );
+				zombies[i] thread zombie_widows_delay_repeat_warning( player_num );
+
+				//wait 1;
+				wait( 0.01 );
+			}
+		}
+		else
+		{
+			break;
+		}
+	
+		wait(0.5);
+	}
+}
+
+//Utilit and implementation methods
+//line
+
+	player_widows_heavy_warning_cooldown()
+	{
+		self.widows_heavy_warning_cooldown = true;
+		wait( level.VALUE_WIDOWS_ZOMBIE_CLOSE_HUD_HEAVY_COOLDOWN );
+		self.widows_heavy_warning_cooldown = false;
+	}
+
+	zombie_widows_delay_repeat_warning( player_num )
+	{
+		self endon( "death" );
+		wait( level.VALUE_WIDOWS_ZOMBIE_CLOSE_HUD_COOLDOWN );
+		self.wine_triggered_player_warning[ player_num ] = false;
+	}
+
+	player_widows_cancel_warning_on_turn()
+	{
+		self endon( "death" );
+
+		forward_view_dir = AnglesToForward( self GetPlayerAngles() );
+		
+		initial_dir = forward_view_dir[1];
+		turn_threshold = 0.2;					//Looks like they use radians
+
+		while ( 1 )
+		{
+			dir = AnglesToForward( self GetPlayerAngles() );
+			dot = VectorDot( forward_view_dir, dir );
+
+			if( dot <= turn_threshold ) //anything at least 90 degrees or more returns <0
+				break;
+			wait( 0.01 );
+		}
+
+		self notify( "widows_cancel_warning" );
+		self.widows_cancel_warning = true;
+		wait( level.VALUE_WIDOWS_ZOMBIE_CLOSE_HUD_ONTURN_COOLDOWN );
+		self.widows_cancel_warning = false;
+	}
+
+	player_widows_check_zomb_behind( zomb )
+	{
+		view_pos = self GetPlayerViewHeight();
+		//origin = zomb GetCentroid();
+		origin = zomb.origin + ( 0, 0, 40 );
+		forward_view_angles = AnglesToForward( self GetPlayerAngles() );
+
+		normal = VectorNormalize( origin - view_pos );
+		dot = VectorDot( forward_view_angles, normal );
+
+		return !( zomb object_in_player_fov( self, level.THRESHOLD_WIDOWS_BEHIND_HUD_DOT ) );
+	}
+
+	object_in_player_fov( player, threshold )	//threshold is between 0 and 1
+	{
+		playerAngles = player getplayerangles();
+		playerForwardVec = AnglesToForward( playerAngles );
+		playerUnitForwardVec = VectorNormalize( playerForwardVec );
+
+		zombiePos = self.origin;
+		playerPos = player GetOrigin();
+		playerTozombieVec = zombiePos - playerPos;
+		playerTozombieUnitVec = VectorNormalize( playerTozombieVec );
+
+		forwardDotzombie = VectorDot( playerUnitForwardVec, playerTozombieUnitVec );
+		angleFromCenter = ACos( forwardDotzombie );
+
+		playerFOV = GetDvarFloat( #"cg_fov" );
+		inPlayerFov = ( angleFromCenter <= ( playerFOV * 0.5 * ( 1 - threshold ) ) );
+
+		return inPlayerFov;
+	}
+
+	//Create hud elem for widows
+	player_widows_create_heavy_warning()
+	{
+		//self notify( "widows_cancel_warning" );
+		level.widows_cancel_warning = true;
+		wait( 0.1 );
+		level.widows_cancel_warning = false;
+
+		self playsound("chr_breathing_better");
+
+
+		/* Heaving warning accross the bottom doesnt look very good */
+		//self thread player_widows_create_warning( self, "left" );	
+		//self thread player_widows_create_warning( self, "center" );
+		//self thread player_widows_create_warning( self, "right" );
+
+		
+		//For heavy warning, large overlay,
+
+		overlay = newClientHudElem( self );
+		overlay.x = 0;
+		overlay.y = 0;
+		ht = 640;
+		wd = 480;
+		//sclale dimensions by 5%
+		ht = Int( ht*1.1 );
+		wd = Int( wd*1.1 );
+		overlay setshader( "overlay_low_health", ht, wd );
+		
+		overlay.alignX = "left";
+		overlay.alignY = "top";
+		overlay.horzAlign = "fullscreen";
+		overlay.vertAlign = "fullscreen";
+		
+		startAlpha = 0.6;
+		endAlpha = 0.5;
+		overlay.alpha = startAlpha;
+		overlay.color = ( 0.5, 0, 0.9 );
+		
+		self player_widows_handle_warning_fade( 0.5, 0.8, startAlpha, endAlpha, overlay );
+		
+		overlay Destroy();
+		
+	}
+
+	player_widows_create_warning( zomb, warning_dir_override )
+	{
+
+		//dir = self player_widows_calc_angle_behind_player( zomb );
+		dir = "center";
+		inner_radius = level.THRESHOLD_WIDOWS_ZOMBIE_CLOSE_HUD_BEHIND_DIST;
+
+		zomb_origin = zomb.origin;
+		zomb_centroid = zomb GetCentroid();
+		origin = self.origin;
+		view_pos = self GetPlayerViewHeight();
+
+		if( IsDefined( warning_dir_override ))
+		{
+			dir = warning_dir_override;	
+		}
+		else if( checkDist( origin, zomb_origin, level.THRESHOLD_WIDOWS_ZOMBIE_CLOSE_HUD_BEHIND_DIST ) )
+		{
+			dir = "center";
+		}
+		else
+		{
+			player_angles = self GetPlayerAngles();
+			right_angles = AnglesToRight( player_angles );
+			left_angles = right_angles * -1;
+			//iprintln("Right Angles: " + right_angles);
+			//iprintln("Left Angles: " + left_angles);
+
+			right_vector = vector_scale( right_angles, inner_radius );
+			left_vector = vector_scale( left_angles, inner_radius );
+			//watch_place_bottle(right_vector);
+			//iprintln("Right Vector: " + right_vector);
+			//iprintln("Left Vector: " + left_vector);
+
+			left_normal = VectorNormalize( zomb_origin - left_vector );
+			right_normal = VectorNormalize( zomb_origin - right_vector );
+			//left_normal = VectorNormalize(  left_vector - zomb_origin);
+			//right_normal = VectorNormalize( right_vector - zomb_origin);
+			
+			left_dot = VectorDot( left_angles, left_normal );
+			right_dot = VectorDot( right_angles, right_normal );
+
+			if( left_dot > 0 )
+				dir = "left";
+			else if( right_dot > 0)
+				dir = "right";
+			else
+				dir = "center";
+		}
+		
+		overlay = NewClientHudElem( self );
+		overlay setshader( "overlay_low_health_compass", 630, 525 );
+
+		overlay.x = 0;
+		overlay.y = 0;
+		
+		overlay.alignX = "center";
+		overlay.horzAlign = "user_center";
+		offset=300;
+		switch( dir )
+		{
+			case "left":
+				overlay.x -= offset;
+				break;
+			case "right":
+				overlay.x += offset;
+				break;
+			default:
+				overlay.alignX = "center";
+				overlay.horzAlign = "user_center";
+				break;
+		}
+				
+		overlay.alignY = "bottom";
+		overlay.vertAlign = "user_bottom";
+
+		overlay.y += 190;		//move down off screen
+
+		overlay.alpha = 1;
+		startAlpha = 1;
+		endAlpha = 0.8;
+		overlay.color = ( 0.4, 0, 0.9 );
+
+		self player_widows_handle_warning_fade( 0.5, 1, startAlpha, endAlpha, overlay );
+
+		overlay Destroy();
+	}
+
+//Widows warning heler methods
+
+		player_widows_calc_angle_behind_player( zomb )
+		{
+			zomb_origin = zomb GetCentroid();
+			view_pos = self GetPlayerViewHeight();
+			
+			angle_offset = 30;
+			forward_dir = AnglesToForward( self GetPlayerAngles() );
+
+			forward_angles = VectorToAngles( forward_dir );
+
+			arctan = atan( forward_dir[1] / forward_dir[0] );
+			//iprintln("Arctan: " + arctan);
+			//iprintln("Angles: " + forward_angles);
+
+			//left-vector, 30deg from forward
+			left_angle = arcTan - angle_offset;
+			//iprintln("Left Angle: " + left_angle);
+			left_vector = ( cos( left_angle ), sin( left_angle ), 0 );
+			//iprintln("Left Vector: ");
+			//iprintln( left_vector );
+
+			right_angle = arcTan + angle_offset;
+			//iprintln("Right Angle: " + right_angle);
+			right_vector = ( cos( right_angle ), sin( right_angle ), 0 );
+			
+			normal = VectorNormalize( zomb_origin - view_pos );
+
+			//if zombie is "in front of" left vector, then it's to the left
+			is_left = VectorDot( left_vector, normal ) > 0;
+			is_right = VectorDot( right_vector, normal ) > 0;
+
+			//iprintln("Is Left: " + is_left + "  Is Right: " + is_right);
+
+		}
+
+		//Utility method for helping fade time
+		player_widows_handle_warning_fade( wait_time, fade_time, startAlpha, endAlpha, overlay )
+		{
+			//self endon( "widows_cancel_warning" );
+			self endon( "death" );
+
+			time = 0;
+			while( !self.widows_cancel_warning )
+			{
+				time += 0.05;
+				wait( 0.05 );
+				if (time > wait_time)
+					break;
+			}
+
+			if( self.widows_cancel_warning )
+				return;
+
+			time = 0;
+			slope = (endAlpha - startAlpha) / fade_time;
+			while( !self.widows_cancel_warning )
+			{
+				time += 0.05;
+				overlay.alpha = startAlpha - slope;
+				wait( 0.05 );
+				if (time > fade_time)
+					break;
+			}
+
+		}
+
+//End handle HUD warnings
+
+
+/*	 Handle Widows Poison damage */
+
+
+player_zombie_handle_widows_poison( zombie )
+{
+	if( is_true( zombie.marked_for_poison ) || level.classic )
+		return;
+	else
+		zombie.marked_for_poison = true;
+
+	fraction = level.THRESHOLD_WIDOWS_POISON_MIN_HEALTH_FRACTION;
+	MAX_TIME = level.THRESHOLD_WIDOWS_POISON_MAX_TIME;
+	mod = "unknown";
+	if( self hasProPerk( level.WWN_PRO ) ) {
+		fraction = level.THRESHOLD_WIDOWS_PRO_POISON_MIN_HEALTH_FRACTION;
+		MAX_TIME = level.THRESHOLD_WIDOWS_PRO_POISON_MAX_TIME;
+		//mod = "burned";	
+	}
+
+	//min_health = fraction * zombie.maxhealth;
+	min_health = 0;
+	time = MAX_TIME;
+	interval = 0.25;	//4 poison ticks a second
+	dmg = (zombie.health - min_health) / (MAX_TIME / interval);
+	dmg /= 2;	//Half the damage, a zombie can be applied with poison twice
+	
+	keepPoison = (zombie.health > min_health) && (time > 0);
+
+	points_per_tick = maps\_zombiemode_score::zombie_calculate_damage_points( level.apocalypse, zombie );
+	ticks_to_reach_max = level.THRESHOLD_WIDOWS_MAX_POISON_POINTS / points_per_tick;
+	max_ticks = MAX_TIME / interval;
+
+	points_count = Int( max_ticks / ticks_to_reach_max );	//Every 1/4 of the way, give points
+	fx_count = 12;											//Every 3 seconds, play fx
+	count = 0;
+
+	//Play once at start
+	zombie thread zombie_handle_widows_poison_fx();
+
+	while( keepPoison )
+	{
+		wait( interval );
+		if( (count % points_count) == 0 )
+			zombie doDamage( dmg, zombie.origin, self, level.WWN_PRK, mod );
+		else
+			zombie doDamage( dmg, zombie.origin, undefined, level.WWN_PRK, "dot" );
+		
+		time -= interval;
+		keepPoison = (zombie.health > min_health) && (time > 0) && IsAlive( zombie ) && zombie.marked_for_poison;
+
+		if( (count % fx_count) == 0 )
+		{
+			//PlayFxOnTag( level._effect[ "fx_acidgat_explode" ], zombie, "tag_origin" );
+			//PlayFxOnTag( level._effect[ "fx_widows_wine_explode" ], zombie, "tag_origin" );
+			//PlayFxOnTag( level._effect[ "fx_widows_wine_zombie" ], zombie, "tag_origin" );
+			//self PlayLocalSound( "mx_widows_explode" );
+			//zombie thread zombie_handle_widows_poison_fx();
+		}
+		count++;
+	}
+
+	zombie.marked_for_poison = false;
+}
+
+//Handle widows poison fx
+
+	
+	zombie_handle_widows_poison_fx()
+	{
+		scale = 50;
+		//forward = vector_scale( AnglesToForward( self.angles ), scale );
+		model = Spawn( "script_model", self GetTagOrigin( "j_SpineLower" ) );
+		model SetModel( "tag_origin" );
+		model LinkTo( self );	//, "j_SpineLower" );
+		
+		condition = self.marked_for_poison && IsAlive( self );
+		time = 0.75;	//down from 4, only play fx for 1 second
+		interval = 0.25;
+		PlayFxOnTag( level._effect[ "fx_acidgat_explode" ], model, "tag_origin" );
+		
+		//PlayFxOnTag( level._effect[ "fx_acidgat_explode" ], self, "j_SpineLower" );
+		while( condition )
+		{
+			condition = self.marked_for_poison && IsAlive( self ) && time > 0;
+			wait( interval );
+			time -= interval;
+		}
+
+		model Delete();
+	}
+	
+//Handle Widows Grenades
+
+player_watch_widows_grenade( stop_str )
+{
+	self endon( "disconnect" );
+	self endon( "death" );
+
+	while( self hasProPerk( level.WWN_PRO ) || (level.classic && self HasPerk( level.WWN_PRK )) )
+	{
+
+		self waittill( "grenade_fire", grenade, weapName );
+		if( weapName == "bo3_zm_widows_grenade" )
+			self thread player_widows_grenade_explode( grenade );
+
+		wait( 0.05 );
+	}
+
+}
+
+player_widows_grenade_explode( grenade )
+{
+	model = Spawn( "script_model", grenade.origin );
+	grenade setModel( "tag_orgin" );
+	model SetModel( "bo3_t7_ww_grenade_world" );
+	PlayFxOnTag( level._effect[ "widow_light" ], model, "tag_origin" );
+	model linkTo( grenade );
+
+	MAX_TIME = level.VALUE_WIDOWS_GRENADE_EXPLODE_TIME;
+	MAX_RANGE = level.VALUE_WIDOWS_GRENADE_EXPLOSION_RANGE;
+	MIN_RANGE = level.VALUE_WIDOWS_GRENADE_TRIGGER_RANGE;
+	time = 0;
+
+	zombies = get_array_of_closest( grenade.origin, GetAiSpeciesArray( "axis", "all" ),
+								 undefined, undefined, MAX_RANGE );
+	
+	interval = 0.2;
+	while( time < MAX_TIME )
+	{
+		wait( interval );
+		time += interval;
+		triggered = (zombies.size > 0) && checkDist( model.origin, zombies[0].origin, MIN_RANGE );
+		if( triggered )
+			break;
+
+		zombies = get_array_of_closest( model.origin, GetAiSpeciesArray( "axis", "all" ),
+									 undefined, undefined, MAX_RANGE );
+
+		if( Int(time / interval) % 5 == 0)
+		{
+			//PlayFx( level._effect["fx_trail_crossbow_blink_red_os"], model.origin );
+			//PlayFx( level._effect["fx_zombie_eye_single"], model.origin );
+			PlayFxOnTag( level._effect["fx_trail_crossbow_blink_red_os"], model, "tag_origin" );
+		}
+	}
+
+	PlayFxOnTag( level._effect[ "fx_widows_wine_explode" ], model, "tag_origin" );
+	PlayFx( level._effect[ "fx_widows_wine_explode" ], model.origin );
+	PlaySoundAtPosition( "mx_widows_explode", model.origin );
+	model Delete();
+
+	for( i = 0; i < zombies.size; i++ ) {
+		zombies[i] thread zombie_watch_widows_web( self );			
+	}
+
+
+}
+
+
+zombie_watch_widows_web( player )
+{
+	self endon( "death" );
+
+	wait ( RandomFloatrange( 0, 0.5 ) );
+	PlayFxOnTag( level._effect[ "fx_widows_wine_explode" ], self, "tag_origin" );
+	PlaySoundAtPosition( "mx_widows_explode", self.origin );
+
+	MAX_TIME = level.VALUE_WIDOWS_ZOMBIE_WEBBED_TIME;
+
+	boss_zombie_or_poisoned = is_boss_zombie( self.animname ) || is_special_zombie( self.animname ) || is_true( self.marked_for_poison ) ;
+
+	if( boss_zombie_or_poisoned )
+		return;
+
+	can_slow_zombie = is_true( self.is_zombie ) && !is_true( self.marked_for_freeze );
+
+	//iprintln("Can Slow Zombie: " + can_slow_zombie);
+	if( can_slow_zombie ) {
+		wait( level.VALUE_WIDOWS_ZOMBIE_WAIT_WEBBED_TIME );
+		self thread maps\_zombiemode_weapon_effects::slow_zombie_over_time( MAX_TIME, "walk" );
+	}
+		
+
+	self doDamage( level.VALUE_WIDOWS_GRENADE_EXPLOSION_DAMAGE, self.origin, player, level.WWN_PRK, "MOD_GRENADE_SPLASH" );
+	
+	player thread player_zombie_handle_widows_poison( self );
+
+	time = 0;
+	interval = 1;
+
+	flip_fx = 1;
+	fx_spots = array( "j_SpineLower", "j_SpineUpper" );
+	while( IsAlive( self ) && time < MAX_TIME )
+	{
+		wait( interval );
+		time += interval;
+
+		PlayFxOnTag( level._effect[ "fx_widows_wine_zombie" ], self, fx_spots[ flip_fx ] );
+		flip_fx = !flip_fx;
+	}
+	
+	
+}

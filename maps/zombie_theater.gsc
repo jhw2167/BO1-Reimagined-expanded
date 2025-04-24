@@ -65,6 +65,7 @@ main()
 	level.custom_ai_type = [];
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_quad::init );
 	level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_dogs::init );
+	//level.custom_ai_type = array_add( level.custom_ai_type, maps\_zombiemode_ai_boss::init );
 
 	level.door_dialog_function = maps\_zombiemode::play_door_dialog;
 	level.first_round_spawn_func = true;
@@ -110,6 +111,7 @@ main()
 	level thread zombie_dog_pathing_hack();
 	level thread barricade_glitch_fix();
 
+	level.zombie_visionset = "zombie_theater";
 	visionsetnaked( "zombie_theater", 0 );
 	// DSM: Setting chandelier Scale
 	chandelier = getentarray("theater_chandelier","targetname");
@@ -217,8 +219,8 @@ include_weapons()
 	include_weapon( "fnfal_upgraded_zm", false );
 
 	//	Weapons - Sniper Rifles
-	//include_weapon( "dragunov_zm" );					// ptrs41
-	//include_weapon( "dragunov_upgraded_zm", false );
+	include_weapon( "dragunov_zm" );					// ptrs41
+	include_weapon( "dragunov_upgraded_zm", false );
 	include_weapon( "l96a1_zm" );
 	include_weapon( "l96a1_upgraded_zm", false );
 
@@ -289,6 +291,12 @@ include_powerups()
 	include_powerup( "full_ammo" );
 	include_powerup( "carpenter" );
 	include_powerup( "fire_sale" );
+
+	include_powerup( "tesla" );
+	include_powerup( "restock" );
+	include_powerup( "free_perk" );
+	PreCacheItem( "minigun_zm" );
+	include_powerup( "minigun" );
 }
 
 add_powerups_after_round_1()

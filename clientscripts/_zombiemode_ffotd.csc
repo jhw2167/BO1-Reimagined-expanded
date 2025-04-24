@@ -16,7 +16,6 @@ main_start()
 	// registerSystem("hud", ::hud);
 	registerSystem("client_systems", ::client_systems_message_handler);
 	register_client_system("hud_anim_handler", ::hud_message_handler);
-
 	//level thread notetrack_think();
 }
 
@@ -31,12 +30,22 @@ notetrack_think()
 	{
 		level waittill( "notetrack", localclientnum, note );
 
-		//iprintlnbold(note);
+		//iprintlnboldbold(note);
 	}
 }
 
 include_weapons()
 {
+	include_weapon( "bo3_zm_widows_grenade", false );
+	include_weapon( "sticky_grenade_zm", false );
+	
+	include_weapon( "asp_zm" );
+	include_weapon( "asp_upgraded_zm" );
+	include_weapon( "uzi_zm" );
+	include_weapon( "uzi_upgraded_zm" );
+	include_weapon( "ks23_zm" );
+	include_weapon( "ks23_upgraded_zm" );
+
 	if(GetDvar("mapname") == "zombie_cod5_prototype")
 	{
 		include_weapon( "ak47_zm" );
@@ -335,6 +344,7 @@ get_grenade_type(weapon)
 		case "zombie_nesting_dolls":
 		case "zombie_quantum_bomb":
 		case "molotov_zm":
+		case "bo3_zm_widows_grenade":
 			return "tactical";
 
 		default:
@@ -387,6 +397,10 @@ get_grenade_icon(weapon, nade_type)
 		{
 			icon = "hud_icon_molotov";
 		}
+		else if(weapon == "bo3_zm_widows_grenade")
+		{
+			icon = "vending_widows_grenade_icon";
+		}
 	}
 
 	return icon;
@@ -400,6 +414,7 @@ hud_message_handler(clientnum, state)
 	fade_type = "";
 	fade_time = 0;
 
+	s = undefined;
 	if(state == "hud_zone_name_in")
 	{
 		menu_name = "zone_name";
@@ -456,37 +471,54 @@ hud_message_handler(clientnum, state)
 		fade_type = "fadeout";
 		fade_time = 1000;
 	}
-	else if(state == "hud_mule_wep_in")
+	else 
 	{
-		menu_name = "mule_wep_indicator";
-		item_name = "mule_wep_indicator_image";
-		fade_type = "fadein";
-		fade_time = 250;
+		//iprintlnbold("HUD: " + state);
+		s = handle_client_perk_hud_updates( clientnum, state );
 	}
-	else if(state == "hud_mule_wep_out")
+
+	if( isDefined( s ) )
 	{
-		menu_name = "mule_wep_indicator";
-		item_name = "mule_wep_indicator_image";
-		fade_type = "fadeout";
-		fade_time = 250;
-	}
-	else if(state == "stamina_ghost_start")
-	{
-		menu_name = "stamina_ghost_indicator";
-		item_name = "stamina_ghost_indicator_image";
-		fade_type = "fadein";
-		fade_time = 250;
-	}
-	else if(state == "stamina_ghost_end")
-	{
-		menu_name = "stamina_ghost_indicator";
-		item_name = "stamina_ghost_indicator_image";
-		fade_type = "fadeout";
-		fade_time = 250;
+		/*
+		//iprintlnbold(s.menu_name);
+		//iprintlnbold(s.item_name);
+		//iprintlnbold(s.fade_type);
+		//iprintlnbold(s.fade_time);
+		*/
+
+		AnimateUI( clientnum, s.menu_name, s.item_name, s.fade_type, s.fade_time );
+		return;
 	}
 
 	AnimateUI(clientnum, menu_name, item_name, fade_type, fade_time);
 }
+
+handle_client_perk_hud_updates( clientnum, state )
+{
+	
+
+	if( IsSubStr( state, "perk_slot" ) ) {
+		return player_handle_perk_slots( state );
+	}
+	else if( IsSubStr( state, "perk_bar" ) ) {
+		return player_handle_perk_bar( state );
+	}
+	else if( IsSubStr( state, "hud_mule_wep" ) ) {
+		return player_handle_mulekick_message( state );
+	}
+	else if( IsSubStr( state, "stamina_ghost" ) ) {
+		return player_handle_stamina_ghost( clientnum, state );
+	} 
+	else if( IsSubStr( state, "vulture_hud" ) ) {
+		player_handle_vulture_hud( clientnum, state );
+	} else if( IsSubStr( state, "hud_hint" ) ) {
+		player_handle_hints( clientnum, state );
+	}
+	
+	return undefined;
+}
+
+
 
 // Infinate client systems
 register_client_system(name, func)
@@ -506,4 +538,149 @@ client_systems_message_handler(clientnum, state, oldState)
 
 	if(isdefined(level.client_systems) && isdefined(level.client_systems[name]))
 		level thread [[level.client_systems[name]]](clientnum, message);
+}
+
+
+
+/*
+
+HANDLE PERK CLIENT MESSAGES
+
+*/
+
+//Perk bar overlayed on health bar
+player_handle_perk_bar( state )
+{
+	s = SpawnStruct();
+	s.menu_name = "health_bar";				//goes over health_bar
+	s.item_name = GetSubStr( state, 0, 11); //Get "perk_slot_01"
+	s.fade_time = 200;
+	//material name must be set as DVAR
+
+	//iprintlnbold("State: " + state);
+	//iprintlnbold("Perk Slot: " + s.item_name);
+	//If state contains "in" then fade in, else fade out
+	if( IsSubStr( state, "_on" ) ) {
+		s.fade_type = "fadein";
+	}
+	else if( IsSubStr( state, "_off" ) ) {
+		s.fade_type = "fadeout";
+	}
+	else if( IsSubStr( state, "_fade" ) ) {
+		s.fade_type = "faded";
+	}
+	else if( IsSubStr( state, "_dark" ) ) {
+		s.fade_type = "dark";
+	}
+
+	return s;
+}
+
+//Perk Slots
+player_handle_perk_slots( state )
+{
+	s = SpawnStruct();
+	s.menu_name = "perk_slots";
+	s.item_name = GetSubStr( state, 0, 12); //Get "perk_slot_01"
+	s.fade_time = 800;
+	//material name must be set as DVAR
+
+	//iprintlnbold("State: " + state);
+	//iprintlnbold("Perk Slot: " + s.item_name);
+	//If state contains "in" then fade in, else fade out
+	if( IsSubStr( state, "_on" ) ) {
+		s.fade_type = "fadein";
+	}
+	else if( IsSubStr( state, "_off" ) ) {
+		s.fade_type = "fadeout";
+	}
+	else if( IsSubStr( state, "_fade" ) ) {
+		s.fade_type = "faded";
+	}
+	else if( IsSubStr( state, "_dark" ) ) {
+		s.fade_type = "dark";
+	}
+
+	return s;
+}
+
+
+
+//Mulekick
+player_handle_mulekick_message( state )
+{ 
+	s = SpawnStruct();
+	s.menu_name = "mule_wep_indicator";
+	s.item_name = "mule_wep_indicator_image";
+	s.fade_time = 250;
+
+	if(state == "hud_mule_wep_in") {
+		s.fade_type = "fadein";
+	}
+	else if(state == "hud_mule_wep_out") {		
+		s.fade_type = "fadeout";
+	}
+
+	return s;
+}
+
+//Stamina
+
+player_handle_stamina_ghost ( clientnum, state )
+{
+
+	s = SpawnStruct();
+	s.menu_name = "stamina_ghost_indicator";
+	s.item_name = "stamina_ghost_indicator_image";
+	s.fade_time = 250;
+	player = GetLocalPlayers()[ clientnum ];
+
+	//iprintlnbold("Setting vision file for clientnum: " + clientnum);
+	//iprintlnbold( "Local entity number: " + player.entity_num );
+
+	prev_vision = player._previous_vision;
+	prev_priority = player._previous_vision_priority;
+	//iprintlnbold("Setting vision file for clientnum: " + clientnum);
+	//iprintlnbold( "vision: " + player._previous_vision);
+	//iprintlnbold( "priority: " + player._previous_vision_priority);
+
+	if(state == "stamina_ghost_start") {
+		s.fade_type = "fadein";
+		player clientscripts\_zombiemode::zombie_vision_set_maps( undefined, "zombie_blood", clientnum, 0.5, 10 );
+	}
+	else if(state == "stamina_ghost_end") {
+		s.fade_type = "fadeout";
+		player clientscripts\_zombiemode::zombie_vision_set_maps( "zombie_blood",  prev_vision, clientnum, 0.5, prev_priority );
+	}
+
+	return s;
+}
+
+
+//Vulture
+
+player_handle_vulture_hud( clientnum, state )
+{
+	if(state == "vulture_hud_pro") {
+		clientscripts\_zombiemode::vulture_toggle( clientnum, "2" );
+	}
+	else if(state == "vulture_hud_on") {
+		clientscripts\_zombiemode::vulture_toggle( clientnum, "1" );
+	}
+	else if(state == "vulture_hud_off") {
+		clientscripts\_zombiemode::vulture_toggle( clientnum, "0" );
+	}
+}
+
+//Handle Player Hints
+player_handle_hints( clientnum, state )
+{
+	//Need to extract "specialty_armorvest" from "hud_hint_specialty_armorvest",use GetSubStr
+	perk = GetSubStr( state, 8, state.size ); //Get "specialty_armorvest"
+	player = GetLocalPlayers()[ clientnum ];
+
+	//iprintlnbold("Perk: " + perk);
+	
+	//player thread generate_perk_hint( perk );
+	//Obselete until we want to do it on UI hud
 }

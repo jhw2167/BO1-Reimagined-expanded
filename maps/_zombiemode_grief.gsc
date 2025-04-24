@@ -424,7 +424,7 @@ giveback_player_weapons()
 	if(IsDefined(self.weaponEquipment["melee"]))
 	{
 		self set_player_melee_weapon(self.weaponEquipment["melee"]);
-		self maps\_zombiemode::set_melee_actionslot();
+		//self maps\_zombiemode::set_melee_actionslot();
 	}
 	
 	if(IsDefined(self.weaponEquipment["lethal"]))

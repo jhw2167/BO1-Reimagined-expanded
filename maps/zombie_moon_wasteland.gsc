@@ -34,7 +34,7 @@ init_no_mans_land()
 	level.initial_spawn = true;
 	level.nml_didteleport = false;
 
-	level.nml_dog_health = 150;
+	level.dog_health = int( level.zombie_health * level.VALUE_ZOMBIE_DOG_HEALTH_PORTION  );
 
 	//level._effect[ "lightning_dog_spawn" ]	= Loadfx( "maps/zombie/fx_zombie_dog_lightning_buildup" );
 
@@ -82,7 +82,7 @@ init_no_mans_land()
 	level.NML_MIN_REACTION_DIST_SQ    = 32*32;	  // minimum distance from the player to be able to react
 	level.NML_MAX_REACTION_DIST_SQ	  = 2400*2400;// maximum distance from the player to be able to react
 
-	level.nml_start_perk = GetDvar("nml_start_perk");
+	level.nml_perk = GetDvar("nml_start_perk");
 }
 
 //******************************************************************************
@@ -912,6 +912,7 @@ perk_machine_show_selected( perk_index, moving )
 			perk_machines_hide( 1, 0, moving );
 		break;
 	}
+
 }
 
 
@@ -962,11 +963,11 @@ perk_machine_arrival_update()
 		{
 			//host can choose which perk initally spawns from game settings
 			level.first_perk = false;
-			if(level.nml_start_perk == "random")
+			if(level.nml_perk == "random")
 			{
 				perk_index = randomintrange( 0, 2 );
 			}
-			else if(level.nml_start_perk == "speed")
+			else if(level.nml_perk == "speed")
 			{
 				perk_index = 0;
 			}
@@ -980,6 +981,7 @@ perk_machine_arrival_update()
 			if(level.last_perk_index == 0)
 			{
 				perk_index = 1;
+				
 			}
 			else
 			{
@@ -987,9 +989,11 @@ perk_machine_arrival_update()
 			}
 		}
 
+		level.nml_perk = level.ARRAY_MOON_VALID_NML_PERKS[ perk_index ];
+
 		level.last_perk_index = perk_index;
 		perk_machine_show_selected( perk_index, false );
-
+		level notify( "zombie_vending_moved" );
 	}
 }
 
@@ -1119,26 +1123,9 @@ nml_ramp_up_zombies()
 
 nml_dog_health_increase()
 {
-	if( level.nml_timer < 4)
-	{
-		level.nml_dog_health = 150;
-	}
-	else if( level.nml_timer >= 4 && level.nml_timer < 6) //80 seconds.
-	{
-		level.nml_dog_health = 400;
-	}
-	else if( level.nml_timer >= 6 && level.nml_timer < 15 ) //2 minutes
-	{
-		level.nml_dog_health = 800;
-	}
-	else if( level.nml_timer >= 15 && level.nml_timer < 30 ) // 5 minutes
-	{
-		level.nml_dog_health = 1200;
-	}
-	else if(level.nml_timer >= 30)//10 minutes or more
-	{
-		level.nml_dog_health = 1600;
-	}
+	//Reimagined-Expanded, dog health as percent of normal zombie health
+	level.dog_health = int( level.zombie_health * level.VALUE_ZOMBIE_DOG_HEALTH_PORTION  );
+	level.nml_dog_health = level.dog_health;
 }
 
 nml_shouldSideStep()

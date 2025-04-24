@@ -59,6 +59,7 @@ teleporter_init()
 	}
 
 	level.teleport_ae_funcs = [];
+	level.teleporter_exploder_func = ::teleport_pad_start_exploder;
 
 	/*if( !IsSplitscreen() )
 	{
@@ -389,6 +390,8 @@ player_teleporting( index, user, first_time )
 		level.times_teleported++;
 	}
 
+	level.teleported_player = user;
+
 	times_teleported = level.times_teleported; //save the current amount because the global variable might change
 
 	level.time_since_last_teleport = GetTime() - level.teleport_time;
@@ -447,21 +450,14 @@ player_teleporting( index, user, first_time )
 	is_powerup = false;
 	if ( IsDefined( ss ) )
 	{
-		if(level.round_number < 15 || first_time)
+		if( first_time && level.round_number < 15 )
 		{
 			is_powerup = true;
 		}
 
 		if(!is_powerup)
-		{
-			// starting at round 15, chance of getting a powerup goes down by 5% each round (minimum of 15% chance)
-			chance = (level.round_number - 14) * 5;
-			if(chance > 85)
-			{
-				chance = 85;
-			}
-
-			is_powerup = RandomInt(100) >= chance;
+		{		
+			is_powerup = ( RandomInt(100) < 34 );
 		}
 
 		// if versus mode, then only spawn powerups once all links are active or else it will try to spawn 3 powerups at the beginning of the match since the teleporters are automatically linked at the beginning of the match
@@ -484,16 +480,92 @@ player_teleporting( index, user, first_time )
 		is_dog = !first_time;
 	}
 
+	if( is_true( level.dev_only ) )
+		is_dog = true;	//testing special_dog_spawn, fluffy
+		
 	if(is_dog)
 	{
 		thread play_sound_2d( "sam_nospawn" );
 		dog_spawners = GetEntArray( "special_dog_spawner", "targetname" );
+		test_special_dog_spawn();
 		maps\_zombiemode_ai_dogs::special_dog_spawn( undefined, 2 * get_players().size );
 	}
 
 	level.teleport_time = GetTime();
 
 	level notify("teleporter_end");
+}
+
+/*
+	test_special_dog_spawn
+	- Reimagined-Expanded - rarealy spawn a special dog that will drop a powerup
+*/
+
+test_special_dog_spawn()
+{
+	tp1 = flag( "teleporter_pad_link_1" );
+	tp2 = flag( "teleporter_pad_link_2" );
+	tp3 = flag( "teleporter_pad_link_3" );
+
+	if( is_true( tp1 ) && is_true( tp2 ) && is_true( tp3 ) )
+	{
+		//all tps linked, continue
+	}
+	else
+	{
+		//iprintln("Tps not init");
+		return;
+	}
+
+	//iprintln("Dog test");
+
+	if( is_true( flag( "dog_round_spawning" ) ) )
+	{
+		//iprintln("Dog round spawning, no special dog");
+		return;
+	}
+
+	if( level.special_dog_spawn )
+	{
+		//iprintln("Special dog spawn already set");
+		return;
+	}
+
+	if( level.zombie_total < 16)
+	{
+		//iprintln("Not enough zombies");
+		return;
+	}
+
+	if( level.round_number - level.last_special_dog_spawn < level.THRESHOLD_FACTORY_MIN_ROUNDS_BETWEEN_SPECIAL_DOG_SPAWN )
+	{
+		//iprintln("Last special dog spawn too soon");
+		return;
+	}
+
+	if( !IsDefined( level.special_dog_spawn_attempted ) )
+		level.special_dog_spawn_attempted = 0;
+	
+	if( level.special_dog_spawn_attempted >= level.THRESHOLD_FACTORY_MAX_ATTEMPTS_SPECIAL_DOG_SPAWN )
+	{
+		//iprintln("Special dog spawn attempted this round");
+		return;
+	}
+
+	//iprintln("Attempting dog chance");
+	if( RandomInt(100) < level.VALUE_FACTORY_SPECIAL_DOG_SPAWN_CHANCE )
+	{
+		level.special_dog_spawn = true;
+		level.last_special_dog_spawn = level.round_number;
+
+		wait( RandomInt(5) );
+	}
+	else
+	{
+		level.special_dog_spawn_attempted++;
+	}
+
+	
 }
 
 //-------------------------------------------------------------------------------
@@ -762,6 +834,9 @@ teleport_players(user)
 
 		player.inteleportation = false;
 	}
+
+	//EMD PLAYER teleport, teleport here
+	//Call spawn
 
 	// play beam fx at the core
 	exploder( 106 );

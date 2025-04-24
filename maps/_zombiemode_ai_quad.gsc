@@ -29,11 +29,13 @@ quad_prespawn()
 	zombies = GetAIArray( "axis" );
 	quad_zombies = 0;
 	for ( i = 0; i < zombies.size; i++ ) {
-		if ( zombies[i].animname == "quad_zombie" )
+		if ( IsDefined(zombies[i].animname) && zombies[i].animname == "quad_zombie" )
 			quad_zombies++;
 	}
-	
-	if( (quad_zombies / zombies.size) > level.THRESHOLD_NOVA_CRAWLER_MAX_PORTION ) {
+
+
+	if( (quad_zombies > 3) && ( (quad_zombies / zombies.size) > 0.2 ) ) 
+	{
 		return;
 	}
 		
@@ -866,7 +868,8 @@ quad_post_death()
 
 quad_killed_override( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime )
 {
-	if( (sMeansOfDeath == "MOD_PISTOL_BULLET" || sMeansOfDeath == "MOD_RIFLE_BULLET") && sWeapon != "zombie_bullet_crouch" )
+	if( (sMeansOfDeath == "MOD_PISTOL_BULLET" || sMeansOfDeath == "MOD_RIFLE_BULLET") && 
+		( sWeapon != "zombie_bullet_crouch" && !IsSubStr(sWeapon, "sabertooth") ) )
 	{
 		self.can_explode = true;
 	}

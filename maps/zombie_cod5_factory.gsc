@@ -30,6 +30,9 @@ main()
 	level.door_dialog_function = maps\_zombiemode::play_door_dialog;
 	level.dog_spawn_func = maps\_zombiemode_ai_dogs::dog_spawn_factory_logic;
 
+	level.mapname = Tolower( GetDvar( #"mapname" ) );
+	level.script = level.mapname;
+
 	// Animations needed for door initialization
 	script_anims_init();
 
@@ -264,7 +267,7 @@ register_offhand_weapons_for_level_defaults_override()
 	level.zombie_placeable_mine_player_init = undefined;
 
 	register_melee_weapon_for_level( "knife_zm" );
-	register_melee_weapon_for_level( "bowie_knife_zm" );
+	//register_melee_weapon_for_level( "bowie_knife_zm" );
 	level.zombie_melee_weapon_player_init = "knife_zm";
 }
 
@@ -382,8 +385,8 @@ intro_screen()
 	level.intro_hud[0] settext(&"WAW_ZOMBIE_INTRO_FACTORY_LEVEL_PLACE");
 	level.intro_hud[1] settext("");
 	level.intro_hud[2] settext("");
-//	level.intro_hud[1] settext(&"WAW_ZOMBIE_INTRO_FACTORY_LEVEL_TIME");
-//	level.intro_hud[2] settext(&"WAW_ZOMBIE_INTRO_FACTORY_LEVEL_DATE");
+	//level.intro_hud[1] settext(&"WAW_ZOMBIE_INTRO_FACTORY_LEVEL_TIME");
+	//level.intro_hud[2] settext(&"WAW_ZOMBIE_INTRO_FACTORY_LEVEL_DATE");
 
 	for(i = 0 ; i < 3; i++)
 	{
@@ -661,8 +664,7 @@ include_weapons()
 	// get the bowie into the collector achievement list
 	level.collector_achievement_weapons = array_add( level.collector_achievement_weapons, "bowie_knife_zm" );
 
-
-
+	/*
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_kar98k", "zombie_kar98k_upgraded", 						&"WAW_ZOMBIE_WEAPON_KAR98K_200", 				200,	"rifle");
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "",					&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
 
@@ -671,7 +673,7 @@ include_weapons()
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1carbine","zombie_m1carbine_upgraded",						&"WAW_ZOMBIE_WEAPON_M1CARBINE_600",				600,	"rifle" );
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1garand", "zombie_m1garand_upgraded" ,						&"WAW_ZOMBIE_WEAPON_M1GARAND_600", 				600,	"rifle" );
 
-	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		250,	"grenade", "", 250 );
+	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		1000,	"grenade", "", 1000 );
 	maps\_zombiemode_weapons::add_zombie_weapon( "mine_bouncing_betty", "", &"WAW_ZOMBIE_WEAPON_SATCHEL_2000", 2000 );
 	// Scoped
 	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				750,	"sniper");
@@ -693,6 +695,8 @@ include_weapons()
 
 	// Bipods
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_bar_bipod", 	"",					&"WAW_ZOMBIE_WEAPON_BAR_BIPOD_2500", 			2500,	"mg" );
+	*/
+	
 }
 
 
@@ -762,6 +766,12 @@ include_powerups()
 	include_powerup( "double_points" );
 	include_powerup( "full_ammo" );
 	include_powerup( "carpenter" );
+	include_powerup( "free_perk" );
+
+	include_powerup( "tesla" );
+	include_powerup( "restock" );
+PreCacheItem( "minigun_zm" );
+include_powerup( "minigun" );
 }
 
 

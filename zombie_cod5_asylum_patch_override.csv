@@ -1,0 +1,29 @@
+//zombie_cod5_asylum_patch_override
+
+//FX
+fx,maps/zombie/fx_zombie_packapunch
+
+
+//WAW WEAPONS
+weapon,sp/zombie_springfield
+weapon,sp/zombie_bar_upgraded
+weapon,sp/zombie_m1garand_upgraded
+weapon,sp/zombie_kar98k_upgraded
+//weapon,sp/zombie_springfield_upgraded
+
+weapon,sp/ray_gun_upgraded_zm
+weapon,sp/freezegun_upgraded_zm
+
+//weapon,sp/zombie_gewehr43_upgraded
+//weapon,sp/zombie_doublebarrel_sawed_upgraded
+//weapon,sp/zombie_doublebarrel_upgraded
+//weapon,sp/zombie_kar98k_upgraded
+//weapon,sp/zombie_m1carbine_upgraded
+//weapon,sp/zombie_shotgun_upgraded
+//weapon,sp/zombie_stg44_upgraded
+//weapon,sp/zombie_thompson_upgraded
+//weapon,sp/zombie_type100_smg_upgraded
+
+
+//IGNORE FILES THAT ARE ALREADY LOADED IN THE BASE GAME
+ignore,ignorefiles

@@ -3,7 +3,7 @@
 #include maps\_zombiemode_utility;
 #include maps\_zombiemode_net;
 #include maps\_zombiemode_audio;
-
+#include maps\_zombiemode_reimagined_utility;
 
 #using_animtree( "generic_human" );
 init()
@@ -28,8 +28,42 @@ init()
 	// I'm putting this in here for now so that we can fit in the ffotd
 	//add player intersection tracker
 	level thread track_players_intersection_tracker();
+	level thread wait_zombie_eye_glow();
 }
 
+wait_zombie_eye_glow()
+{
+	level endon( "end_game" );
+
+	level.fx_eye_glow = "eye_glow";
+	//flag_wait( "power_on" );		//or level waittill("juggernog_on");
+	//level._effect["blue_eyes"]
+	
+	if( level.mapname=="zombie_moon" && !level.apocalypse )
+	{
+		level waittill( "start_launch" );
+		wait(5);
+		level.fx_eye_glow = "blue_eyes";
+	}
+	else
+	{
+		return;
+	}
+		
+
+	zombies = GetAiSpeciesArray( "axis", "all" );
+	
+	for ( i = 0; i < zombies.size; i++ )
+	{
+		if ( isDefined( zombies[i].fx_eye_glow ) )
+		{
+			zombies[i].fx_eye_glow Delete();
+			zombies[i] thread zombie_eye_glow();
+		}
+	}
+
+
+}
 
 track_players_intersection_tracker()
 {
@@ -152,7 +186,7 @@ zombie_spawn_init( animname_set )
 	self.targetname = "zombie";
 	self.script_noteworthy = undefined;
 
-	if( !animname_set )
+	if( !animname_set  || !isDefined( self.animname ) )
 	{
 		self.animname = "zombie";
 	}
@@ -163,7 +197,8 @@ zombie_spawn_init( animname_set )
 	self.ignoreme = true; // don't let attack dogs give chase until the zombie is in the playable area
 	self.allowdeath = true; 			// allows death during animscripted calls
 	self.force_gib = true; 		// needed to make sure this guy does gibs
-	self.is_zombie = true; 			// needed for melee.gsc in the animscripts
+	if( self.animname == "zombie" )
+		self.is_zombie = true; 			// needed for melee.gsc in the animscripts
 	self.has_legs = true; 			// Sumeet - This tells the zombie that he is allowed to stand anymore or not, gibbing can take
 									// out both legs and then the only allowed stance should be prone.
 	self allowedStances( "stand" );
@@ -211,9 +246,18 @@ zombie_spawn_init( animname_set )
 	self thread zombie_gib_on_damage();
 	self thread zombie_damage_failsafe();	
 	
+	self.zombie_despawn=false;
 	self.respawn_zombie = false;
+
 	self.marked_for_freeze=false;
 	self.marked_for_tesla=false;
+	self.marked_for_poison=false;
+	self.burned = false;
+
+	self.knockdown = false;
+	self.is_water = false;
+	self.widows_posion_bullet_count = 0;
+
 	if(self.animname == "zombie" ) 
 	{
 		//Check respawn queue
@@ -235,22 +279,32 @@ zombie_spawn_init( animname_set )
 
 		
 
-		//Reimagined-Expanded, despawn zombies if they are not damaged for a period
+		//Reimagined-Expanded, despawn or speed_up zombies if they are not damaged for a period
+		self.zombie_hash = randomint(level.VALUE_ZOMBIE_HASH_MAX);
 		if(
-		level.tough_zombies
-		&& is_in_array(level.ARRAY_DESPAWN_ZOMBIES_VALID, self.animname)
+		is_in_array(level.ARRAY_VALID_DESPAWN_ZOMBIES, self.animname)
 		&& level.round_number > 5
-		&& level.zombie_total > 5 ) 
+		&& maps\_zombiemode::get_total_remaining_enemies() > 5
+		) 
 		{
+			//iprintln("Zombie watching despawn: ");
 			self thread zombie_watch_despawn_no_damage();
+		} 
+		else {
+			//iprintln("Zombie not watching despawn: ");
 		}
 
 		//Reimagined-Expanded, zombie drops
-		if(level.round_number >= level.THRESHOLD_ZOMBIE_RANDOM_DROP_ROUND
-		&& !self.respawn_zombie
-		&& is_in_array(level.ARRAY_DESPAWN_ZOMBIES_VALID, self.animname)
+		if(
+		( level.round_number >= level.THRESHOLD_ZOMBIE_RANDOM_DROP_ROUND )
+		&& ( !self.respawn_zombie )
+		&& ( is_in_array(level.ARRAY_VALID_DESPAWN_ZOMBIES, self.animname) )
+		&& ( level.total_drops_round < level.THRESHOLD_MAX_DROPS )
 		)
 			self thread zombie_wait_determine_drop();
+
+		if( is_true( level.zombiemode_using_vulture_perk ) )
+			self thread maps\_zombiemode_perks::zombie_watch_vulture_drop_bonus();
 	}
 
 	if(IsDefined(level._zombie_custom_spawn_logic))
@@ -289,7 +343,7 @@ zombie_spawn_init( animname_set )
 
 	//Reimagined-Expanded, slightly more damage since we now have baby jug
 	self.meleeDamage = 60;
-	self.zombie_hash=randomint(level.VALUE_ZOMBIE_HASH_MAX);
+	
 
 	//Effects
 	self.marked_for_freeze=false;
@@ -324,10 +378,11 @@ zombie_spawn_init( animname_set )
 zombie_on_death()
 {
 	self waittill_any("death", "zombie_delete" );
-
-	if( isDefined( self.zombie_drop_model ) )
+	
+	if( isDefined( self.zombie_drop_model ) ) {
 		self.zombie_drop_model Delete();
-
+	}
+		
 	if( isDefined( self.fx_eye_glow ) )
 		self.fx_eye_glow Delete();
 	
@@ -336,7 +391,7 @@ zombie_on_death()
 zombie_wait_determine_drop() 
 {
 	self endon("death");
-	/* I kinda like seeing zombies spawn with the glowy - Reinmagined-Expanded
+	/* I kinda like seeing zombies spawn with the glowy - Reimagined-Expanded
 	notInPlayableArea = true;
 	playable_area = getentarray("player_volume","script_noteworthy");
 	while( notInPlayableArea )
@@ -359,6 +414,13 @@ zombie_determine_drop()
 {
 		self endon("death");
 
+		if( level.total_drops_round >= level.THRESHOLD_MAX_DROPS )
+		{
+			self.hasDrop = "NONE";
+			return;
+		}
+			
+
 		total = 1000;
 		if( isDefined(level.zombie_round_total) )
 			total = level.zombie_round_total*10;
@@ -369,24 +431,35 @@ zombie_determine_drop()
 		//print total and rand
 		//iprintln(" rand: " + rand);
 
-		green_rate = Int( ( level.VALUE_ZOMBIE_DROP_RATE_GREEN / total ) * 1000);
-		blue_rate = Int( ( level.VALUE_ZOMBIE_DROP_RATE_BLUE / total ) * 1000);
+		green_rate = Int( ( ( level.VALUE_ZOMBIE_DROP_RATE_GREEN + level.drop_rate_adjustment ) / total ) * 1000);
+		blue_rate = Int( ( ( level.VALUE_ZOMBIE_DROP_RATE_BLUE +  level.drop_rate_adjustment ) / total ) * 1000);
 		red_rate = Int( ( level.VALUE_ZOMBIE_DROP_RATE_RED / total ) * 1000);
 
+		//iprintln(" rand: " + rand);
+		//iprintln( "blue_rate: " + blue_rate + " red_rate: " + red_rate + " green_rate: " + green_rate);
 		//Not Acpocalypse/extra drops
 		if(level.extra_drops) 
 		{
+			 // level.drop_rate_adjustment,  between  0 and 80, makes drops more frequent later
 			//Apocalypse or extra drops
 			if( rand < green_rate )
-			self.hasDrop = "GREEN";
+			{
+				self.hasDrop = "GREEN";
+			}
 			else if( rand < green_rate + blue_rate )
+			{
 				self.hasDrop = "BLUE";
+			}
 			else if( rand < green_rate + blue_rate + red_rate )
+			{
 				self.hasDrop = "RED";
-		} else {
-			green_rate = Int( ( level.VALUE_ZOMBIE_DROP_RATE_GREEN_NORMAL / total ) * 1000);
+				self.hasDrop = "NONE";
+			}
 			
-			if( rand < green_rate ) {
+		} else {
+				green_rate = Int( ( ( level.VALUE_ZOMBIE_DROP_RATE_GREEN_NORMAL + level.drop_rate_adjustment ) / total ) * 1000);
+			
+			if( rand < green_rate  ) {
 				self.hasDrop = "GREEN";
 				//iprintln("SUCESS: rand: " + rand + " < " + green_rate);
 			} 
@@ -398,30 +471,119 @@ zombie_determine_drop()
 			
 		if( self.hasDrop == "GREEN" || self.hasDrop == "BLUE" || self.hasDrop == "RED" ) 
 		{
-			//iprintln("Zombie drop: " + self.hasDrop);
-			self.zombie_drop_model = Spawn( "script_model", self GetTagOrigin( "j_SpineLower" ) );
-			self.zombie_drop_model setModel( "tag_origin" );
-			self.zombie_drop_model LinkTo( self, "tag_origin" );
+			//iprintln( "zombie total: " + total);
+			//iprintln(" rand: " + rand);
+			//iprintln( "blue_rate: " + blue_rate + " red_rate: " + red_rate + " green_rate: " + green_rate);
 
-			//This needs to be in client csc for Vulture aid Pro, not for all to see
-			// -- PlayFXOnTag( level._effect["powerup_on"], self.zombie_drop_model, "tag_origin" );
-			//PlayFXOnTag( level._effect["powerup_on"], self, "J_SpineLower" ); - this wont get deleted
+			//iprintln("Zombie Drop 3: " + self.hasDrop);
+
+			level.total_drops_round++;
+			useClientSideFx = true;
+			if( useClientSideFx )
+			{
+				self setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+				wait 0.5;
+				self clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+			}
+			else
+			{
+				self.zombie_drop_model = Spawn( "script_model", self GetTagOrigin( "j_SpineLower" ) );
+				self.zombie_drop_model LinkTo( self, "j_SpineLower" );
+				self.zombie_drop_model SetModel( "tag_origin" );
+
+				if( IsDefined(self.zombie_drop_model) )
+					PlayFXOnTag( level._effect["powerup_on"], self.zombie_drop_model, "tag_origin" );
+			}
+			
+
+			
+			
 		}
 }
 
 //Reimagined-Expanded
 //If a zombie is not damaged for a period, delete it
-zombie_watch_despawn_no_damage() 
+zombie_watch_despawn_no_damage( initialDelay ) 
 {
-	wait( level.VALUE_DESPAWN_ZOMBIES_UNDAMGED_TIME_MAX );
-	self.zombie_despawn=false;
+	//iprintln("Starting zombie despawn: " + self.zombie_hash);
+
 	self endon("death");
+	level endon( level.STRING_MIN_ZOMBS_REMAINING_NOTIFY );
+
+	if( !IsDefined( initialDelay ) )
+		initialDelay = true;
+
+	if( initialDelay )
+		wait( level.VALUE_DESPAWN_ZOMBIES_UNDAMGED_TIME_MAX );
+
+	//iprintln("1: initial delay" + self.zombie_hash);
+	while( !checkObjectInPlayableArea( self ) ) {
+		wait(0.5);
+	}
+	
+	//iprintln("2: Playble area" + self.zombie_hash);
+
+	if( !Isdefined(self) || !IsAlive(self) )
+		return;
+
 	while( !self.zombie_despawn )
 	{
 		self zombie_watch_despawn_no_damage_trigger();
+		
+		if( !IsDefined(self) || !IsAlive(self) )
+				return;
+		
 		wait(0.1);
 	}
+
+	/*
+	  First attempt to speed up the zombie
+
+	*/
+		if( self.animname == "zombie" || self.animname == "quad_zombie" )
+		{
+			//Deal with crawler zombies
+			if( !is_true(self.has_legs) )
+			{
+				if( level.zombie_total < 5 ) 
+				{
+					self thread zombie_watch_despawn_no_damage( false );
+					return;	//don't kill the crawlers with few zombies left
+				}
+					
+			}
+			else if( level.apocalypse)
+			{
+				if( self.zombie_speed_og_indx < 4 ) 
+				{
+					self zombie_speed_up( 1, true );
+					self.zombie_despawn = false;
+					self thread zombie_watch_despawn_no_damage( false );
+					return;
+				}
+				//else zombie will be kiled and respawn
+			}
+			else	//Classic Mode!
+			{
+				if( self.zombie_speed_og_indx < 3 ) 
+				{
+					self zombie_speed_up( 1, true );
+					self.zombie_despawn = false;
+					self thread zombie_watch_despawn_no_damage( false );
+					return;
+				}
+				else 
+				{
+					return;
+				}
+
+			}
+
+		}
 	
+			
+
+	//Only reached in apocalypse mode - kill the zombie and no points can be salvaged
 	respawn_queue_interface("PUSH", self.zombie_type);
 	level.zombie_total++;
 	self DoDamage(self.health + 100, self.origin);
@@ -431,9 +593,19 @@ zombie_watch_despawn_no_damage()
 	{
 		self endon("zombie_damaged");
 		self endon( "hit_player" );
+
+		level endon( level.STRING_MIN_ZOMBS_REMAINING_NOTIFY );
 		wait( level.VALUE_DESPAWN_ZOMBIES_UNDAMGED_TIME_MAX );
-		players = GetPlayers();
-		for(i=0; i < players.size ; i++) {
+
+		if( !IsDefined(self) || !IsAlive(self) )
+				return;
+			
+		players = get_players();
+		for(i=0; i < players.size ; i++) 
+		{
+			if( !IsDefined(players[i].origin) || !IsDefined(self.origin) )
+				continue;
+
 			if ( checkDist(self.origin, players[i].origin, level.VALUE_DESPAWN_ZOMBIES_UNDAMGED_RADIUS ))
 				return;
 		}
@@ -468,18 +640,21 @@ respawn_queue_interface( action, zombie_type )
 	
 	//iprintln("respawn_queue_interface: " + action + " | " + zombie_type);
 	queue_num = level.respawn_queue_num;
-	while( level.respawn_queue_locked  || queue_num < level.respawn_queue_unlocks_num) 
+	level.respawn_queue_num++;
+	NOTIFY_MSG = "respawn_queue_unlock_";
+	while( level.respawn_queue_locked  || level.respawn_queue_unlocks_num < queue_num ) 
 	{
-		wait 0.05;
+		level waittill( NOTIFY_MSG );
 	}
 
 	level.respawn_queue_locked = true;
-	level.respawn_queue_num++;
 
 	response = alter_respawn_queue( action, zombie_type );
 
 	level.respawn_queue_unlocks_num++;
 	level.respawn_queue_locked = false;
+	level notify( NOTIFY_MSG );
+
 	//iprintln("interface returning: " + response);
 	return response;
 }
@@ -579,16 +754,34 @@ zombie_damage_failsafe()
 	}
 }
 
-set_zombie_run_cycle( new_move_speed )
+set_zombie_run_cycle( new_move_speed, isPermanent )
 {
-	if ( isDefined( new_move_speed ) )
+
+	
+	//if zombie doesnt have legs, return
+	if( !is_true(self.has_legs ) )
+		return;
+
+	if( !isDefined( isPermanent ) )
+		isPermanent = false;
+
+	if ( !isDefined( new_move_speed ) )
 	{
-		self.zombie_move_speed = new_move_speed;
-	}
-	else
-	{
-		self set_run_speed();
+		new_move_speed = self set_run_speed();
 		self.zombie_move_speed_original = self.zombie_move_speed;
+	}
+	
+	if( new_move_speed == "super-sprint" ) 
+	{
+		self.zombie_move_speed = "sprint";
+		self.zombie_move_speed_supersprint = true;
+	}
+	else if ( new_move_speed == "terror" )
+	{
+		self.zombie_move_speed = "sprint";
+		self.zombie_move_speed_supersprint = true;
+		if( !IsDefined(self.zombie_speed_up) ) 
+			self.zombie_speed_up = 1.15;
 	}
 
 	self.needs_run_update = true;
@@ -597,18 +790,15 @@ set_zombie_run_cycle( new_move_speed )
 
 	self.deathanim = random(death_anims);
 
-	if( self.animname != "zombie" ) {
-		//iprintln( "zombie_spawn_init -> move speed = " + self.zombie_move_speed );
-	}
+	// var = 0;
 
-// var = 0;
-
-	switch(self.zombie_move_speed)
+	switch( new_move_speed )
 	{
 	case "walk":
 		var = randomintrange(1, 9);
 		self set_run_anim( "walk" + var );
 		self.run_combatanim = level.scr_anim[self.animname]["walk" + var];
+		self.zombie_speed_indx = 0;
 		break;
 	case "run":
 		var = 1;
@@ -623,32 +813,65 @@ set_zombie_run_cycle( new_move_speed )
 		}
 		self set_run_anim( "run" + var );
 		self.run_combatanim = level.scr_anim[self.animname]["run" + var];
+		self.zombie_speed_indx = 1;
 		break;
-	case "sprint":
-		var = 1;
-		if(is_true(self.zombie_move_speed_supersprint))
-		{
-			var = randomintrange(5, 7);
-			if(isDefined(self.zombie_speed_up))
-			{
-				self.moveplaybackrate = self.zombie_speed_up;
-				self.animplaybackrate = self.zombie_speed_up;
-				//iprintln("super sprinter spawned - " + self.zombie_speed_up);
-				var=5;
-			}
-		}
-		else
-		{
-			var = randomintrange(1, 5);
-		}
+	case "sprint":	
+
+		var = randomintrange(1, 5);
 		self set_run_anim( "sprint" + var );
 		self.run_combatanim = level.scr_anim[self.animname]["sprint" + var];
+		self.zombie_speed_indx = 2;
+		//iprintln( "zombie_spawn_init -> sprinter " + self.zombie_hash );
+		break;
+	
+	case "super-sprint":
+		//var = randomintrange(5, 7);
+		//iprintln( "zombie_spawn_init -> super-sprinter " + self.zombie_hash );
+		self.zombie_speed_indx = 3;
+
+		var=5;
+		self.zombie_move_speed_supersprint = true;
+
+		self set_run_anim( "sprint" + var );
+		self.run_combatanim = level.scr_anim[self.animname]["sprint" + var];
+		
+		break;
+
+	case "terror":
+		//iprintln( "zombie_spawn_init -> terror " + self.zombie_hash );
+		self.zombie_speed_indx = 4;
+		///*
+		var=5;
+		self.zombie_move_speed_supersprint = true;
+		
+		self set_run_anim( "sprint" + var );
+		self.run_combatanim = level.scr_anim[self.animname]["sprint" + var];
+
+		self.moveplaybackrate = self.zombie_speed_up;
+		self.animplaybackrate = self.zombie_speed_up;
+
+		//self notify( "end_terror_zombie" );
+		//self thread watch_terror_playback_rate();
+		//*/
+
 		break;
 	}
 
-	if( !IsDefined(self.zombie_speed_up) ) {
+	if( isPermanent ) 
+	{
+		self.zombie_move_speed_original = self.zombie_move_speed;
+		self.zombie_speed_og_indx = self.zombie_speed_indx;
+	}
+		
+
+	if( !IsDefined( self.zombie_speed_up ) || self.zombie_speed_indx < 4 ) 
+	{
 		self.moveplaybackrate = 1;
 		self.animplaybackrate = 1;
+	} 
+
+	if ( self.zombie_speed_indx < 3 ) {
+		self.zombie_move_speed_supersprint = false;
 	}
 
 //	self thread print3d_ent( self.zombie_move_speed+var, (1,1,1), 2.0, (0,0,72), "", true );
@@ -657,39 +880,133 @@ set_zombie_run_cycle( new_move_speed )
 set_run_speed()
 {
 	rand = level.zombie_move_speed;
-	if(level.zombie_move_speed < 100 ) {
-		rand = randomintrange( level.zombie_move_speed, level.zombie_move_speed + 35 );
-	} else {
-		rand = randomintrange( 100, level.zombie_move_speed + 35 );
+	if(level.zombie_move_speed < 65 ) {
+		rand = randomintrange( level.zombie_move_speed, level.zombie_move_speed + 40 );
+	} 
+	else  if(level.zombie_move_speed < 110 ) {
+		rand = randomintrange( level.zombie_move_speed - 20, level.zombie_move_speed + 40 );
+	}
+	else {
+		//Uniform dist
+		rand = randomintrange( level.zombie_move_speed - 40, level.zombie_move_speed + 40 );
 	}
 	
 
 	//iprintln( "zombie_spawn_init -> rand = " + rand );
-//	self thread print_run_speed( rand );
-	if( rand <= 35 )
+//	self thread print_run_speed( rand ); 
+	if( rand <= 35 )	/* 0 - 35 */
 	{
 		self.zombie_move_speed = "walk";
+		self.zombie_speed_og_indx = 0;
 	}
-	else if( rand <= 70 )
+	else if( rand <= 70 )	/* 35 - 70 */
 	{
 		self.zombie_move_speed = "run";
+		self.zombie_speed_og_indx = 1;
 	}
-	else if( rand < 105 ) {
+	else if( rand < 110 ) 		/* 70 - 105 */
+	{
 		//Sprinter
 		self.zombie_move_speed = "sprint";
+		self.zombie_speed_og_indx = 2;
 	}
-	else if( rand < 140 ) {
+	else if( rand < 140 ) 		/* 105 - 140 */
+	{
 		//super sprinter
-		self.zombie_move_speed = "sprint";
-		self.zombie_move_speed_supersprint = true;
+		self.zombie_move_speed = "super-sprint";
+		self.zombie_speed_og_indx = 3;
 	}
-	else {
+	else 						/* 140 - 180 */
+	{
 		//terror (super sprinter) -- NEED TO SPEED UP ATTACK ANIMS
-		self.zombie_move_speed = "sprint";
-		self.zombie_move_speed_supersprint = true;
-		self.zombie_speed_up = ( (level.zombie_move_speed + 30) / rand ); // > 1
+		self.zombie_move_speed = "terror";
+		self.zombie_speed_up = ( (level.zombie_move_speed + 60) / rand ); // > 1
+		self.zombie_speed_og_indx = 4;
 	}
 
+	return self.zombie_move_speed;
+
+}
+
+/*
+	Method: zombie_speed_up( dir )
+
+	Description:
+		- dir is a positive or negative integer
+		- increase or decrease the zombies speed between the enum values of walk, run, sprint, super-sprint
+
+*/
+zombie_speed_up( dir, isPermanent )
+{
+	if( !isDefined( dir ) )
+		return false;
+
+	if( !isDefined( isPermanent ) )
+		isPermanent = false;
+
+	new_move_index = self.zombie_speed_indx + dir;
+	if( new_move_index < 0 || new_move_index > 4 )
+		return false;
+	
+	speed_enum = array("walk", "run", "sprint", "super-sprint", "terror");
+	self set_zombie_run_cycle( speed_enum[new_move_index], isPermanent );
+	
+}
+
+/*
+	Zombie does not attack at this speed, need to reset playback rates to 1
+	when zombie gets within 64 units of any player
+*/
+
+watch_terror_playback_rate()
+{
+	self endon("death");
+	self endon("end_terror_zombie");
+
+	players = get_players();
+	MAX_DIST = 128;
+
+
+
+	while(1)
+	{
+		goFast = false;
+
+		if( !IsDefined(players) || players.size == 0 ) {
+			//iprintln("No players");
+			continue;
+		}	
+			
+
+		for(i=0; i < players.size; i++)
+		{
+			if( !IsDefined(players[i].origin) || !IsDefined(self.origin) )
+				continue;
+
+			if( checkDist(self.origin, players[i].origin, MAX_DIST) )
+			{
+				self notify("hit_player");			//resets damage trigger
+
+				self melee();
+				self animscripted("fling",self.origin,self.angles, %ai_zombie_flinger_flail , "normal", undefined, 2, 0.3 );
+				direction_vec = VectorNormalize( players[i] GetWeaponMuzzlePoint() - self.origin );
+				direction_vec = vector_scale( direction_vec, 75);
+				self MoveTo( self.origin + direction_vec , 0.5 );
+				//self StartRagdoll();
+				//self launchragdoll(direction_vec);
+
+				wait_network_frame();
+				//self thread set_zombie_run_cycle( "sprint" );
+				
+				wait(1);
+				break;
+			}
+		
+		}
+			
+
+		wait(0.1);
+	}
 }
 
 
@@ -1551,7 +1868,7 @@ zombie_tear_notetracks( msg, chunk, node, tear_anim )
 		{
 			if( !chunk.destroyed )
 			{
-				//PlayFx( level._effect["wood_chunk_destory"], chunk.origin );
+				//PlayFx( level._effect["wood_chunk_destroy"], chunk.origin );
 				// jl created another function for dust so we create offsets with its timing
 				if(chunk.script_noteworthy == "4" || chunk.script_noteworthy == "6" || chunk.script_noteworthy == "5" || chunk.script_noteworthy == "1")
 				{
@@ -1818,6 +2135,11 @@ bar_repair_bend_right( bar_bend_right, chunk )
 // need to add this to the boards
 zombie_boardtear_offset_fx_horizontle( chunk, node )
 {
+	//Reimagined-Expanded, cant afford board fx:
+	if( true )
+	{
+		return;
+	}
 	// DCS 090110: fx for breaking out glass or wall.
 	if ( IsDefined( chunk.script_parameters ) && ( chunk.script_parameters == "repair_board"  || chunk.script_parameters == "board") )
 	{
@@ -1865,7 +2187,6 @@ zombie_boardtear_offset_fx_horizontle( chunk, node )
 			chunk setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_ROCK_FX);
 		}
 	}
-
 	else
 	{
 		if(isDefined(level.use_clientside_board_fx))
@@ -1874,9 +2195,9 @@ zombie_boardtear_offset_fx_horizontle( chunk, node )
 		}
 		else
 		{
-			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (0, 0, 30));
+			//PlayFx( level._effect["wood_chunk_destroy"], chunk.origin + (0, 0, 30));
 			wait( randomfloat( 0.2, 0.4 ));
-			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (0, 0, -30));
+			//PlayFx( level._effect["wood_chunk_destroy"], chunk.origin + (0, 0, -30));
 		}
 	}
 }
@@ -1939,9 +2260,9 @@ zombie_boardtear_offset_fx_verticle( chunk, node )
 		}
 		else
 		{
-			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (30, 0, 0));
+			//PlayFx( level._effect["wood_chunk_destroy"], chunk.origin + (30, 0, 0));
 			wait( randomfloat( 0.2, 0.4 ));
-			PlayFx( level._effect["wood_chunk_destory"], chunk.origin + (-30, 0, 0));
+			//PlayFx( level._effect["wood_chunk_destroy"], chunk.origin + (-30, 0, 0));
 		}
 	}
 }
@@ -3061,6 +3382,13 @@ zombie_head_gib( attacker, means_of_death, tesla )
 	temp_array = [];
 	temp_array[0] = level._ZOMBIE_GIB_PIECE_INDEX_HEAD;
 	self gib( "normal", temp_array );
+
+	//Head gibbed zombies die in 5 seconds
+
+	if( self.health > 100 ) //base melee damage, zombie should be one knife if head gibbed
+		self DoDamage( self.health - 50, self.origin, attacker, undefined, means_of_death);
+
+	self thread damage_over_time( self.health + 50 , 5, attacker, means_of_death );
 }
 
 damage_over_time( dmg, delay, attacker, means_of_death )
@@ -4320,8 +4648,16 @@ zombie_death_event( zombie )
 	}
 
 	level notify( "zom_kill" );
-	if(!IsDefined(zombie.zombie_despawn) && !zombie.zombie_despawn )
+	if( is_true( zombie.zombie_despawn ) )
+	{
+		//nothing
+	}
+	else
+	{
 		level.total_zombies_killed++;
+	}
+
+		
 }
 
 
@@ -4821,22 +5157,25 @@ zombie_eye_glow()
 	{
 		if( self.animname == "zombie") 
 		{
+			fx = level.fx_eye_glow;
 			eye_glow = Spawn( "script_model", self GetTagOrigin( "J_EyeBall_LE" ) );
-			assert( IsDefined( eye_glow ) );
 
 			eye_glow.angles = self GetTagAngles( "J_EyeBall_LE" );
 			eye_glow SetModel( "tag_origin" );
 			eye_glow LinkTo( self, "J_EyeBall_LE" );
 
 			if( isDefined( self ) && isAlive( self ) ) {
+				//iprintln("tring to set eye glow " + fx );
 				self.fx_eye_glow = eye_glow;
-				network_safe_play_fx_on_tag( "zombie_fx", 2, level._effect["eye_glow"], self.fx_eye_glow, "tag_origin" );
+				network_safe_play_fx_on_tag( "zombie_fx", 2, level._effect[ fx ], self.fx_eye_glow, "tag_origin" );
+				self haseyes(1);
 			} else {
 				eye_glow delete();
+				self haseyes(0);
 			}
 		}
 
-		self haseyes(1);
+		
 	}
 }
 

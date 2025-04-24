@@ -15,35 +15,8 @@ main()
 	init_client_flag_callback_funcs();
 	//init_blocker_fx();
 	//init_riser_fx();
-	level._effect[ "zmb_new_gibtrail_fx" ] = LoadFX( "custom/zm_dog_v2/fx_zmb_blood_trail_mature" );	
-	level._effect[ "electric_cherry_explode" ] = LoadFX( "electric_cherry/cherry_shock_large" );
-	level._effect[ "electric_cherry_reload_small" ] = LoadFX( "electric_cherry/cherry_shock_large" );
-	level._effect[ "electric_cherry_reload_medium" ] = LoadFX( "electric_cherry/cherry_shock_large" );
-	level._effect[ "electric_cherry_reload_large" ] = LoadFX( "electric_cherry/cherry_shock_large" );
-	//level._effect[ "vulture_perk_zombie_stink" ] = LoadFX( "vulture/fx_zm_vulture_perk_stink" );
-	//level._effect[ "vulture_perk_zombie_stink_trail" ] = LoadFX( "vulture/fx_zm_vulture_perk_stink_trail" );
-	level._effect[ "vulture_perk_bonus_drop" ] = LoadFX( "vulture/fx_zombie_powerup_vulture" );
-	level._effect[ "vulture_drop_picked_up" ] = LoadFX( "misc/fx_zombie_powerup_grab" );
-	level._effect[ "vulture_perk_wallbuy_static" ] = LoadFX( "vulture/vulture_wallgun_glow" );
-	level._effect[ "vulture_perk_machine_glow_doubletap" ] = LoadFX( "vulture/vulture_dtap_glow" );
-	level._effect[ "vulture_perk_machine_glow_juggernog" ] = LoadFX( "vulture/vulture_jugg_glow" );
-	level._effect[ "vulture_perk_machine_glow_revive" ] = LoadFX( "vulture/vulture_revive_glow" );
-	level._effect[ "vulture_perk_machine_glow_speed" ] = LoadFX( "vulture/vulture_speed_glow" );
-	level._effect[ "vulture_perk_machine_glow_marathon" ] = LoadFX( "vulture/vulture_stamin_glow" );
-	level._effect[ "vulture_perk_machine_glow_mule_kick" ] = LoadFX( "vulture/vulture_mule_glow" );
-	level._effect[ "vulture_perk_machine_glow_pack_a_punch" ] = LoadFX( "vulture/vulture_pap_glow" );
-	level._effect[ "vulture_perk_machine_glow_vulture" ] = LoadFX( "vulture/vulture_aid_glow" );
-	level._effect[ "vulture_perk_machine_glow_electric_cherry" ] = LoadFX( "vulture/vulture_cherry_glow" );
-	level._effect[ "vulture_perk_machine_glow_phd_flopper" ] = LoadFX( "vulture/vulture_phd_glow" );
-	//level._effect[ "vulture_perk_machine_glow_whos_who" ] = LoadFX( "vulture/vulture_whoswho_glow" );
-	level._effect[ "vulture_perk_machine_glow_widows_wine" ] = LoadFX( "vulture/vulture_widows_glow" );
-	level._effect[ "vulture_perk_machine_glow_deadshot" ] = LoadFX( "vulture/vulture_deadshot_glow" );
-	level._effect[ "vulture_perk_mystery_box_glow" ] = LoadFX( "vulture/vulture_box_glow" );
-	level._effect[ "vulture_perk_powerup_drop" ] = LoadFX( "vulture/vulture_powerup_glow" );
-	//level._effect[ "vulture_perk_zombie_eye_glow" ] = LoadFX( "vulture/fx_zombie_eye_vulture" );
-	//level._effect[ "widows_wine_wrap" ] = LoadFX( "widows_wine/fx_widows_wine_zombie" );
-	//level._effect[ "widows_wine_exp_1p" ] = LoadFX( "widows_wine/fx_widows_wine_explode" );
-	level._zombieCBFunc = ::on_zombie_spawn;
+	init_perk_fx();
+	//level._zombieCBFunc = ::on_zombie_spawn;
 	level._playerCBFunc = ::on_player_spawn;
 	level._gibEventCBFunc = ::on_gib_event;
 	level thread ZPO_listener();
@@ -69,15 +42,98 @@ main()
 	clientscripts\_zombiemode_weap_tesla::init();
 	//init_zombie_blood();
 	init_client_side_fx();
-	//init_vulture();
+	init_vulture();
 	//init_lowhealth_sound();
 	//clientscripts\_zombiemode_weap_freezegun::init();
 	//clientscripts\_zombiemode_weap_tazer_knuckles::init();
 	//clientscripts\_zombiemode_weap_thundergun::init();
 	level thread init_local_player_count();
+	level thread init_level_vars();
 	level thread clientscripts\_zombiemode_ffotd::main_end();
 	
 	//iprintlnbold("FINISHED zombiemode init csc");
+}
+
+//=========================================================================================================
+
+init_perk_fx()
+{
+	level._effect[ "zmb_new_gibtrail_fx" ] = LoadFX( "custom/zm_dog_v2/fx_zmb_blood_trail_mature" );	
+	//level._effect[ "electric_cherry_explode" ] = LoadFX( "electric_cherry/cherry_shock_large" );
+	//level._effect[ "electric_cherry_reload_small" ] = LoadFX( "electric_cherry/cherry_shock_large" );
+	//level._effect[ "electric_cherry_reload_medium" ] = LoadFX( "electric_cherry/cherry_shock_large" );
+	//level._effect[ "electric_cherry_reload_large" ] = LoadFX( "electric_cherry/cherry_shock_large" );
+	//level._effect[ "vulture_perk_zombie_stink" ] = LoadFX( "vulture/fx_zm_vulture_perk_stink" );
+	//level._effect[ "vulture_perk_zombie_stink_trail" ] = LoadFX( "vulture/fx_zm_vulture_perk_stink_trail" );
+	
+	level._effect[ "vulture_glow" ] = LoadFX( "vulture/fx_vulture_glow" );
+	level._effect[ "vulture_perk_bonus_drop" ] = LoadFX( "misc/fx_zombie_powerup_solo_on" ); //powerup_on_solo, powerup_solo
+	level._effect[ "vulture_perk_mystery_box_glow" ] = LoadFX( "vulture/fx_vulture_box" );
+	level._effect[ "vulture_skull" ] = LoadFX( "vulture/fx_vulture_skull" );
+	level._effect[ "powerup_on" ] 					= LoadFX( "misc/fx_zombie_powerup_on" );
+	
+	//level._effect[ "widows_wine_wrap" ] = LoadFX( "widows_wine/fx_widows_wine_zombie" );
+	//level._effect[ "widows_wine_exp_1p" ] = LoadFX( "widows_wine/fx_widows_wine_explode" );
+}
+
+init_level_vars()
+{
+
+	level.JUG_PRK = "specialty_armorvest";
+	level.QRV_PRK = "specialty_quickrevive";
+	level.SPD_PRK = "specialty_fastreload";
+	level.DBT_PRK = "specialty_rof";
+	level.STM_PRK = "specialty_endurance";
+	level.PHD_PRK = "specialty_flakjacket";
+	level.DST_PRK = "specialty_deadshot";
+	level.MUL_PRK = "specialty_additionalprimaryweapon";
+	level.ECH_PRK = "specialty_bulletdamage";
+	level.VLT_PRK = "specialty_altmelee";
+	level.WWN_PRK = "specialty_bulletaccuracy";
+
+	//Reimagined-Expanded -- Pro Perk Vars
+	level.JUG_PRO = "specialty_armorvest_upgrade";
+	level.QRV_PRO = "specialty_quickrevive_upgrade";
+	level.SPD_PRO = "specialty_fastreload_upgrade";
+	level.DBT_PRO = "specialty_rof_upgrade";
+	level.STM_PRO = "specialty_endurance_upgrade";
+	level.PHD_PRO = "specialty_flakjacket_upgrade";
+	level.DST_PRO = "specialty_deadshot_upgrade";
+	level.MUL_PRO = "specialty_additionalprimaryweapon_upgrade";
+	level.ECH_PRO = "specialty_bulletdamage_upgrade";
+	level.VLT_PRO = "specialty_altmelee_upgrade";
+	level.WWN_PRO = "specialty_bulletaccuracy_upgrade";
+
+	//PERK CONSTANTS
+	level.ARRAY_VALID_PERKS = array(
+		level.JUG_PRK,
+		level.QRV_PRK,
+		level.SPD_PRK,
+		level.DBT_PRK,
+		level.STM_PRK,
+		level.PHD_PRK,
+		level.DST_PRK,
+		level.MUL_PRK,
+		level.ECH_PRK,
+		level.VLT_PRK,
+		level.WWN_PRK
+	 );
+	 // "specialty_extraammo", 			//babyjugg
+
+	level.ARRAY_VALID_PRO_PERKS = array(
+		level.QRV_PRO,
+		level.JUG_PRO,
+		level.SPD_PRO,
+		level.DBT_PRO,
+		level.STM_PRO,
+		level.PHD_PRO,
+		level.DST_PRO,
+		level.MUL_PRO,
+		level.ECH_PRO,
+		level.VLT_PRO,
+		level.WWN_PRO
+	);
+
 }
 
 init_local_player_count()
@@ -97,6 +153,7 @@ init_blocker_fx()
 
 init_riser_fx()
 {
+	/*
 	if( IsDefined( level.riser_fx_on_client ) && level.riser_fx_on_client )
 	{
 		if( IsDefined( level.use_new_riser_water ) && level.use_new_riser_water )
@@ -108,6 +165,7 @@ init_riser_fx()
 		level._effect[ "rise_burst" ] = LoadFX( "maps/zombie/fx_mp_zombie_hand_dirt_burst" );
 		level._effect[ "rise_billow" ] = LoadFX( "maps/zombie/fx_mp_zombie_body_dirt_billowing" );
 		level._effect[ "rise_dust" ] = LoadFX( "maps/zombie/fx_mp_zombie_body_dust_falling" );
+
 		if( IsDefined( level.riser_type ) && level.riser_type == "snow" )
 		{
 			level._effect[ "rise_burst_snow" ] = LoadFX( "maps/zombie/fx_mp_zombie_hand_snow_burst" );
@@ -115,6 +173,7 @@ init_riser_fx()
 			level._effect[ "rise_dust_snow" ] = LoadFX( "maps/zombie/fx_mp_zombie_body_snow_falling" );
 		}
 	}
+	*/
 }
 
 //=========================================================================================================
@@ -171,6 +230,7 @@ init_client_flag_callback_funcs()
 			register_clientflag_callback( "actor", level._ZOMBIE_ACTOR_ZOMBIE_RISER_LOWG_FX, ::handle_zombie_lowg_risers );
 		}
 	}
+
 }
 
 //=========================================================================================================
@@ -324,6 +384,7 @@ ZPO_listener()
 // Zombie Eye Glow
 //=========================================================================================================
 
+/*
 createZombieEyes( localClientNum )
 {
 	if( IsDefined( self._eyeArray ) )
@@ -339,7 +400,9 @@ createZombieEyes( localClientNum )
 		}
 	} 
 }
+*/
 
+//Needed by clientscript/humangun.csc
 deleteZombieEyes( localClientNum )
 {
 	self vulture_eye_glow_callback_from_system( localClientNum );
@@ -363,6 +426,7 @@ on_player_spawn( localClientNum )
 	ForceGameModeMappings( localClientNum, "default" );
 }
 
+/*
 on_zombie_spawn( localClientNum )
 {
 	self endon( "entityshutdown" );
@@ -376,6 +440,7 @@ on_zombie_spawn( localClientNum )
 		self createZombieEyes( localClientNum );
 	}
 	self MapShaderConstant( localClientNum, 0, "scriptVector0", -4, -1, 0, -1 );
+
 }
 
 zombie_eye_callback( localClientNum, hasEyes )
@@ -393,16 +458,15 @@ zombie_eye_callback( localClientNum, hasEyes )
 		}
 	}
 }
+*/
 
 //=========================================================================================================
 // Perk Machine Lights ( Obsolete )
 //=========================================================================================================
 
-init_perk_machines_fx()
-{
-
+init_perk_machines_fx() {
+	//called from someonewher, dont delete
 }
-
 //=========================================================================================================
 // Zombie Gibbing
 //=========================================================================================================
@@ -490,7 +554,7 @@ do_gib( model, tag )
 		forward *= RandomIntRange( 600, 1000 );
 		forward += ( 0, 0, RandomIntRange( 400, 700 ) );
 	}
-	CreateDynEntAndLaunch( 0, model, end_pos, angles, start_pos, forward, level._effect[ "zmb_new_gibtrail_fx" ], 1 );
+	//CreateDynEntAndLaunch( 0, model, end_pos, angles, start_pos, forward, level._effect[ "zmb_new_gibtrail_fx" ], 1 );
 	if( IsDefined( self ) )
 	{
 		self do_gib_fx( tag );
@@ -609,6 +673,15 @@ on_gib_event( localClientNum, type, locations )
 // Vision System
 //=========================================================================================================
 
+zombie_vision_set_maps(prev_vision, new_vision, clientnum, trans_time )
+{
+	if( IsDefined( level.map_visionset_function ) )
+	{ 
+		self [[ level.map_visionset_function ]]( prev_vision, new_vision, clientnum, trans_time );	
+	}
+
+}
+
 zombie_vision_set_apply( str_visionset, int_priority, flt_transition_time, int_clientnum )
 {
 	self endon( "death" );
@@ -625,6 +698,8 @@ zombie_vision_set_apply( str_visionset, int_priority, flt_transition_time, int_c
 	{
 		flt_transition_time = 1;
 	}
+	self._previous_vision_priority = int_priority;
+	self._previous_vision = str_visionset;
 	already_in_array = false;
 	if( self._zombie_visionset_list.size != 0 )
 	{
@@ -696,6 +771,7 @@ zombie_vision_set_remove( str_visionset, flt_transition_time, int_clientnum )
 	}
 }
 
+//Higher number is higher priority
 zombie_highest_vision_set_apply()
 {
 	if( !IsDefined( self._zombie_visionset_list ) )
@@ -708,6 +784,7 @@ zombie_highest_vision_set_apply()
 	{
 		if( IsDefined( self._zombie_visionset_list[i].priority ) && self._zombie_visionset_list[i].priority > highest_score )
 		{
+			//iprintlnbold( "Setting vision to " + self._zombie_visionset_list[i].priority );
 			highest_score = self._zombie_visionset_list[i].priority;
 			highest_score_vision = self._zombie_visionset_list[i].vision_set;
 		}
@@ -1093,7 +1170,7 @@ init_zombie_blood()
 
 zblood_vision( localclientnum, state )
 {
-	iprintlnbold("zblood vision  :  " + localClientNum );
+	//iprintlnbold("zblood vision  :  " + localClientNum );
 	player = GetLocalPlayers()[ localclientnum ];
 	if( state == "1" )
 	{
@@ -1137,10 +1214,13 @@ init_client_side_fx()
 	level.client_side_fx = [];
 	level.client_side_sound = [];
 	registerSystem( "client_side_fx", ::handle_client_side_fx );
+	clientscripts\_zombiemode_ffotd::register_client_system("client_side_fx", ::handle_client_side_fx);
 }
 
 handle_client_side_fx( localClientNum, state, oldState )
 {
+	//iprintlnbold("handle_client_side_fx : " + state);
+	//iprintlnbold("handle_client_side_fx  SIZE : " + level.client_side_fx[ localClientNum ].size );
 	tokens = StrTok( state, "|" );
 	if( tokens[0] == "fx" )
 	{
@@ -1248,77 +1328,21 @@ stop_loop_sound( localClientNum, sound_array, fade_time )
 
 init_vulture()
 {
-	level.perk_vulture_array_stink_zombies = [];
-	level.perk_vulture_array_stink_drop_locations = [];
-	level.perk_vulture_vulture_vision_powerups = [];
+	level.vulture_powerup_zombies = [];
 	level.perk_vulture_vulture_vision_actors_eye_glow = [];
-	level.perk_vulture_players_with_vulture_perk = [];
-	add_level_notify_callback( "vulture_active_1", ::vulture_toggle, "1" );
-	add_level_notify_callback( "vulture_active_0", ::vulture_toggle, "0" );
-	//add_level_notify_callback( "vulture_stink_sound_1", ::sndvulturestink, "1" );
-	//add_level_notify_callback( "vulture_stink_sound_0", ::sndvulturestink, "0" );
-	level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_POWERUP_DROP = 12;
-	level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX = 13;
-	level._ZOMBIE_ACTOR_FLAG_VULTURE_STINK_TRAIL_FX = 3;
-	level._ZOMBIE_ACTOR_FLAG_VULTURE_EYE_GLOW = 4;
-	register_clientflag_callback( "scriptmover", level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_POWERUP_DROP, ::vulture_powerup_drop );
-	register_clientflag_callback( "scriptmover", level._ZOMBIE_SCRIPTMOVER_FLAG_VULTURE_STINK_FX, ::vulture_stink_fx );
-	register_clientflag_callback( "actor", level._ZOMBIE_ACTOR_FLAG_VULTURE_STINK_TRAIL_FX, ::vulture_stink_trail_fx );
-	register_clientflag_callback( "actor", level._ZOMBIE_ACTOR_FLAG_VULTURE_EYE_GLOW, ::vulture_eye_glow );
+	level.vulture_status = [];
+	for(i = 0; i < 4; i++) { level.vulture_status[i] = 0; }
+
+	level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP = 12;
+	
+	//Reimagined-Expanded -- callback for vultrure powerup fx
+	register_clientflag_callback( "actor", level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP, ::vulture_zombie_powerup_fx );
 }
 
+//vulture_zombie
 vulture_toggle( localclientnumber, newval )
 {
-	if( newval == "1" )
-	{
-		level.perk_vulture_players_with_vulture_perk[ localclientnumber ] = true;
-		for( i = 0; i < level.perk_vulture_array_stink_zombies.size; i ++ )
-		{
-			zombie = level.perk_vulture_array_stink_zombies[i];
-			zombie _stink_trail_enable( localclientnumber );
-		}
-		for( i = 0; i < level.perk_vulture_array_stink_drop_locations.size; i ++ )
-		{
-			ent = level.perk_vulture_array_stink_drop_locations[i];
-			ent _stink_fx_enable( localclientnumber );
-		}
-		for( i = 0; i < level.perk_vulture_vulture_vision_powerups.size; i ++ )
-		{
-			powerup = level.perk_vulture_vulture_vision_powerups[i];
-			powerup _powerup_drop_fx_enable( localclientnumber );
-		}
-		for( i = 0; i < level.perk_vulture_vulture_vision_actors_eye_glow.size; i ++ )
-		{
-			zombie = level.perk_vulture_vulture_vision_actors_eye_glow[i];
-			zombie _zombie_eye_glow_enable( localclientnumber );
-		}
-	}
-	else
-	{
-		level.perk_vulture_players_with_vulture_perk[ localclientnumber ] = undefined;
-		level.perk_vulture_array_stink_zombies = array_removeUndefined( level.perk_vulture_array_stink_zombies );
-		level.perk_vulture_vulture_vision_actors_eye_glow = array_removeUndefined( level.perk_vulture_vulture_vision_actors_eye_glow );
-		for( i = 0; i < level.perk_vulture_array_stink_zombies.size; i ++ )
-		{
-			zombie = level.perk_vulture_array_stink_zombies[i];
-			zombie _stink_trail_disable( localclientnumber );
-		}
-		for( i = 0; i < level.perk_vulture_array_stink_drop_locations.size; i ++ )
-		{
-			ent = level.perk_vulture_array_stink_drop_locations[i];
-			ent _stink_fx_disable( localclientnumber );
-		}
-		for( i = 0; i < level.perk_vulture_vulture_vision_powerups.size; i ++ )
-		{
-			powerup = level.perk_vulture_vulture_vision_powerups[i];
-			powerup _powerup_drop_fx_disable( localclientnumber );
-		}
-		for( i = 0; i < level.perk_vulture_vulture_vision_actors_eye_glow.size; i ++ )
-		{
-			zombie = level.perk_vulture_vulture_vision_actors_eye_glow[i];
-			zombie _zombie_eye_glow_disable( localclientnumber );
-		}
-	}
+	level.vulture_status[ localclientnumber ] = string_to_float( newval );
 }
 
 vulture_eye_glow( localclientnumber, set, newEnt )
@@ -1339,179 +1363,7 @@ vulture_eye_glow_callback_from_system( localclientnumber )
 	self _zombie_eye_glow_disable( localclientnumber );
 }
 
-vulture_powerup_drop( localclientnumber, set, newEnt )
-{
-	if( set )
-	{
-		level.perk_vulture_vulture_vision_powerups[ level.perk_vulture_vulture_vision_powerups.size ] = self;
-		self _powerup_drop_fx_enable( localclientnumber );
-	}
-	else
-	{
-		level.perk_vulture_vulture_vision_powerups = array_remove_nokeys( level.perk_vulture_vulture_vision_powerups, self );
-		level.perk_vulture_vulture_vision_powerups = array_removeUndefined( level.perk_vulture_vulture_vision_powerups );
-		self _powerup_drop_fx_disable( localclientnumber );
-	}
-}
 
-vulture_stink_fx( localclientnumber, set, newEnt )
-{
-	if( set )
-	{
-		level.perk_vulture_array_stink_drop_locations[ level.perk_vulture_array_stink_drop_locations.size ] = self;
-		self _stink_fx_enable( localclientnumber );
-	}
-	else
-	{
-		level.perk_vulture_array_stink_drop_locations = array_remove_nokeys( level.perk_vulture_array_stink_drop_locations, self );
-		level.perk_vulture_array_stink_drop_locations = array_removeUndefined( level.perk_vulture_array_stink_drop_locations );
-		self _stink_fx_disable( localclientnumber );
-	}
-}
-
-vulture_stink_trail_fx( localclientnumber, set, newEnt )
-{
-	if( set )
-	{
-		level.perk_vulture_array_stink_zombies[ level.perk_vulture_array_stink_zombies.size ] = self;
-		self _stink_trail_enable( localclientnumber );
-	}
-	else
-	{
-		level.perk_vulture_array_stink_zombies = array_remove_nokeys( level.perk_vulture_array_stink_zombies, self );
-		level.perk_vulture_array_stink_zombies = array_removeUndefined( level.perk_vulture_array_stink_zombies );
-		self _stink_trail_disable( localclientnumber );
-	}
-}
-
-_powerup_drop_fx_enable( localclientnumber )
-{
-	if( IsDefined( self ) )
-	{
-		if( !IsDefined( self.perk_vulture_fx_id ) )
-		{
-			self.perk_vulture_fx_id = [];
-		}
-		if( _player_has_vulture( localclientnumber ) )
-		{
-			self.perk_vulture_fx_id[ localclientnumber ] = PlayFX( localclientnumber, level._effect[ "vulture_perk_powerup_drop" ], self.origin );
-		}
-	}
-}
-
-_powerup_drop_fx_disable( localclientnumber )
-{
-	if( IsDefined( self ) && IsDefined( self.perk_vulture_fx_id ) && IsDefined( self.perk_vulture_fx_id[ localclientnumber ] ) )
-	{
-		DeleteFX( localclientnumber, self.perk_vulture_fx_id[ localclientnumber ], true );
-	}
-}
-
-_stink_trail_enable( localclientnumber )
-{
-	if( IsDefined( self ) && _player_has_vulture( localclientnumber ) )
-	{
-		self thread _loop_stink_trail( localclientnumber );
-	}
-}
-
-_loop_stink_trail( localclientnumber )
-{
-	self endon( "vulture_stop_stink_trail_fx" );
-	if( !IsDefined( self.perk_vulture_stink_trail ) )
-	{
-		self.perk_vulture_stink_trail = [];
-	}
-	if( !IsDefined( self.sndent ) )
-	{
-		self.sndent = Spawn( 0, self.origin, "script_origin" );
-		self.sndent LinkTo( self );
-	}
-	sndent = self.sndent;
-	sndent PlayLoopSound( "zmb_vulture_stink_loop", 1 );
-	self thread sndloopstinktraildelete( sndent );
-	while( IsDefined( self ) )
-	{
-		self.perk_vulture_stink_trail[ localclientnumber ] = PlayFX( localclientnumber, level._effect[ "vulture_perk_zombie_stink_trail" ], self.origin );
-		realWait( 0.1 );
-	}
-	if( IsDefined( sndent ) )
-	{
-		sndent StopLoopSound();
-		sndent Delete();
-	}
-}
-
-sndloopstinktraildelete( sndent )
-{
-	self endon( "death" );
-	self waittill( "vulture_stop_stink_trail_fx" );
-	if( IsDefined( sndent ) )
-	{
-		sndent StopLoopSound();
-		sndent Delete();
-	}
-}
-
-_stink_trail_disable( localclientnumber )
-{
-	if( IsDefined( self ) )
-	{
-		self notify( "vulture_stop_stink_trail_fx" );
-		if( IsDefined( self.perk_vulture_stink_trail ) && IsDefined( self.perk_vulture_stink_trail[ localclientnumber ] ) )
-		{
-			DeleteFX( localclientnumber, self.perk_vulture_stink_trail[ localclientnumber ], false );
-		}
-	}
-}
-
-_stink_fx_enable( localclientnumber )
-{
-	if( IsDefined( self ) && _player_has_vulture( localclientnumber ) )
-	{
-		self thread _loop_stink_stationary( localclientnumber );
-	}
-}
-
-_loop_stink_stationary( localclientnumber )
-{
-	self endon( "vulture_stop_stink_fx" );
-	if( !IsDefined( self.perk_vulture_fx ) )
-	{
-		self.perk_vulture_fx = [];
-	}
-	sndorigin = self.origin;
-	SoundLoopEmitter( "zmb_vulture_stink_loop", sndorigin );
-	self thread sndloopstinkstationarydelete( sndorigin );
-	while( IsDefined( self ) )
-	{
-		self.perk_vulture_fx[ localclientnumber ] = PlayFX( localclientnumber, level._effect[ "vulture_perk_zombie_stink" ], self.origin );
-		realWait( 0.125 );
-	}
-	SoundStopLoopEmitter( "zmb_vulture_stink_loop", sndorigin );
-}
-
-sndloopstinkstationarydelete( sndorigin )
-{
-	self endon( "death" );
-	self waittill( "vulture_stop_stink_fx" );
-	if( IsDefined( sndorigin ) )
-	{
-		SoundStopLoopEmitter( "zmb_vulture_stink_loop", sndorigin );
-	}
-}
-
-_stink_fx_disable( localclientnumber, b_kill_fx_immediately )
-{
-	if( IsDefined( self ) )
-	{
-		self notify( "vulture_stop_stink_fx" );
-		if( IsDefined( self.perk_vulture_fx ) && IsDefined( self.perk_vulture_fx[ localclientnumber ] ) )
-		{
-			DeleteFX( localclientnumber, self.perk_vulture_fx[ localclientnumber ], true );
-		}
-	}
-}
 
 _zombie_eye_glow_think()
 {
@@ -1558,43 +1410,40 @@ _zombie_eye_glow_disable( localclientnumber )
 
 _player_has_vulture( localclientnumber )
 {
-	return IsDefined( level.perk_vulture_players_with_vulture_perk[ localclientnumber ] );
+	if ( !IsDefined( level.vulture_status[ localclientnumber ] ) )
+		return false;
+	
+	return level.vulture_status[ localclientnumber ] > 0;
 }
 
-sndvulturestink( localclientnum, state )
+
+vulture_zombie_powerup_fx( localclientnumber, set, newEnt )
 {
-	player = GetLocalPlayers()[ localclientnum ];
-	if( state == "1" )
+	if( set )
 	{
-		player thread sndactivatevulturestink();
+		if( level.vulture_status[ localclientnumber ] > 1 )
+		{
+			ent_num = self GetEntityNumber();
+			level.vulture_powerup_zombies[ localclientnumber ][ ent_num ] = 
+				PlayFXOnTag( localclientnumber, level._effect["powerup_on"], self, "j_SpineLower" );
+			self thread vulture_zombie_end_powerup_fx( localclientnumber );
+		}
 	}
-	else
-	{
-		player thread snddeactivatevulturestink();
-	}
+	
 }
 
-sndactivatevulturestink()
+//HERE
+vulture_zombie_end_powerup_fx( client_num )
 {
-	if( !IsDefined( self.sndstinkent ) )
+	player_has_vulture_pro = level.vulture_status[ client_num ] > 1;
+	while( player_has_vulture_pro && IsAlive( self ) )
 	{
-		self.sndstinkent = Spawn( 0, ( 0, 0, 0 ), "script_origin" );
-		self.sndstinkent PlayLoopSound( "zmb_vulture_stink_player_loop", 0.5 );
+		wait 0.5;
+		player_has_vulture_pro = (level.vulture_status[ client_num ] > 1 );
 	}
-	PlaySound( 0, "zmb_vulture_stink_player_start", ( 0, 0, 0 ) );
-	//clientscripts\_audio::snd_set_snapshot( "zmb_buried_stink" );
-}
 
-snddeactivatevulturestink()
-{
-	PlaySound( 0, "zmb_vulture_stink_player_stop", ( 0, 0, 0 ) );
-	clientscripts\_audio::snd_set_snapshot( "default" );
-	if( IsDefined( self.sndstinkent ) )
-	{
-		self.sndstinkent StopLoopSound();
-		self.sndstinkent Delete();
-		self.sndstinkent = undefined;
-	}
+	DeleteFX( client_num, level.vulture_powerup_zombies[ client_num ][ self GetEntityNumber() ], true );
+	level.vulture_powerup_zombies[ client_num ][ self GetEntityNumber() ] = undefined;
 }
 
 //=========================================================================================================

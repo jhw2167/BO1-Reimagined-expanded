@@ -48,9 +48,9 @@ scriptedFX()
 	level._effect["large_ceiling_dust"]		= LoadFx( "env/dirt/fx_dust_ceiling_impact_lg_mdbrown" );
 	level._effect["poltergeist"]			= LoadFx( "maps/zombie/fx_zombie_debris_removal" );
 	
-	level._effect["lght_marker_old"] 		= Loadfx("maps/zombie/fx_zombie_factory_marker");
-	level._effect["lght_marker"]			= Loadfx("maps/zombie/fx_zombie_factory_marker");
-	level._effect["lght_marker_flare"]		= Loadfx("maps/zombie/fx_zombie_factory_marker_fl");
+	level._effect["lght_marker_old"] = Loadfx("maps/zombie/fx_zombie_lght_marker");
+	level._effect["lght_marker"] = Loadfx("maps/zombie/fx_zombie_lght_marker_hut1");
+	level._effect["lght_marker_flare"] = Loadfx("maps/zombie/fx_zombie_lght_marker_flare");
 	
   level._effect["betty_explode"]			= loadfx("weapon/bouncing_betty/fx_explosion_betty_generic");
 	level._effect["betty_trail"]				= loadfx("weapon/bouncing_betty/fx_betty_trail");

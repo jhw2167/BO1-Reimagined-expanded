@@ -24,6 +24,8 @@ main()
 	// make sure we randomize things in the map once
 	level.randomize_perks = false;
 	//level.exit_level_func = ::sumpf_exit_level;
+	level.mapname = Tolower( GetDvar( #"mapname" ) );
+	level.script = level.mapname;
 
 	// JMA - used to modify the percentages of pulls of ray gun and tesla gun in magic box
 	level.pulls_since_last_ray_gun = 0;
@@ -95,10 +97,10 @@ main()
 
 	//Reimagined-Expanded, setup game
 	maps\_zombiemode::main();
-	maps\zombie_cod5_sumpf_perk_machines::init();
 	maps\zombie_cod5_sumpf_perks::randomize_vending_machines();
+	//maps\zombie_cod5_sumpf_perk_machines::init();
 
-	level thread turn_on_all_perks();
+	//level thread turn_on_all_perks();
 
 	level.zone_manager_init_func = ::sumpf_zone_init;
 	init_zones[0] = "center_building_upstairs";
@@ -132,6 +134,8 @@ main()
 	SetSavedDvar( "r_lightGridContrast", .1 );
 
 	VisionSetNaked("zombie_sumpf", 0);
+
+	level thread watch_pap_available();
 }
 
 setup_water_physics()
@@ -312,54 +316,54 @@ include_weapons()
 	include_weapon("china_lake_upgraded_zm", false);
 	include_weapon("crossbow_explosive_upgraded_zm", false);
 	include_weapon("knife_ballistic_upgraded_zm", false);
-	include_weapon( "zombie_type99_rifle_upgraded", false );
 	include_weapon( "ray_gun_upgraded_zm", false );
 	include_weapon( "zombie_fg42_upgraded", false );
 	include_weapon( "ithaca_upgraded_zm", false );
-	include_weapon( "zombie_shotgun_upgraded", false );		
-	include_weapon( "zombie_doublebarrel_sawed_upgraded", false );
-	include_weapon( "zombie_doublebarrel_upgraded", false );
-	include_weapon( "zombie_type100_smg_upgraded", false );
-	include_weapon( "mp40_upgraded_zm", false );
-	include_weapon( "zombie_thompson_upgraded", false );
-	include_weapon( "zombie_bar_upgraded", false );	
-	include_weapon( "zombie_stg44_upgraded", false );
-	include_weapon( "zombie_gewehr43_upgraded", false );
-	include_weapon( "zombie_m1carbine_upgraded", false );
-	include_weapon( "zombie_m1garand_upgraded", false );
 	include_weapon( "tesla_gun_upgraded_zm", false );	
-	include_weapon( "mg42_upgraded_zm", false );
-	include_weapon( "mg08_upgraded_zm", false );	
-	include_weapon( "win1894_upgraded_zm", false );			
-	include_weapon( "karabin_upgraded_zm", false );	
 
-	// Bolt Action
-	include_weapon( "zombie_type99_rifle", false, true);
 
-	// Semi Auto
-	include_weapon( "zombie_m1carbine", false, true );
-	include_weapon( "zombie_m1garand", false, true );
+	//Single Shot
+	include_weapon( "karabin_zm", false );
+	include_weapon( "zombie_type99_rifle", false );
+	//include_weapon( "karabin_upgraded_zm", false );
+	//Single Shot
 	include_weapon( "zombie_gewehr43", false, true );
-
-	// Full Auto
-	include_weapon( "zombie_stg44", false, true );
-	include_weapon( "zombie_thompson", false, true );
-	include_weapon( "mp40_zm", false, true );
-	include_weapon( "zombie_type100_smg", false, true );
-
-	include_weapon( "stielhandgranate", false, true );
-
+	include_weapon( "zombie_m1garand", false, true );
+	include_weapon( "zombie_springfield", false, true );
+	include_weapon( "springfield_upgraded_zm", false );
+	include_weapon( "zombie_kar98k", false, true );
+	include_weapon( "zombie_kar98k_upgraded", false );
+	
+	include_weapon( "zombie_gewehr43_upgraded", false );
+	include_weapon( "m1garand_upgraded_zm", false );
+	
+	
+	//Shotguns
 	include_weapon( "zombie_shotgun", false, true );
+	include_weapon( "zombie_shotgun_upgraded", false );		
 
-	// Heavy MG
+	
+	//Full Auto
 	include_weapon( "zombie_bar", false, true );
+	include_weapon( "zombie_bar_bipod", false, true );
+	include_weapon( "bar_upgraded_zm", false );
+	include_weapon( "zombie_stg44", false, true );
+	include_weapon( "zombie_thompson", false, true );	
+	include_weapon( "mp40_zm", false, true );
+	include_weapon( "zombie_type100_smg", false );
+	
+	
+	include_weapon( "zombie_thompson_upgraded", false );
+	include_weapon( "zombie_stg44_upgraded", false );
+	include_weapon( "mp40_upgraded_zm", false );
+	include_weapon( "zombie_type100_smg_upgraded", false );
 
-	// Special
 	include_weapon( "tesla_gun_zm" );
 	include_weapon( "m1911_upgraded_zm", false );
 
 	//bouncing betties
 	include_weapon("mine_bouncing_betty", false, true );
+	include_weapon("stielhandgranate", false, true);
 
 	include_weapon( "zombie_cymbal_monkey");
 
@@ -375,19 +379,20 @@ include_weapons()
 	precacheItem( "explosive_bolt_upgraded_zm" );
 
 
-
+	//
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_kar98k", "zombie_kar98k_upgraded", 						&"WAW_ZOMBIE_WEAPON_KAR98K_200", 				200,	"rifle");
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "",					&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "springfield_upgraded_zm",					&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
+	maps\_zombiemode_weapons::add_zombie_weapon( "karabin_zm", "springfield_upgraded_zm", 						&"WAW_ZOMBIE_WEAPON_KARABIN_200", 				200,	"rifle" );
 
 	// Semi Auto
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_gewehr43", "zombie_gewehr43_upgraded",						&"WAW_ZOMBIE_WEAPON_GEWEHR43_600", 				600,	"rifle" );
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1carbine","zombie_m1carbine_upgraded",						&"WAW_ZOMBIE_WEAPON_M1CARBINE_600",				600,	"rifle" );
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1garand", "zombie_m1garand_upgraded" ,						&"WAW_ZOMBIE_WEAPON_M1GARAND_600", 				600,	"rifle" );
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1garand", "m1garand_upgraded_zm" ,						&"WAW_ZOMBIE_WEAPON_M1GARAND_600", 				600,	"rifle" );
 
-	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		250,	"grenade", "", 250 );
+	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		1000,	"grenade", "", 1000 );
 	maps\_zombiemode_weapons::add_zombie_weapon( "mine_bouncing_betty", "", &"WAW_ZOMBIE_WEAPON_SATCHEL_2000", 2000 );
 	// Scoped
-	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				750,	"sniper");
+	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "zombie_kar98k_upgraded", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				750,	"sniper");
 
 	// Full Auto
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_stg44", "zombie_stg44_upgraded", 							    &"WAW_ZOMBIE_WEAPON_STG44_1200", 				1200, "mg" );
@@ -415,6 +420,12 @@ include_powerups()
 	include_powerup( "double_points" );
 	include_powerup( "full_ammo" );
 	include_powerup( "carpenter" );
+
+	include_powerup( "free_perk" );
+	include_powerup( "tesla" );
+	include_powerup( "restock" );
+PreCacheItem( "minigun_zm" );
+include_powerup( "minigun" );
 }
 //-------------------------------------------------------------------------------
 init_zombie_sumpf()
@@ -1047,4 +1058,27 @@ turn_on_all_perks()
 	wait_network_frame();
 	level notify("divetonuke_on");
 	wait_network_frame();
+}
+
+watch_pap_available()
+{
+	level.is_pap_available = false;
+	while( !level.is_pap_available )
+	{
+		//Check to add PaP to vending triggers if all zones are opened
+		allZonesOpened = true;
+		for( i = 0; i < 4; i ++) {
+			allZonesOpened = allZonesOpened && is_true( level.ARRAY_SHINO_ZONE_OPENED[i] );		
+		}
+		
+		if( allZonesOpened )
+		{
+			level.is_pap_available = true;
+			break;
+		}
+
+		level waittill( "end_of_round" );
+	}
+
+	level notify( "pap_available" );
 }

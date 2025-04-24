@@ -9,7 +9,7 @@ main_start()
 	SetSavedDvar( "sm_sunShadowSmallScriptPS3OnlyEnable", true );
 
 	PreCacheModel("collision_wall_512x512x10");
-	PreCacheModel("collision_geo_64x64x256");
+	PreCacheModel("collision_geo_64x64x64");
 }
 
 
@@ -48,7 +48,7 @@ main_end()
 	collision Hide();
 
 	collision2 = spawn("script_model", (1231, 4536, 186));
-	collision2 setmodel("collision_geo_64x64x256");
+	collision2 setmodel("collision_geo_64x64x64");
 	collision2.angles = (0, 0, 0);
 	collision2 Hide();	
 	

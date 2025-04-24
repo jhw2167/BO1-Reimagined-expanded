@@ -1250,7 +1250,10 @@ _powerup_Randomize(monkey)
 	if(isdefined(currentPowerUp))
 	{
 		powerup_cycle = array_remove(powerup_cycle, currentPowerUp);
-		powerup_cycle = array_insert(powerup_cycle, currentPowerUp, 0);
+		if( self.drop_color == "BLUE")
+			powerup_cycle = array_insert(powerup_cycle, "free_perk", 0);
+		else
+			powerup_cycle = array_insert(powerup_cycle, currentPowerUp, 0);
 	}
 	//Add Perk bottle if this is a max ammo
 	if(currentPowerUp == "full_ammo") //&& self.grab_count == 1

@@ -3550,6 +3550,7 @@ fade_in( hold_black_time, fade_in_time, freeze_controls )
 		}
 	}
 
+	level notify("hold_introblack");
 	level.introblack.alpha = 1;
 
 	if( IsDefined( hold_black_time ) )
@@ -3936,13 +3937,14 @@ register_offhand_weapons_for_level_defaults()
 	level.zombie_lethal_grenade_player_init = "frag_grenade_zm";
 
 	register_tactical_grenade_for_level( "zombie_cymbal_monkey" );
+	register_tactical_grenade_for_level( "bo3_zm_widows_grenade" );
 	level.zombie_tactical_grenade_player_init = undefined;
 
 	register_placeable_mine_for_level( "claymore_zm" );
 	level.zombie_placeable_mine_player_init = undefined;
 
 	register_melee_weapon_for_level( "knife_zm" );
-	register_melee_weapon_for_level( "bowie_knife_zm" );
+	//register_melee_weapon_for_level( "bowie_knife_zm" );
 	level.zombie_melee_weapon_player_init = "knife_zm";
 
 	level.zombie_equipment_player_init = undefined;

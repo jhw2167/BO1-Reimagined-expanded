@@ -1066,7 +1066,7 @@ black_hole_teleport_cancel( ent_player )
 // teleports the player to a new position
 // override included, runs before the player is moved this way anything that needs to be done for the teleport
 // SELF == PLAYER
-black_hole_teleport( struct_dest )
+black_hole_teleport( struct_dest, isGeneralTeleport )
 {
 	self endon( "death" );
 
@@ -1075,6 +1075,11 @@ black_hole_teleport( struct_dest )
 		return;
 	}
 
+	if( !IsDefined( isGeneralTeleport ) )
+	{
+		isGeneralTeleport = false;
+	}
+	
 	prone_offset = (0, 0, 49);
 	crouch_offset = (0, 0, 20);
 	stand_offset = (0, 0, 0);
@@ -1101,7 +1106,8 @@ black_hole_teleport( struct_dest )
 	}
 
 	// create the exit portal
-	black_hole_bomb_create_exit_portal( struct_dest.origin );
+	if( !isGeneralTeleport )
+		black_hole_bomb_create_exit_portal( struct_dest.origin );
 
 	// don't allow any funny biz
 	self FreezeControls( true );
@@ -1116,6 +1122,13 @@ black_hole_teleport( struct_dest )
 	// allow the funny biz
 	self EnableOffhandWeapons();
 	self EnableWeapons();
+	if( isGeneralTeleport )
+	{
+		self shellshock( "electrocution", 1.25 );
+		self shellshock( "explosion", 1.25 );
+		wait(0.5);
+	}
+		
 	self FreezeControls( false );
 
 	self thread slightly_delayed_player_response();

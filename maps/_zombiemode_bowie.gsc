@@ -4,7 +4,7 @@
 
 bowie_init()
 {
-	PrecacheItem( "zombie_bowie_flourish" );
+	//PrecacheItem( "zombie_bowie_flourish" );
 
 	if( isDefined( level.bowie_cost ) )
 	{
@@ -90,7 +90,7 @@ bowie_think(cost)
 
 //Z2	HasPerk( "specialty_altmelee" ) is returning undefined
 //		player_has_bowie = player HasPerk( "specialty_altmelee" );
-		player_has_bowie = false;
+		player_has_bowie = ( player.knife_index == level.VALUE_WPN_INDEX_BOWIE);
 
 		if( !player_has_bowie )
 		{
@@ -144,10 +144,10 @@ give_bowie()
 		self UnSetPerk("specialty_fastswitch");
 	}
 
-	gun = self do_bowie_flourish_begin();
+	//gun = self do_bowie_flourish_begin();
 	self maps\_zombiemode_audio::create_and_play_dialog( "weapon_pickup", "bowie" );
 
-	self waittill_any( "fake_death", "death", "player_downed", "weapon_change_complete" );
+	//self waittill_any( "fake_death", "death", "player_downed", "weapon_change_complete" );
 
 	if(self HasPerk("specialty_fastreload"))
 	{
@@ -155,7 +155,8 @@ give_bowie()
 	}
 
 	// restore player controls and movement
-	self do_bowie_flourish_end( gun );
+	//self do_bowie_flourish_end( gun );
+	self do_bowie_flourish_end( "none" );
 }
 
 do_bowie_flourish_begin()
@@ -244,19 +245,35 @@ do_bowie_flourish_end( gun )
 	{
 		gun = "none";
 	}
+	gun = "none";	//Reimagined-Expanded, no flourish, don't take any weapon from player
 
 	self TakeWeapon(weapon);
-
-	//self GiveWeapon( "bowie_knife_zm" );
-	//self set_player_melee_weapon( "bowie_knife_zm" ); keep player with knife_zm for knockdown
-
-	self TakeWeapon("combat_knife_zm");
-	self GiveWeapon("combat_bowie_knife_zm");
-	self SetActionSlot(2, "weapon", "combat_bowie_knife_zm");
-
-	if( self HasWeapon("knife_zm") )
+	melee_wep = self get_player_melee_weapon();
+	self.knife_index = level.VALUE_WPN_INDEX_BOWIE;
+	if( melee_wep == "knife_zm")
 	{
-		//self TakeWeapon( "knife_zm" );
+		self TakeWeapon( "knife_zm" );
+		self GiveWeapon( "knife_zm", self.knife_index );
+		self set_player_melee_weapon( "knife_zm" );
+
+	}
+	else
+	{
+		
+		self TakeWeapon("combat_knife_zm");
+		self GiveWeapon("combat_knife_zm", self.knife_index);
+		self SetActionSlot(2, "weapon", "combat_knife_zm");
+	}
+
+	//Iterate over all player wepaons, if they have any ballistic knife, switch to bowie
+	weapons = self GetWeaponsList();
+	for(i = 0; i < weapons.size; i++)
+	{
+		if(isSubStr(weapons[i], "knife_ballistic"))
+		{
+			self TakeWeapon(weapons[i]);
+			self GiveWeapon(weapons[i], self.knife_index);
+		}
 	}
 
 	// TODO: race condition?

@@ -148,6 +148,10 @@ coast_director_entered_water( trigger )
 {
 	self endon( "death" );
 
+	if( IsDefined( self.pointIndexToRunTo ))
+		return;
+
+	//iprintln( "coast_director_entered_water" );
 	self.water_trigger = trigger;
 
 	if ( is_true( self.is_sliding ) )
@@ -164,6 +168,10 @@ coast_director_exited_water()
 {
 	self endon( "death" );
 
+	if( IsDefined( self.pointIndexToRunTo ))
+		return;
+
+	//iprintln( "coast_director_entered_water" );
 	if ( !is_true( self.defeated ) )
 	{
 		self thread maps\_zombiemode_ai_director::director_zombie_check_for_activation();
@@ -382,7 +390,7 @@ coast_director_reenter_level()
 //--------------------------------------------------------------
 // director leaves through the water
 //--------------------------------------------------------------
-coast_director_exit_level( exit, calm )
+coast_director_exit_level( exit, calm, partialExit )
 {
 	self endon( "death" );
 	self endon( "stop_exit" );
@@ -406,6 +414,10 @@ coast_director_exit_level( exit, calm )
 	self.goalradius = 32;
 	self SetGoalPos( exit.origin );
 	self waittill( "goal" );
+	if( is_true( partialExit ) )
+		return;
+
+	wait( 0.5 );
 
 	self OrientMode( "face angle", exit.angles[1] );
 	time = 0;
@@ -500,13 +512,20 @@ coast_director_find_exit()
 	location = undefined;
 	dist = 1000000;
 
+	randKeys = array();
+	for ( i = 0; i < level.water.size; i++ ) {
+		randKeys[ randKeys.size ] = i;
+	}
+
+	randKeys = array_randomize( randKeys );
 	for ( i = 0; i < level.water.size; i++ )
 	{
-		if ( isDefined( level.water[i].target ) )
+		key = randKeys[i];
+		if ( isDefined( level.water[key].target ) )
 		{
 			//if ( level.zones[ level.water[i].script_noteworthy ].is_enabled )
 
-			point = getstruct( level.water[i].target, "targetname" );
+			point = getstruct( level.water[key].target, "targetname" );
 			zone_enabled = check_point_in_active_zone( point.origin );
 			if ( zone_enabled )
 			{
@@ -574,7 +593,11 @@ coast_director_sliding( slide_node )
 
 	self thread coast_director_delay_transition( 3 );
 
-	if ( isDefined( self.exit ) )
+	if ( isDefined( self.fake_exit ) )
+	{
+		self thread maps\_zombiemode_ai_director::director_run_to_exit( self, self.fake_exit );
+	}
+	else if ( isDefined( self.exit ) )
 	{
 		self thread coast_director_exit_level( self.exit, self.calm );
 	}

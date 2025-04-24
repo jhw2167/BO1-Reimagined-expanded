@@ -130,7 +130,7 @@ cosmodrome_collision_fix()
 {
 	PreCacheModel("collision_geo_256x256x256");
 	PreCacheModel("collision_geo_256x256x10");
-	PreCacheModel("collision_geo_64x64x256");
+	PreCacheModel("collision_geo_64x64x64");
 
 	collision = spawn("script_model", (-1692, 2116, -96));
 	collision setmodel("collision_geo_256x256x256");
@@ -153,7 +153,7 @@ cosmodrome_collision_fix()
 	collision4 Hide();	
 	
 	collision5 = spawn("script_model", (-2115, 1699, 153));
-	collision5 setmodel("collision_geo_64x64x256");
+	collision5 setmodel("collision_geo_64x64x64");
 	collision5.angles = (0, 0, 0);
 	collision5 Hide();	
 			

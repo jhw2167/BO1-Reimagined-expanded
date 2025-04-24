@@ -784,9 +784,12 @@ custom_zombie_introscreen()
 {
 	flag_wait( "all_players_spawned" );
 
-	wait( 1.5 );
+	//wait( 1.5 );
 
-	level thread maps\_zombiemode_utility::fade_in();
+	if( is_true(level.dev_only) )
+		level maps\_zombiemode_utility::fade_in(2);
+	else
+		level maps\_zombiemode_utility::fade_in(5);
 }
 
 onPlayerConnect()
@@ -894,7 +897,7 @@ onPlayerSpawned()
 		// make sure any existing attachments have been removed
 		self DetachAll();
 
-		/*players = get_players();
+		players = get_players();
 		if( players.size == 1 && (1 != GetDvarInt( #"zombiefive_norandomchar" )) ) // ww: randomize the character a solo player has
 		{
 			self.zm_random_char = RandomInt( 4 );
@@ -910,7 +913,7 @@ onPlayerSpawned()
 				}
 			}
 			#/
-		}*/
+		}
 
 		if ( isdefined( level.zombiemode_give_player_model_override ) )
 		{
@@ -940,21 +943,9 @@ onPlayerSpawned()
 		// ww: set viewmodel based on character
 		if ( !isDefined(level.zombietron_mode) )
 		{
-			/*players = get_players();
-			if( players.size == 1 && IsDefined( self.zm_random_char ) )
-			{
-				self player_set_viewmodel( self.zm_random_char );
-			}
-			self player_set_viewmodel();*/
-			if(level.gamemode == "survival")
-			{
-				self player_set_viewmodel( self.zm_random_char );
-			}
-			else
-			{
-				self maps\_zombiemode_grief::set_grief_viewmodel();
-				self maps\_zombiemode_grief::set_grief_model();
-			}
+			players = get_players();
+			self player_set_viewmodel( self.zm_random_char );
+			
 		}
 
 		self maps\_art::setdefaultdepthoffield();
@@ -996,7 +987,7 @@ onPlayerSpawned()
 player_set_viewmodel( zm_random_solo_char )
 {
 	// WWilliams (8/18/10) Randomize what character is used in Solo play
-	/*if( IsDefined( zm_random_solo_char ) )
+	if( IsDefined( zm_random_solo_char ) )
 	{
 		self.entity_num = zm_random_solo_char;
 	}
@@ -1005,8 +996,9 @@ player_set_viewmodel( zm_random_solo_char )
 	if( !IsDefined( self.entity_num ) )
 	{
 		self.entity_num =  self GetEntityNumber();
-	}*/
+	}
 
+	self.zombiemode_load_ent_num = self.entity_num;
 	if ( isdefined( level.zombiemode_player_set_viewmodel_override ) )
 	{
 		[[ level.zombiemode_player_set_viewmodel_override ]]( self.entity_num );

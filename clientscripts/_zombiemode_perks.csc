@@ -59,7 +59,7 @@ Struct:
 perks_action_handler(clientnum, struct)
 {
 	message = struct.message;
-	iprintlnbold("Perks action handler: " + message + " " + struct.state);
+	//iprintlnbold("Perks action handler: " + message + " " + struct.state);
 	
 	if(message == "zombie_blood")
 	{

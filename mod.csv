@@ -16,6 +16,7 @@ rawfile,maps/_zombiemode_powerups.gsc
 rawfile,maps/_zombiemode_spawner.gsc
 rawfile,maps/_zombiemode_traps.gsc
 rawfile,maps/_zombiemode_utility.gsc
+rawfile,maps/_utility.gsc
 rawfile,maps/_zombiemode_weapons.gsc
 rawfile,maps/_zombiemode_weapon_effects.gsc
 rawfile,maps/_zombiemode_weap_sickle.gsc
@@ -39,9 +40,8 @@ rawfile,maps/_zombiemode_weap_cymbal_monkey.gsc
 //New
 rawfile,maps/sb_bo2_zombie_blood_powerup.gsc
 rawfile,maps/sb_pap_spawn_powerup.gsc
+rawfile,maps/_zombiemode_reimagined_utility.gsc
 
-//vision
-rawfile,vision/zombie_blood.vision
 
 //NACHT
 rawfile,maps/zombie_cod5_prototype.gsc
@@ -70,6 +70,7 @@ rawfile,maps/zombie_theater_amb.gsc
 rawfile,maps/zombie_theater_teleporter.gsc
 rawfile,maps/zombie_theater_quad.gsc
 rawfile,maps/zombie_theater_magic_box.gsc
+rawfile,maps/_zombiemode_ai_boss.gsc
 
 //FIVE
 rawfile,maps/zombie_pentagon.gsc
@@ -97,6 +98,7 @@ rawfile,maps/_zombiemode_weap_sniper_explosive.gsc
 rawfile,maps/_zombiemode_ai_director.gsc
 rawfile,maps/_zombiemode_player_zipline.gsc
 rawfile,maps/zombie_coast.gsc
+rawfile,maps/zombie_coast_fx.gsc
 rawfile,maps/zombie_coast_flinger.gsc
 rawfile,maps/zombie_coast_ai_director.gsc
 rawfile,maps/zombie_coast_amb.gsc
@@ -163,6 +165,7 @@ rawfile,maps/zombie_moon_teleporter.gsc
 rawfile,maps/zombie_moon_amb.gsc
 rawfile,maps/zombie_moon_ffotd.gsc
 rawfile,maps/zombie_moon_ai_astro.gsc
+//rawfile,maps/zombie_moon_fx.gsc
 
 //Perk Placement files
 rawfile,maps/zombie_coast_perk_machines.gsc
@@ -175,6 +178,11 @@ rawfile,maps/zombie_moon_perk_machines.gsc
 rawfile,maps/zombie_pentagon_perk_machines.gsc
 rawfile,maps/zombie_temple_perk_machines.gsc
 rawfile,maps/zombie_theater_perk_machines.gsc
+
+//fx files
+rawfile,maps/createfx/zombie_theater_fx.gsc
+rawfile,maps/createfx/zombie_cod5_prototype_fx.gsc
+rawfile,maps/createfx/zombie_cod5_factory_fx.gsc
 
 
 //DEAD OPS ARCADE
@@ -197,7 +205,16 @@ rawfile,clientscripts/zombie_moon.csc
 rawfile,clientscripts/zombie_moon_amb.csc
 rawfile,clientscripts/_utility.csc
 rawfile,clientscripts/_zombiemode_weapons.csc
+rawfile,clientscripts/zombie_moon_fx.csc
+rawfile,clientscripts/zombie_cosmodrome.csc
 
+
+
+rawfile,common_scripts/utility.gsc
+
+//misc
+rawfile,vision/zombie_blood.vision
+rawfile,shock/zombie_death.shock
 
 //ANIMSCRIPTS
 rawfile,animscripts/zombie_melee.gsc
@@ -216,30 +233,22 @@ menufile,ui_mp/leftside_options.inc
 //WEAPONS
 weapon,sp/knife_ballistic_zm
 weapon,sp/knife_ballistic_upgraded_zm
-weapon,sp/knife_ballistic_bowie_zm
-weapon,sp/knife_ballistic_bowie_upgraded_zm
-weapon,sp/knife_ballistic_sickle_zm
-weapon,sp/knife_ballistic_sickle_upgraded_zm
 weapon,sp/crossbow_explosive_zm
 weapon,sp/crossbow_explosive_upgraded_zm
 weapon,sp/explosive_bolt_zm
 weapon,sp/explosive_bolt_upgraded_zm
 weapon,sp/minigun_zm
-weapon,sp/ray_gun_zm
-weapon,sp/ray_gun_upgraded_zm
-weapon,sp/tesla_gun_zm
-weapon,sp/tesla_gun_upgraded_zm
-weapon,sp/thundergun_zm
-weapon,sp/thundergun_upgraded_zm
-weapon,sp/freezegun_zm
-weapon,sp/freezegun_upgraded_zm
 
 //EQUIPMENT
+weapon,sp/rebirth_hands_sp
+weapon,sp/vorkuta_knife_sp
+weapon,sp/falling_hands_zm
 weapon,sp/knife_zm
-weapon,sp/bowie_knife_zm
-weapon,sp/sickle_knife_zm
-weapon,sp/zombie_bowie_flourish
-weapon,sp/zombie_sickle_flourish
+//weapon,sp/bowie_knife_zm
+//weapon,sp/sickle_knife_zm
+
+//weapon,sp/zombie_bowie_flourish
+//weapon,sp/zombie_sickle_flourish
 weapon,sp/stielhandgranate
 weapon,sp/frag_grenade_zm
 weapon,sp/sticky_grenade_zm
@@ -253,95 +262,95 @@ weapon,sp/lower_equip_gasmask_zm
 weapon,sp/zombie_bullet_crouch
 weapon,sp/zombie_perk_bottle
 
-//WAW WEAPONS
-weapon,sp/kar98k_scoped_zombie
-weapon,sp/zombie_doublebarrel_sawed
-weapon,sp/zombie_springfield
-weapon,sp/zombie_m1garand
-weapon,sp/zombie_type99_rifle
-weapon,sp/zombie_bar
-weapon,sp/zombie_kar98k
-weapon,sp/zombie_kar98k_upgraded
-weapon,sp/zombie_m1carbine
-weapon,sp/zombie_m1carbine_upgraded
-weapon,sp/zombie_gewehr43
-weapon,sp/zombie_gewehr43_upgraded
-weapon,sp/zombie_shotgun
-weapon,sp/zombie_shotgun_upgraded
-weapon,sp/zombie_doublebarrel
-weapon,sp/zombie_doublebarrel_upgraded
-weapon,sp/zombie_thompson
-weapon,sp/zombie_thompson_upgraded
-weapon,sp/zombie_stg44
-weapon,sp/zombie_stg44_upgraded
-weapon,sp/zombie_fg42
-weapon,sp/zombie_fg42_upgraded
-weapon,sp/zombie_type100_smg
-weapon,sp/zombie_type100_smg_upgraded
+//New Weapons
+weapon,sp/ak47_zm
+weapon,sp/ft_ak47_upgraded_zm
+weapon,sp/ak47_ft_upgraded_zm
+weapon,sp/asp_zm
+weapon,sp/asp_upgraded_zm
+weapon,sp/asp_upgraded_zm_x2
+weapon,sp/uzi_zm
+weapon,sp/uzi_upgraded_zm
 
-//NEW WEAPONS
+weapon,sp/m60_zm
+weapon,sp/m60_upgraded_zm
+weapon,sp/enfield_zm
+weapon,sp/enfield_upgraded_zm
+weapon,sp/makarov_zm
+weapon,sp/makarov_upgraded_zm
+weapon,sp/ks23_zm
+weapon,sp/ks23_upgraded_zm
+weapon,sp/sabertooth_zm
+weapon,sp/sabertooth_upgraded_zm
+//weapon,sp/ithaca_zm
+//weapon,sp/mac11_upgraded_zm
+
+//WAW WEAPONS
+weapon,sp/zombie_m1carbine_upgraded
+weapon,sp/zombie_gewehr43_upgraded
+weapon,sp/zombie_doublebarrel_upgraded
+weapon,sp/zombie_kar98k_upgraded
+
+weapon,sp/zombie_shotgun_upgraded
+weapon,sp/zombie_stg44_upgraded
+weapon,sp/zombie_thompson_upgraded
+weapon,sp/zombie_type100_smg_upgraded
+weapon,sp/zombie_bar_upgraded
+weapon,sp/zombie_m1garand_upgraded
+
+
+//NEW Equip
 weapon,sp/molotov_zm
+
 weapon,sp/combat_knife_zm
-weapon,sp/combat_bowie_knife_zm
-weapon,sp/combat_sickle_knife_zm
+//weapon,sp/combat_bowie_knife_zm
+//weapon,sp/combat_sickle_knife_zm
+
+
+//New / Overriden weapons
+
+//Pistols
+//weapon,sp/cz75dw_upgraded_zm_x2
+//weapon,sp/cz75lh_upgraded_zm_x2
+
+//SMGS
 weapon,sp/ppsh_zm
 weapon,sp/ppsh_upgraded_zm
-weapon,sp/ak47_zm
-weapon,sp/ak47_ft_upgraded_zm
-weapon,sp/ft_ak47_upgraded_zm
+weapon,sp/ppsh_upgraded_zm_x2
+weapon,sp/spectre_upgraded_zm
+weapon,sp/spectre_upgraded_zm_x2
+
+//Shotguns
+weapon,sp/spas_upgraded_zm
+weapon,sp/hs10_upgraded_zm
+//weapon,sp/hs10lh_upgraded_zm
+//weapon,sp/hs10_upgraded_zm_x2
+
+//ARs
+weapon,sp/famas_upgraded_zm
+weapon,sp/aug_acog_mk_upgraded_zm
+weapon,sp/galil_upgraded_zm_x2
+weapon,sp/commando_upgraded_zm_x2
+
+//Mgs
 weapon,sp/stoner63_zm
 weapon,sp/stoner63_upgraded_zm
-weapon,sp/psg1_zm
-weapon,sp/psg1_upgraded_zm
-weapon,sp/falling_hands_zm
-weapon,sp/meat_zm
-weapon,sp/starburst_ray_gun_zm
-weapon,sp/starburst_m72_law_zm
-weapon,sp/starburst_china_lake_zm
-weapon,sp/tesla_gun_powerup_zm
-weapon,sp/tesla_gun_powerup_upgraded_zm
-
-//DOUBLE PAP
-weapon,sp/spas_upgraded_zm_x2
-//weapon,sp/m14_upgraded_zm_x2
-//weapon,sp/rottweil72_upgraded_zm_x2
-//weapon,sp/m16_gl_upgraded_zm_x2
-//weapon,sp/gl_m16_upgraded_zm_x2
-//weapon,sp/pm63_upgraded_zm_x2
-//weapon,sp/pm63lh_upgraded_zm_x2
-//weapon,sp/mpl_upgraded_zm_x2
-//weapon,sp/mp5k_upgraded_zm_x2
-//weapon,sp/ak74u_upgraded_zm_x2
-//weapon,sp/mp40_upgraded_zm_x2
-weapon,sp/python_upgraded_zm_x2
-weapon,sp/cz75_upgraded_zm_x2
-weapon,sp/cz75dw_upgraded_zm_x2
-weapon,sp/cz75lh_upgraded_zm_x2
-weapon,sp/spectre_upgraded_zm_x2
-weapon,sp/hs10_upgraded_zm_x2
-weapon,sp/hs10lh_upgraded_zm_x2
-//weapon,sp/ithaca_upgraded_zm_x2
-weapon,sp/g11_lps_upgraded_zm_x2
-weapon,sp/famas_upgraded_zm_x2
-weapon,sp/aug_acog_mk_upgraded_zm_x2
-weapon,sp/commando_upgraded_zm_x2
-weapon,sp/galil_upgraded_zm_x2
-weapon,sp/fnfal_upgraded_zm_x2
 weapon,sp/rpk_upgraded_zm_x2
 weapon,sp/hk21_upgraded_zm_x2
-weapon,sp/l96a1_upgraded_zm_x2
-weapon,sp/china_lake_upgraded_zm_x2
-weapon,sp/m72_law_upgraded_zm_x2
-weapon,sp/knife_ballistic_upgraded_zm_x2
-weapon,sp/crossbow_explosive_upgraded_zm_x2
 
-weapon,sp/ppsh_upgraded_zm_x2
-weapon,sp/ak47_ft_upgraded_zm_x2
-weapon,sp/stoner63_upgraded_zm_x2
-weapon,sp/psg1_upgraded_zm_x2
+//Snipers
+weapon,sp/psg1_zm
+weapon,sp/psg1_upgraded_zm
+//weapon,sp/dragunov_upgraded_zm_x2 - naming convention not accepted
+
+//Specials
+//weapon,sp/crossbow_explosive_upgraded_zm_x2
+
+
 
 //Perks
 weapon,sp/zombie_perk_bottle
+weapon,sp/bo3_zm_widows_grenade
 
 
 //SOUNDS
@@ -351,32 +360,41 @@ sound,reimagined
 stringtable,weaponoptions.csv
 
 //FX
-fx,maps/zombie/grief/fx_grief_shock
-fx,weapon/meat/fx_meat_stink
-fx,weapon/meat/fx_meat_impact
-fx,misc/fx_zombie_powerup_on_red
-fx,misc/fx_zombie_powerup_red_grab
-fx,misc/fx_zombie_powerup_red_wave
-fx,misc/fx_zombie_eye_single
-fx,maps/zombie/fx_zmb_ent_stolen
-fx,maps/zombie/fx_zombie_auto_turret_light_ready
-fx,maps/zombie/fx_zombie_factory_marker
-fx,maps/zombie/fx_zombie_factory_marker_fl
-fx,maps/zombie/fx_zombie_packapunch
-fx,maps/zombie/fx_zombie_tesla_bolt_secondary
-fx,maps/zombie/fx_zombie_tesla_electric_bolt
-fx,maps/zombie/fx_zombie_tesla_shock_secondary
-fx,maps/zombie/fx_zombie_tesla_shock
+//fx,misc/fx_zombie_powerup_on_red
+//fx,misc/fx_zombie_powerup_red_grab
+//fx,misc/fx_zombie_powerup_red_wave
+//fx,eyes/fx_zombie_eye_single_red
+//fx,eyes/fx_zombie_eye_single_purple
 
+
+fx,maps/zombie/fx_zombie_tesla_bolt_secondary	//tesla volt bounce, wpn efects
+fx,maps/zombie/fx_zombie_tesla_shock
+//fx,maps/zombie/fx_zombie_packapunch
+
+//weapon effects
 fx,explosions/fx_explosion_charge_large
-//fx,explosions/fx_default_explosion
-//fx,env/smoke/fx_grenade_smoke
 fx,env/fire/fx_fire_xlg_fuel
 fx,env/fire/fx_fire_player_torso_mp
 fx,weapon/freeze_gun/fx_trail_freezegun_ring_emit
 fx,weapon/freeze_gun/fx_exp_freezegun_impact
 fx,electric_cherry/fx_electric_cherry_shock
-//fx,trail/fx_trail_blood_streak
+fx,electric_cherry/fx_electric_cherry_shock_large
+
+//vulture
+fx,vulture/fx_vulture_glow
+fx,vulture/fx_vulture_box
+fx,vulture/fx_vulture_skull
+
+//Wine
+fx,widowswine/fx_widows_wine_zombie
+fx,widowswine/fx_widows_wine_explode
+fx,acidgat/fx_acidgat_explode
+//fx,acidgat/fx_acidgat_explode_ug
+//fx,acidgat/fx_acidgat_marker
+//fx,acidgat/fx_acidgat_view
+//fx,acidgat/fx_acidgat_zombiesplash
+
+
 
 
 //MATERIALS
@@ -398,6 +416,12 @@ material,mtl_viet_zombie_napalm_body
 
 material,specialty_bo4hitmarker_white
 material,specialty_bo4hitmarker_red__
+material,punch_zm
+material,mtl_sabretooth
+
+
+material,hud_icon_pistol
+//{{NEW_MATERIAL_LINE}}
 
 
 //Material Properties
@@ -500,6 +524,26 @@ material,mtl_zombie_vending_three_gun_logo_on
 material,mtl_zombie_vending_vent_power_off
 material,mtl_zombie_vending_vent_power_on
 
+//Vulture Material Glow
+material,specialty_glow_dbl_tap
+material,specialty_glow_deadshot
+material,specialty_glow_flopper
+material,specialty_glow_jugg
+material,specialty_glow_magic_box
+material,specialty_glow_mule_kick
+material,specialty_glow_pap
+material,specialty_glow_quickrevive
+material,specialty_glow_rifle
+material,specialty_glow_skull
+material,specialty_glow_speed
+material,specialty_glow_stamin
+material,specialty_glow_tombstone
+material,specialty_glow_vulture
+material,specialty_glow_whoswho
+material,specialty_glow_widow
+material,specialty_glow_wunderfizz
+material,specialty_nuke_zombies
+
 
 //Drop Icons
 material,i_t6_bonfire_shader
@@ -509,6 +553,14 @@ material,i_t6_specialty_firesale_shader
 material,i_t6_specialty_instakill_shader
 material,i_t6_specialty_zomblood_shader
 
+//wine
+material,vending_widows_grenade_icon
+material,vending_widows_grenade_indicator
+material,t7_semtex_ww
+
+material,bo2_mtl_p6_zm_buildable_pswitch
+
+//{{NEW_MATERIAL_PROPERTY_LINE}
 
 //XMODELS
 xmodel,zombie_3rd_perk_bottle_jugg
@@ -520,6 +572,23 @@ xmodel,zombie_3rd_perk_bottle_nuke
 xmodel,zombie_3rd_perk_bottle_ads
 xmodel,zombie_3rd_perk_bottle_three_gun
 xmodel,zombie_vending_doubletap
+xmodel,zombie_vending_doubletap2
+xmodel,zombie_vending_doubletap2_on
+xmodel,zombie_vending_doubletap_on
+xmodel,zombie_vending_jugg
+xmodel,zombie_vending_jugg_on
+xmodel,zombie_vending_marathon
+xmodel,zombie_vending_marathon_on
+xmodel,zombie_vending_nuke
+xmodel,zombie_vending_nuke_on
+xmodel,zombie_vending_packapunch
+xmodel,zombie_vending_packapunch_on
+xmodel,zombie_vending_revive
+xmodel,zombie_vending_revive_on
+xmodel,zombie_vending_sleight
+xmodel,zombie_vending_sleight_on
+xmodel,zombie_vending_three_gun
+xmodel,zombie_vending_three_gun_on
 xmodel,zombie_vending_nuke
 xmodel,zombie_vending_nuke_on
 xmodel,zombie_vending_marathon
@@ -577,6 +646,11 @@ xmodel,zombie_moon_treasure_box_bottom
 xmodel,c_viet_zombie_napalm_head
 xmodel,c_viet_zombie_napalm
 
+xmodel,viewmodel_ballistic_knife_w_bowie
+xmodel,t7_wpn_melee_ballistic_sickle_view
+
+xmodel,p6_zm_buildable_pswitch_body
+xmodel,p6_zm_buildable_pswitch_lever
 
 
 //Perk XMODELS
@@ -605,6 +679,17 @@ xmodel,t6_wpn_zmb_perk_bottle_sleight_world
 xmodel,t6_wpn_zmb_perk_bottle_vulture_view
 xmodel,t6_wpn_zmb_perk_bottle_vulture_world
 
+//Wine
+xmodel,bo3_t7_ww_grenade_world
+xmodel,bo3_t7_ww_grenade_view
+xmodel,bo3_t7_ww_grenade_proj
+
+//Drops
+
+//Weapons
+xmodel,t5_weapon_sabretooth_viewmodel
+xmodel,t5_weapon_sabretooth_world
+//{{NEW_XMODEL_LINE}}
 
 //ANIMS
 xanim,p_zombie_perkacola_drink
@@ -632,6 +717,7 @@ xanim,ai_zombie_tesla_death_d
 xanim,ai_zombie_tesla_death_e
 xanim,viewmodel_ppsh_empty_sprint_loop
 xanim,ai_zombie_thundergun_hit_upontoback
+xanim,ai_zombie_thundergun_hit_doublebounce
 xanim,ai_zombie_thundergun_getup_b
 
 xanim,p_zombie_perkacola_drink
@@ -643,6 +729,35 @@ xanim,vm_perk_bottle_t7_ads_up
 xanim,vm_perk_bottle_t7_drink
 xanim,vm_perk_bottle_t7_idle
 
+xanim,ai_zombie_afterlife_stun_a
+xanim,ai_zombie_afterlife_stun_b
+xanim,ai_zombie_afterlife_stun_c
+xanim,ai_zombie_afterlife_stun_d
+xanim,ai_zombie_afterlife_stun_e
+
+xanim,ai_zombie_quad_death_tesla
+xanim,ai_zombie_quad_death_tesla_2
+xanim,ai_zombie_quad_death_tesla_3
+xanim,ai_zombie_quad_death_tesla_4
+
+xanim,ai_zombie_flinger_flail
+
+//Weapons
+xanim,viewmodel_asp_sw_d2p_in
+xanim,viewmodel_asp_sw_d2p_loop
+xanim,viewmodel_asp_sw_d2p_out
+xanim,viewmodel_asp_sw_reload_empty
+xanim,viewmodel_asp_sw_reload
+xanim,viewmodel_asp_sw_first_raise
+xanim,viewmodel_asp_sw_ads_down
+xanim,viewmodel_asp_sw_ads_up
+xanim,viewmodel_asp_sw_ads_fire
+xanim,viewmodel_ks23_ads_rechamber
+xanim,viewmodel_ks23_reload_loop
+xanim,viewmodel_ks23_reload_in
+xanim,viewmodel_ks23_reload_out
+
+//{{NEW_XANIM_LINE}}
 
 //PLAYER ANIMS
 rawfile,mp/playeranim.script
@@ -658,6 +773,11 @@ rawfile,character\c_usa_marine4_dlc5.gsc
 
 //STRINGS
 localize,reimagined
+
+//fonts
+//font,fonts\Achafexp.ttf
+
+
 
 //IGNORE FILES THAT ARE ALREADY LOADED IN THE BASE GAME
 ignore,ignorefiles

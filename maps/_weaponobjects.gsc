@@ -48,8 +48,8 @@ onPlayerSpawned() // self == player
 		{
 			self create_claymore_watcher_zm();
 			self create_ballistic_knife_watcher_zm( "knife_ballistic", "knife_ballistic_zm" );
-			self create_ballistic_knife_watcher_zm( "knife_ballistic_upgraded", "knife_ballistic_upgraded_zm" );
-			self create_ballistic_knife_watcher_zm( "knife_ballistic_upgraded", "knife_ballistic_upgraded_zm_x2" ); //Reimagined-Expanded 5/14
+			self create_ballistic_knife_watcher_zm( "knife_ballistic_upgraded_zm", "knife_ballistic_upgraded_zm" );
+			//self create_ballistic_knife_watcher_zm( "knife_ballistic_upgraded", "knife_ballistic_upgraded_zm_x2" ); //Reimagined-Expanded 5/14
 			self create_ballistic_knife_watcher_zm( "knife_ballistic_bowie", "knife_ballistic_bowie_zm" );
 			self create_ballistic_knife_watcher_zm( "knife_ballistic_bowie_upgraded", "knife_ballistic_bowie_upgraded_zm" );
 			
@@ -295,6 +295,9 @@ setup_retrievable_watcher()
 	{
 		watcher = get_weapon_object_watcher_by_weapon( level.retrievableWeapons[i] );
 
+		if( !isDefined( watcher ) )
+			continue;
+
 		if( !isDefined( watcher.onSpawnRetrieveTriggers ) )
 			watcher.onSpawnRetrieveTriggers = ::on_spawn_retrievable_weapon_object;
 
@@ -348,6 +351,12 @@ watch_weapon_projectile_object_spawn() // self == player
 	while(1)
 	{
 		self waittill( "missile_fire", weapon, weapname );
+
+		if( IsSubStr( weapname, "knife_ballistic" ) )
+		{
+			weapname = "knife_ballistic_zm";
+			//weapon = "knife_ballistic";
+		}
 
 		watcher = get_weapon_object_watcher_by_weapon( weapname );
 		if ( IsDefined(watcher) )

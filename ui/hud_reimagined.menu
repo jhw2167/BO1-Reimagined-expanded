@@ -184,6 +184,44 @@
 			visible				1
 			decoration
 		}
+
+
+		itemDef
+		{
+			name        "perk_bar_00"
+			type        ITEM_TYPE_IMAGE
+			rect		67 2.35 9.5 9.5
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_bar_00"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_bar_00") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
 	}
 
 	menuDef
@@ -293,7 +331,569 @@
 			decoration
 		}
 	}
-	
+
+
+	menuDef
+	{
+		name            "perk_slots"
+		rect            0 0 0 0
+		fullscreen      0
+		visible         1
+
+
+		itemDef
+		{
+			name        "perk_slot_00"
+			type        ITEM_TYPE_IMAGE
+			rect        4 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_00"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_00") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		itemDef
+		{
+			name        "perk_slot_01"
+			type        ITEM_TYPE_IMAGE
+			rect        32 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_01"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_01") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_02"
+			type        ITEM_TYPE_IMAGE
+			rect        60 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_02"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_02") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		itemDef
+		{
+			name        "perk_slot_03"
+			type        ITEM_TYPE_IMAGE
+			rect        88 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_03"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_03") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		itemDef
+		{
+			name        "perk_slot_04"
+			type        ITEM_TYPE_IMAGE
+			rect        116 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_04"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_04") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_05"
+			type        ITEM_TYPE_IMAGE
+			rect        144 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_05"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_05") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_06"
+			type        ITEM_TYPE_IMAGE
+			rect        172 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_06"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_06") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_07"
+			type        ITEM_TYPE_IMAGE
+			rect        200 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_07"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_07") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_08"
+			type        ITEM_TYPE_IMAGE
+			rect        228 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_08"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_08") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_09"
+			type        ITEM_TYPE_IMAGE
+			rect        256 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_09"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_09") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_10"
+			type        ITEM_TYPE_IMAGE
+			rect        284 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_10"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_10") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_11"
+			type        ITEM_TYPE_IMAGE
+			rect        312 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_11"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_11") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		
+		itemDef
+		{
+			name        "perk_slot_12"
+			type        ITEM_TYPE_IMAGE
+			rect        340 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_12"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_12") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		itemDef
+		{
+			name        "perk_slot_13"
+			type        ITEM_TYPE_IMAGE
+			rect        368 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_13"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_13") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+		itemDef
+		{
+			name        "perk_slot_14"
+			type        ITEM_TYPE_IMAGE
+			rect        396 -92 24 24 HORIZONTAL_ALIGN_USER_LEFT VERTICAL_ALIGN_USER_BOTTOM
+			forecolor   1 1 1 0
+			exp         material(dvarString("perk_slot_14"))
+			style       WINDOW_STYLE_SHADER
+			visible     When(dvarString("perk_slot_14") != "")
+			decoration
+
+			state
+			{
+				name        "fadein"
+				forecolor   1 1 1 1
+			}
+
+			state
+			{
+				name        "faded"
+				forecolor   1 1 1 0.5
+			}
+
+			state
+			{
+				name        "fadeout"
+				forecolor   1 1 1 0
+			}
+
+			state
+			{
+				name        "dark"
+				forecolor   0.5 0.5 0.5 1
+			}
+		}
+
+	}
+
+
+
 	menuDef
 	{
 		name				"mule_wep_indicator"
@@ -484,4 +1084,5 @@
 			decoration
 		}
 	}
+
 }

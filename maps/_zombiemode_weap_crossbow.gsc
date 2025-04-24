@@ -53,18 +53,6 @@ watch_for_monkey_bolt()
 		{
 			case "explosive_bolt_upgraded_zm":
 				grenade thread crossbow_monkey_bolt( self );
-				
-				//Reimagined-Expanded - self is money bolt, want to play large explosion
-				primaryWeapons = self GetWeaponsListPrimaries();
-				for( i=0; i<primaryWeapons.size; i++) 
-				{
-					if(primaryWeapons[i]=="crossbow_explosive_upgraded_zm_x2") 
-					{
-						//							(exploding object, radius, time, player)
-					level thread maps\_zombiemode_weapon_effects::napalm_fire_effects( grenade, 80, 4, self );
-					}
-					
-				}
 				break;
 				
 		}
@@ -216,6 +204,7 @@ crossbow_monkey_bolt( player_who_fired )
 wait_for_bolt_death(bolt)
 {
 	bolt waittill("death");
+	wait(0.1);
 	self delete();
 }
 
@@ -230,7 +219,7 @@ wait_for_monkey_bolt_holder_to_die(bolt,zombie)
 	{
 		return;
 	}
-
+	wait(0.1);
 	if ( isDefined( bolt ) )
 	{
 		bolt delete();

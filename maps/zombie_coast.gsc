@@ -213,7 +213,7 @@ main()
 	//Reimagined-Expanded, don't need this, messes with zombie spawning with no bosses
 	//level thread coast_spawn_init_delay();
 
-	level thread maps\zombie_coast_fx:: manage_blizzard();
+	level thread maps\zombie_coast_fx::manage_blizzard();
 
 	//level thread rock_wall_barricade();
 
@@ -487,8 +487,8 @@ include_weapons()
 	include_weapon( "fnfal_upgraded_zm", false );
 
 	//	Weapons - Sniper Rifles
-	//include_weapon( "dragunov_zm" );					// ptrs41
-	//include_weapon( "dragunov_upgraded_zm", false );
+	include_weapon( "dragunov_zm" );					// ptrs41
+	include_weapon( "dragunov_upgraded_zm", false );
 	include_weapon( "l96a1_zm" );
 	include_weapon( "l96a1_upgraded_zm", false );
 
@@ -636,6 +636,7 @@ include_powerups()
 	//PreCacheItem( "tesla_gun_powerup_zm" );
 	//PrecacheItem( "tesla_gun_powerup_upgraded_zm" );
 	include_powerup( "tesla" );
+	include_powerup( "restock" );
 
 	include_powerup( "free_perk" );
 
@@ -708,10 +709,29 @@ wait_for_power()
 
 	clientnotify("ZPO");	 // Zombie Power On.
 
-	master_switch waittill("rotatedone");
+
+	//master_switch waittill("rotatedone");
 	playfx(level._effect["switch_sparks"] ,getstruct("elec_switch_fx","targetname").origin);
 
 	master_switch playsound("zmb_turn_on");
+	
+}
+
+threaded_kill_blizzard()
+{
+	level endon("end_game");
+
+	while(1)
+	{
+		wait(3);
+		players = get_players();
+		for(i = 0; i < players.size; i++) {
+			players[i] ClearClientFlag(level._COAST_FOG_BLIZZARD);
+		}
+
+		level notify("kill_blizzard");
+	}
+	
 }
 
 //*****************************************************************************

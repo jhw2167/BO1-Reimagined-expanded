@@ -23,46 +23,63 @@ player_add_points( event, mod, hit_location, zombie)
 	player_points = 0;
 	team_points = 0;
 	multiplier = self get_points_multiplier();
-	
+	gross_possible_points = 0;
 
 	//iprintln("event: " + event + " mod: " + mod + " ");
+	//print current weapon
+	//iprintln("current weapon: " + self getcurrentweapon());
+	
+	//Mod adjust for Sabertooth Chainsaw
+	if( isSubStr( self getcurrentweapon(), "sabertooth" ) && IsString(mod) && mod == "MOD_RIFLE_BULLET" )
+	{
+		mod = "MOD_MELEE";
+	}
 
 	switch( event )
 	{
 		case "death":
+		case "ballistic_knife_death":
 			player_points	= get_zombie_death_player_points();
 			team_points		= get_zombie_death_team_points();
+			gross_possible_points += player_points;
 
+			//iprintln("zombie_death_player_points: " + player_points);
 			//Headshots and melee bonus
 			player_points += player_add_points_kill_bonus( mod, hit_location, self getcurrentweapon(), zombie );
+			gross_possible_points += level.zombie_vars["zombie_score_bonus_head"];
+			//iprintln("KILL BONUS: " + player_points);
 
 			//Reimagined-Expanded - Apocalypse mod - Bonus points for killing zombies quickly
 			if( level.apocalypse ) 
 			{
 				//No points for WondwerWeapons, double for pistols
-				player_points *= weapon_points_multiplier( self getcurrentweapon(), mod );
+				
+				weapon_multiplier = weapon_points_multiplier( self getcurrentweapon(), mod, false, zombie );
+				if( weapon_multiplier < 1 ) 
+				{
+					player_points *= weapon_multiplier;
+				} 
+				else 
+				{
+					player_points = Int( player_points * weapon_multiplier );
+					gross_possible_points = Int( gross_possible_points * weapon_multiplier );
+				}	
+				
 
 				//Bonus points for killing zombies quickly - not doubled, not valid on WW
+				max_bonus = level.ARRAY_QUICK_KILL_BONUS_POINTS[level.round_number];
+				if( IsDefined( max_bonus ) )
+					gross_possible_points += max_bonus;
+				else
+					gross_possible_points += level.ARRAY_QUICK_KILL_BONUS_POINTS[ level.THRESHOLD_MAX_APOCALYSE_ROUND ];
+				
 				if( player_points > 0 )
 					player_points += quick_kill_bonus_points( zombie );
+
+				if( player_points < 0 )
+					player_points = 0;
 			}
 			//iprintln("Points after multiplier: " + player_points);
-
-			if(IsDefined(self.kill_tracker))
-			{
-				self.kill_tracker++;
-			}
-			else
-			{
-				self.kill_tracker = 1;
-			}
-			//stats tracking
-			self.stats["kills"] = self.kill_tracker;
-
-			break;
-
-		case "ballistic_knife_death":
-			player_points = get_zombie_death_player_points() + level.zombie_vars["zombie_score_bonus_melee"];
 
 			if(IsDefined(self.kill_tracker))
 			{
@@ -87,39 +104,28 @@ player_add_points( event, mod, hit_location, zombie)
 			//iprintln("animname: " + zombie.animname);
 			//iprintln("respawn: " + zombie.respawn_zombie);		
 
-			if(level.apocalypse) 
+			player_points = zombie_calculate_damage_points( level.apocalypse, zombie );
+			if( level.apocalypse ) 
 			{
-				if (level.round_number < level.LIMIT_ZOMBIE_DAMAGE_POINTS_ROUND_LOW )
+				weapon_multiplier = weapon_points_multiplier( self getcurrentweapon(), mod, true, zombie );
+				if( weapon_multiplier < 1 ) 
 				{
-					player_points = level.VALUE_ZOMBIE_DAMAGE_POINTS_LOW;
+					self.gross_possible_points += player_points; //points u could have got if u had a better weapon
+					player_points *= weapon_multiplier;
+				} 
+				else 
+				{
+					player_points *= weapon_multiplier;
+					self.gross_possible_points += player_points;
 				}
-				else if (level.round_number < level.LIMIT_ZOMBIE_DAMAGE_POINTS_ROUND_MED ) 
-				{
-					player_points = level.VALUE_ZOMBIE_DAMAGE_POINTS_MED;
-				}
-				else
-				{
-					player_points = level.VALUE_ZOMBIE_DAMAGE_POINTS_HIGH;
-				}
-
-				//No points for shooting zombie if it respawned
-				if( IsDefined( zombie ) && ( zombie.animname == "zombie") )
-				{
-					if ( zombie.respawn_zombie )
-						multiplier = 0;
-				}				
-		
-				player_points *= self weapon_points_multiplier( self getcurrentweapon(), mod );
-				//iprintln("Points after multiplier: " + player_points);
-			}
-			else //Regular zombies!
-			{
-				player_points = level.zombie_vars["zombie_score_damage_light"];
 			}
 			
+
 			break;
 
 		case "rebuild_board":
+		player_points	= mod* (Int(level.round_number/5)+1);
+		break;
 		case "carpenter_powerup":
 			player_points	= mod* (Int(level.round_number/5)+1);
 			if( player_points > level.THRESHOLD_MAX_POINTS_CARPENTER )
@@ -139,6 +145,8 @@ player_add_points( event, mod, hit_location, zombie)
 
 		case "thundergun_fling":
 			player_points = mod;
+			if( level.apocalypse )
+				player_points = 0;
 			break;
 
 		case "hacker_transfer":
@@ -156,6 +164,7 @@ player_add_points( event, mod, hit_location, zombie)
 
 	//player_points = multiplier * round_up_score( player_points, 5 );
 	//team_points = multiplier * round_up_score( team_points, 5 );
+
 	player_points = int(multiplier * player_points);
 	team_points = int(multiplier * team_points);
 
@@ -176,12 +185,60 @@ player_add_points( event, mod, hit_location, zombie)
 
 	//stat tracking
 	self.stats["score"] = self.score_total;
+	self.gross_points += player_points;
+	
+	switch( event )
+	{
+		case "death":
+		case "ballistic_knife_death":
+		case "damage_light":
+		case "damage_ads":
+		case "damage":
+			self.gross_possible_points += (multiplier * gross_possible_points);
+			break;
+
+		default:
+			self.gross_possible_points += (multiplier * player_points);
+			break;
+	}
 
 //	self thread play_killstreak_vo();
 }
 
+	zombie_calculate_damage_points( isApocalypseMode, zombie )
+	{
+		player_points = level.zombie_vars["zombie_score_damage_light"];
+
+		if( isApocalypseMode ) 
+		{
+			if (level.round_number < level.LIMIT_ZOMBIE_DAMAGE_POINTS_ROUND_LOW )
+			{
+				player_points = level.VALUE_ZOMBIE_DAMAGE_POINTS_LOW;
+			}
+			else if (level.round_number < level.LIMIT_ZOMBIE_DAMAGE_POINTS_ROUND_MED ) 
+			{
+				player_points = level.VALUE_ZOMBIE_DAMAGE_POINTS_MED;
+			}
+			else
+			{
+				player_points = level.VALUE_ZOMBIE_DAMAGE_POINTS_HIGH;
+			}
+
+			//No points for shooting zombie if it respawned
+			if( IsDefined( zombie ) && ( is_in_array( level.ARRAY_VALID_DESPAWN_ZOMBIES, zombie.animname ) ) )
+			{
+				if ( zombie.respawn_zombie )
+					return level.VALUE_ZOMBIE_DAMAGE_POINTS_RESPAWN;
+			}				
+			//iprintln("Points after multiplier: " + player_points);
+
+		}
+
+		return player_points;
+	}
+
 //Reimagined-Expanded
-weapon_points_multiplier( weapon, mod ) 
+weapon_points_multiplier( weapon, mod, isForDamage, zombie ) 
 {
 	multiplier = 1;
 	//Reimagined-Expanded dont want to do a whole extra switch case for double pap damage, so we take subtring
@@ -189,23 +246,29 @@ weapon_points_multiplier( weapon, mod )
 			weapon = GetSubStr(weapon, 0, weapon.size-3);
 	}
 
-	if( !IsDefined( mod ) ) {
+	if( !IsDefined( mod ) )
 		mod = "MOD_UNKNOWN";
-	}
+	
+	if( !IsDefined( isForDamage ) )
+		isForDamage = false;
 
 	//if mod is melee, return 1
 	if( mod == "MOD_MELEE" )
 		return 1;
 
-	switch( weapon ) {
+	switch( weapon ) 
+	{
 		case "cz75_zm":
 		case "cz75dw_zm":
 		case "python_zm":
 		case "cz75_upgraded_zm":
 		case "cz75dw_upgraded_zm":
 		case "python_upgraded_zm":
-			if(isSubStr(mod, "BULLET")) {
-				multiplier = 2;	
+			if(isSubStr(mod, "BULLET")) 
+			{
+				multiplier = 1.33;
+				if( isForDamage )				
+					multiplier = 2;
 			}
 		break;
 
@@ -219,16 +282,20 @@ weapon_points_multiplier( weapon, mod )
 		case "tesla_gun_upgraded_zm":
 		case "thundergun_zm":
 		case "thundergun_upgraded_zm":
-		case "ray_gun_zm":
-		case "ray_gun_upgraded_zm":
+		//case "ray_gun_zm":
+		//case "ray_gun_upgraded_zm":
 		case "starburst_ray_gun_zm":
 		case "freezegun_zm":
 		case "freezegun_upgraded_zm":
 		case "shrink_ray_zm":
 		case "shrink_ray_upgraded_zm":
 		case "humangun_upgraded_zm":
-		if(level.apocalypse && mod != "MOD_GRENADE_SPLASH")
+
+		//iprintln("Wonder weapon: " + weapon);
+		
+		if( mod != "MOD_GRENADE_SPLASH" )
 			multiplier = 0;
+
         break;
 
 	}
@@ -275,7 +342,7 @@ get_zombie_death_player_points()
 		points = level.zombie_vars["zombie_score_kill_4player"];
 	}
 	
-	if( level.apocalypse)
+	if( level.apocalypse )
 		points = level.VALUE_APOCALYPSE_ZOMBIE_DEATH_POINTS;
 	
 	return( points );
@@ -350,25 +417,57 @@ quick_kill_bonus_points( zombie )
 	//Reimagined-Expanded - Apocalypse mod - Bonus points for killing zombies quickly
 	valid_bonus_points = ( IsDefined( zombie ) 
 		&& ( zombie.animname == "zombie" )
-		&& ( level.expensive_perks )
-		&& (!zombie.respawn_zombie ) );
+		&& ( level.expensive_perks && level.tough_zombies )
+		&& ( !zombie.respawn_zombie ) );
 
-	if( valid_bonus_points ) {
+	valid_penalty_points = ( IsDefined( zombie ) 
+		&& ( zombie.animname == "zombie" )
+		&& ( level.expensive_perks && level.tough_zombies )
+		&& ( zombie.respawn_zombie ) );
+
+	if( valid_bonus_points ) 
+	{
 		bonus = level.ARRAY_QUICK_KILL_BONUS_POINTS[level.round_number];
 		if( IsDefined( bonus ) )
 			return bonus;
 	}	
+
+	if( valid_penalty_points ) 
+	{
+		penalty = -1*level.ARRAY_QUICK_KILL_NEGATIVE_BONUS_POINTS[level.round_number];
+		if( IsDefined( penalty ) )
+			return penalty;
+		else
+			return -1*level.ARRAY_QUICK_KILL_NEGATIVE_BONUS_POINTS[ level.THRESHOLD_MAX_APOCALYSE_ROUND ];
+	}
+
 	return 0;
 }
 
 player_add_points_kill_bonus( mod, hit_location, weapon, zombie )
 {
+	score = 0;
+
+	//iprintln( "Mod for zomb kill: ");
+	//iprintln( mod );
 	if( mod == "MOD_MELEE" )
-	{
-		return level.zombie_vars["zombie_score_bonus_melee"];
+	{ 
+		score = level.zombie_vars["zombie_score_bonus_melee"];
+		if( self HasPerk( level.VLT_PRK ) && !level.classic )
+			score += level.VALUE_VULTURE_BONUS_MELEE_POINTS;
+
+		return score;
 	}
 
-	score = 0;
+	if( mod == "MOD_EXPLOSIVE" || mod == "MOD_GRENADE_SPLASH"
+	 || mod == "MOD_PROJECTILE_SPLASH" || mod == "MOD_PROJECTILE" )
+	{ 
+		if( self HasPerk( level.PHD_PRK ) )
+			score += level.VALUE_PHD_EXPL_BONUS_POINTS;
+
+		return score;
+	}
+
 
 	//Headshot bonus
 	if( WeaponClass(weapon) == "spread" ) {
@@ -384,6 +483,13 @@ player_add_points_kill_bonus( mod, hit_location, weapon, zombie )
 				score = level.zombie_vars["zombie_score_bonus_head"];
 				break;
 		}
+
+		//Reimagined-Expanded - All sniper damage rewards headshot kill bonus
+		if( is_in_array(level.ARRAY_VALID_SNIPERS, weapon) ) 
+		{
+			score = level.zombie_vars["zombie_score_bonus_head"];
+		}
+		
 
 	} else {
 		//No bonus for shotguns, explosives, melee, wonder weapons
@@ -447,7 +553,7 @@ add_to_player_score( points, add_to_total )
 {
 	if ( !IsDefined(add_to_total) )
 	{
-		add_to_total = true;
+		add_to_total = false;
 	}
 
 	if( !IsDefined( points ) || level.intermission )
@@ -460,6 +566,8 @@ add_to_player_score( points, add_to_total )
 	if ( add_to_total )
 	{
 		self.score_total += points;
+		self.gross_points += points;
+		self.gross_possible_points += points;
 	}
 
 	// also set the score onscreen
@@ -479,6 +587,9 @@ minus_to_player_score( points )
 	}
 
 	self.score -= points;
+	self.spent_points += points;
+	if( points <= 250 )
+		self.gross_possible_points += points;
 
 	// also set the score onscreen
 	self set_player_score_hud();
@@ -654,16 +765,21 @@ create_highlight_hud( x, y, value )
 	hud.horzAlign = "user_right";
 	hud.vertAlign = "user_bottom";
 
-	if( value < 1 )
+	if( value < -1 )
 	{
 		hud.color = ( 0.4, 0, 0 );
 	}
-	else
+	else if ( value > 0 )
 	{
 		hud.color = ( 0.9, 0.9, 0.0 );
 		hud.label = &"SCRIPT_PLUS";
 	}
-
+	else
+	{
+		hud.color = ( 0, 0, 0 );
+		hud.alpha = 0.5;
+	}
+	
 	//hud.glowColor = ( 0.3, 0.6, 0.3 );
 	//hud.glowAlpha = 1;
 	hud.hidewheninmenu = true;
@@ -676,6 +792,7 @@ create_highlight_hud( x, y, value )
 //
 // Handles the creation/movement/deletion of the moving hud elems
 //
+/*
 score_highlight( scoring_player, score, value )
 {
 	self endon( "disconnect" );
@@ -725,7 +842,7 @@ score_highlight( scoring_player, score, value )
 		y -= 5;
 	}
 
-	time = 0.7;
+	time = 1.0;
 	half_time = time * 0.5;
 	quarter_time = time * 0.25;
 
@@ -742,7 +859,7 @@ score_highlight( scoring_player, score, value )
 	else if(IsDefined(self.positive_points_hud) && IsDefined(self.positive_points_hud[player_num]))
 	{
 		value = self.positive_points_hud_value[player_num];
-		//self.positive_points_hud[player_num] Destroy();
+		self.positive_points_hud[player_num] Destroy();
 	}
 
 	hud = self create_highlight_hud( x, y, value );
@@ -776,14 +893,14 @@ score_highlight( scoring_player, score, value )
 
 	// Move the hud
 	hud MoveOverTime( time );
-	hud.x -= 40;
+	hud.x -= RandomIntRange(30,50);
 	if(value < 1)
 	{
 		hud.y += RandomIntRange(5,25);
 	}
 	else
 	{
-		hud.y -= 5;
+		hud.y -= RandomIntRange(-15,15);;
 	}
 
 	wait( half_time );
@@ -806,8 +923,9 @@ score_highlight( scoring_player, score, value )
 
 	hud Destroy();
 }
+*/
 
-/*
+//*
 //OLD
 //
 // Handles the creation/movement/deletion of the moving hud elems
@@ -858,7 +976,7 @@ score_highlight( scoring_player, score, value )
 		y *= 2;
 	}
 
-	time = 0.5;
+	time = 0.8;
 	half_time = time * 0.5;
 	quarter_time = time * 0.25;
 
@@ -885,7 +1003,7 @@ score_highlight( scoring_player, score, value )
 	//hud.x -= 20 + RandomInt( 40 );
 	//hud.y -= ( -15 + RandomInt( 30 ) );
 	hud.x -= 50;
-	hud.y += ( -20 + (((y_count + 2) % 5) * 10) );
+	hud.y += ( -20 + (((y_count + 2) % 5) * 15) );
 
 	wait( time - quarter_time );
 
@@ -907,7 +1025,9 @@ minus_after_wait(time)
 {
 	wait time;
 	self.current_highlight_hudelem_count--;
-}*/
+}
+
+//*/
 
 
 //

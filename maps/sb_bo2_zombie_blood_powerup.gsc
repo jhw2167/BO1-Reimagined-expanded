@@ -40,19 +40,18 @@ zombie_blood_powerup( player, powerup_time )
 	player thread zombie_blood_change_playermodel( true );
 	//player thread zombie_blood_create_fx();
 
-	player VisionSetNaked( "zombie_blood", 0.5 );
+	if( IsDefined( level.set_custom_visionset_func ) )
+	{
+		//Handled in CSC
+		player send_message_to_csc("hud_anim_handler", "stamina_ghost_start");
+	}
+	else
+	{
+		//iprintln("zombie visionset" + level.zombie_visionset + " " + self.entity_num);
+		player VisionSetNaked( "zombie_blood", 0.5 );
+	}
 	player SetMoveSpeedScale( player.moveSpeed + 0.3 );
-	//start_time = GetRealTime();
-	/*
-	transition_time = 1.0;
-	time=0;
-	while( time < transition_time ) {
-		progress = time / transition_time;
-	 	player SetClientDvar( "cg_fovscale", player GetDvar("cg_fovscale") + ( 0.2 * progress ) );
-		time += 0.1;
-		wait (0.1);
-	} 
-	*/
+
 	
 	//player SetClientDvar( "cg_fovscale", player GetDvar("cg_fovscale") + 0.2 );
 	while( player.zombie_vars[ "zombie_powerup_zombie_blood_time" ] > 0 )
@@ -64,10 +63,22 @@ zombie_blood_powerup( player, powerup_time )
 	}
 
 	//player SetClientDvar( "cg_fovscale", player GetDvar("cg_fovscale") - 0.2 );
-		if( IsDefined( level.zombie_visionset ) )
+	//iprintln("zombie visionset" + level.zombie_visionset);
+		
+		if( IsDefined( level.set_custom_visionset_func ) )
+		{
+			player send_message_to_csc("hud_anim_handler", "stamina_ghost_end");
+			[[ level.set_custom_visionset_func ]]( player );
+		}
+		else if( IsDefined( level.zombie_visionset ) )
+		{
 			player VisionSetNaked( level.zombie_visionset, 0.5 );
-		else
+		}
+		else	
+		{
 			player VisionSetNaked( "undefined", 0.5 );
+		}
+			
 	player SetMoveSpeedScale( player.moveSpeed - 0.3 );
 	player.ignoreme = false;
 

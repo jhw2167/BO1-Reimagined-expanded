@@ -10,6 +10,7 @@
 
 main()
 {
+	level.flag = [];
 	maps\zombie_cod5_asylum_fx::main();
 
 	// viewmodel arms for the level
@@ -28,6 +29,8 @@ main()
 	level.dogs_enabled = false;
 
 	level.zones = [];
+	level.mapname = Tolower( GetDvar( #"mapname" ) );
+	level.script = level.mapname;
 
 //	maps\_waw_destructible_opel_blitz::init_blitz();
 	precacheshellshock("electrocution");
@@ -130,7 +133,7 @@ main()
 
 	maps\createart\zombie_cod5_asylum_art::main();
 
-	level.has_pack_a_punch = false;
+	level.has_pack_a_punch = true;
 
 	level thread fix_zombie_pathing();
 
@@ -492,29 +495,79 @@ include_weapons()
 	include_weapon("crossbow_explosive_zm");
 	include_weapon("knife_ballistic_zm");
 
-	// Bolt Action
-	include_weapon( "zombie_springfield", false, true );
-	include_weapon( "zombie_kar98k", false, true );
-	include_weapon( "stielhandgranate", false, true );
+	//Single Shot
 	include_weapon( "zombie_gewehr43", false, true );
+	include_weapon( "zombie_gewehr43_upgraded", false );
+
 	include_weapon( "zombie_m1garand", false, true );
-	include_weapon( "zombie_thompson", false, true );
+	include_weapon( "zombie_m1garand_upgraded", false );
+
+	//include_weapon( "zombie_springfield", false, true );
+	//include_weapon( "zombie_springfield_upgraded", false );
+
+	include_weapon( "zombie_kar98k", false, true );
+	include_weapon( "zombie_kar98k_upgraded", false );
+	
+	
+	
+	
+	//Shotguns
 	include_weapon( "zombie_shotgun", false, true );
-	include_weapon( "mp40_zm", false, true );
-	include_weapon( "zombie_bar_bipod", false, true );
-	include_weapon( "zombie_stg44", false, true );
 	include_weapon( "zombie_doublebarrel", false, true );
 	include_weapon( "zombie_doublebarrel_sawed", false, true );
+
+	include_weapon( "zombie_shotgun_upgraded", false );		
+	include_weapon( "zombie_doublebarrel_upgraded", false );
+
+	
+	//Full Auto
 	include_weapon( "zombie_bar", false, true );
+	include_weapon( "zombie_bar_bipod", false, true );
+	include_weapon( "zombie_bar_upgraded", false );
+	
+	include_weapon( "zombie_stg44", false, true );
+	include_weapon( "zombie_thompson", false, true );	
+	include_weapon( "mp40_zm", false, true );
+	
+	include_weapon( "zombie_thompson_upgraded", false );
+	include_weapon( "zombie_stg44_upgraded", false );
+	include_weapon( "mp40_upgraded_zm", false );
 
 	include_weapon( "zombie_cymbal_monkey");
 
+	include_weapon("python_upgraded_zm", false);
+	include_weapon("fnfal_upgraded_zm", false);
+	include_weapon("ak47_upgraded_zm", false);	
+	include_weapon("dragunov_upgraded_zm", false);	
+	include_weapon("cz75_upgraded_zm", false);
+	include_weapon("g11_lps_upgraded_zm", false);
+	include_weapon("famas_upgraded_zm", false);
+	include_weapon("spectre_upgraded_zm", false);
+	include_weapon("cz75dw_upgraded_zm", false);
+	include_weapon("spas_upgraded_zm", false);
+	include_weapon("hs10_upgraded_zm", false);
+	include_weapon("aug_acog_mk_upgraded_zm", false);
+	include_weapon("galil_upgraded_zm", false);
+	include_weapon("commando_upgraded_zm", false);
+	include_weapon("l96a1_upgraded_zm", false);
+	include_weapon("rpk_upgraded_zm", false);
+	include_weapon("hk21_upgraded_zm", false);	
+	include_weapon("m72_law_upgraded_zm", false);
+	include_weapon("china_lake_upgraded_zm", false);
+	include_weapon("crossbow_explosive_upgraded_zm", false);
+	include_weapon("knife_ballistic_upgraded_zm", false);
+	include_weapon( "ray_gun_upgraded_zm", false );
+	include_weapon( "ithaca_upgraded_zm", false );
+
+
 	// Special
 	include_weapon( "freezegun_zm" );
+	include_weapon( "freezegun_upgraded_zm" );
 	include_weapon( "m1911_upgraded_zm", false );
 
 	//bouncing betties
 	include_weapon("mine_bouncing_betty", false, true);
+	include_weapon("stielhandgranate", false, true);
 
 	// limited weapons
 	maps\_zombiemode_weapons::add_limited_weapon( "m1911_zm", 0 );
@@ -527,19 +580,19 @@ include_weapons()
 	precacheItem( "explosive_bolt_zm" );
 	precacheItem( "explosive_bolt_upgraded_zm" );
 
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_springfield", "", 						&"WAW_ZOMBIE_WEAPON_SPRINGFIELD_200", 			200,	"rifle");
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_springfield", "springfield_upgraded_zm", 						&"WAW_ZOMBIE_WEAPON_SPRINGFIELD_200", 			200,	"rifle");
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_kar98k", "zombie_kar98k_upgraded", 	&"WAW_ZOMBIE_WEAPON_KAR98K_200", 				200,	"rifle");
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "",						&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "zombie_kar98k_upgraded",						&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
 
 	// Semi Auto
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_gewehr43", "zombie_gewehr43_upgraded",						&"WAW_ZOMBIE_WEAPON_GEWEHR43_600", 				600,	"rifle" );
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1carbine","zombie_m1carbine_upgraded",						&"WAW_ZOMBIE_WEAPON_M1CARBINE_600",				600,	"rifle" );
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1garand", "zombie_m1garand_upgraded" ,						&"WAW_ZOMBIE_WEAPON_M1GARAND_600", 				600,	"rifle" );
 
-	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		250,	"grenade", "", 250 );
+	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		1000,	"grenade", "", 1000 );
 	maps\_zombiemode_weapons::add_zombie_weapon( "mine_bouncing_betty", "", &"WAW_ZOMBIE_WEAPON_SATCHEL_2000", 2000 );
 	// Scoped
-	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				750,	"sniper");
+	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "zombie_kar98k_upgraded", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				750,	"sniper");
 
 	// Full Auto
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_stg44", "zombie_stg44_upgraded", 							    &"WAW_ZOMBIE_WEAPON_STG44_1200", 				1200, "mg" );
@@ -551,13 +604,16 @@ include_weapons()
 
 	// Shotguns
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_doublebarrel", "zombie_doublebarrel_upgraded", 						&"WAW_ZOMBIE_WEAPON_DOUBLEBARREL_1200", 		1200, "shotgun");
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_doublebarrel_sawed", "", 			    &"REIMAGINED_WEAPON_DOUBLEBARREL_SAWED", 	1200, "shotgun");
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_doublebarrel_sawed", "zombie_doublebarrel_upgraded", 			    &"REIMAGINED_WEAPON_DOUBLEBARREL_SAWED", 	1200, "shotgun");
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_shotgun", "zombie_shotgun_upgraded",							&"WAW_ZOMBIE_WEAPON_SHOTGUN_1500", 				1500, "shotgun");
 
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_bar", "zombie_bar_upgraded", 						&"WAW_ZOMBIE_WEAPON_BAR_1800", 					1800,	"mg" );
 
 	// Bipods
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_bar_bipod", 	"",					&"WAW_ZOMBIE_WEAPON_BAR_BIPOD_2500", 			2500,	"mg" );
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_bar_bipod", 	"bar_upgraded_zm",					&"WAW_ZOMBIE_WEAPON_BAR_BIPOD_2500", 			2500,	"mg" );
+
+	maps\_zombiemode_weapons::init_includes();
+	maps\_zombiemode_weapons::init_weapons();
 }
 
 //-------------------------------------------------------------------------------
@@ -568,6 +624,14 @@ include_powerups()
 	include_powerup( "double_points" );
 	include_powerup( "full_ammo" );
 	include_powerup( "carpenter" );
+
+	include_powerup( "pap_teleport" );
+	include_powerup( "fire_sale" );
+	include_powerup( "free_perk" );	
+	include_powerup( "tesla" );
+	include_powerup( "restock" );
+PreCacheItem( "minigun_zm" );
+include_powerup( "minigun" );
 }
 
 /*------------------------------------
@@ -881,6 +945,7 @@ activate_electric_trap(who)
 	{
 		wait_network_frame();
 		fire_points[i] thread electric_trap_fx(self);
+		fire_points[i] thread electric_trap_hack_powerup(self);
 	}
 
 	//do the damage
@@ -889,6 +954,88 @@ activate_electric_trap(who)
 	// reset the zapper model
 	level waittill("arc_done");
 	machine setmodel("zombie_zapper_power_box");
+}
+
+checkDist( a, b, dist )
+{
+	result = maps\_zombiemode::checkDist( a, b, dist );
+	return result;
+}
+
+//tags: free_perk, free perk, switch drop 
+electric_trap_hack_powerup( notify_ent )
+{
+	notify_ent endon("elec_done");
+
+	while(1)
+	{
+		wait( 2	);
+		//Existing powerup info
+		powerups = level.vulture_track_current_powerups;
+		if( !isDefined(powerups) || powerups.size < 1 )
+			continue;
+
+		for(i = 0; i < powerups.size; i++)
+		{
+			p = powerups[i];
+			if( isDefined(p) && p.is_active_powerup )
+			{
+				if( checkDist(p.origin, self.origin, level.THRESHOLD_VRKT_ELECTRAP_DROP_HACK_RADIUS ) )
+				{
+					size = level.asylum_array_powerup_hackables.size;
+					
+					level.asylum_array_powerup_hackables[size] = level.vulture_track_current_powerups[i];
+
+					playfx( level._effect["powerup_grabbed"], p.origin );
+					playfx( level._effect["powerup_grabbed_wave"], p.origin );
+
+					level.vulture_track_current_powerups[i].powerup notify("powerup_end");
+					level.vulture_track_current_powerups[i].powerup delete();
+					level.vulture_track_current_powerups[i].is_active_powerup = false;
+				}
+			}
+				
+		}
+	}
+}
+
+//Level watch hackable drops
+watch_electric_trap_hackable_powerups()
+{
+	self endon("end_game");
+
+	while(1)
+	{
+		level waittill( "arc_done" );
+		wait(2);
+		
+		total_hackables = level.asylum_array_powerup_hackables.size;
+		if(  total_hackables > 0 )
+		{
+			hackables = [];
+			for(i = 0; i < total_hackables; i++)
+			{
+				if( isDefined(level.asylum_array_powerup_hackables[i]) )
+				{
+					//Remove duplicates using .original_entity_number
+					struct = level.asylum_array_powerup_hackables[i];
+					num = "" + struct.original_entity_number;
+					hackables[num] = level.asylum_array_powerup_hackables[i];
+				}
+			}
+
+			//Non duplicate hackables
+			keys = GetArrayKeys(hackables);
+			for(i = 0; i < keys.size; i++)
+			{
+				new_drop = level.MAP_VRKT_POWERUP_HACKS[hackables[keys[i]].name];
+				maps\_zombiemode_powerups::specific_powerup_drop( new_drop, ( hackables[keys[i]].origin + (0,0,-40) )  );
+				wait 1;
+			}
+		}
+
+		level.asylum_array_powerup_hackables = [];
+	}
 }
 
 
@@ -1232,6 +1379,9 @@ master_electric_switch()
 
 	//activate perks-a-cola
 	level notify( "master_switch_activated" );
+	level thread watch_pap_teleport_drops();
+	level thread watch_electric_trap_hackable_powerups();
+	
 	fx_org delete();
 
 	fx_org = spawn("script_model", (-675.021, -300.906, 283.724));
@@ -1354,6 +1504,71 @@ electric_current_open_middle_door()
 		fx_org delete();
 
 
+
+}
+
+watch_pap_teleport_drops()
+{
+
+	self endon( "end_game" );
+
+	
+	while(true)
+	{
+		zkeys = GetArrayKeys( level.zones );
+
+		zonesClosed = 0;
+		for( z=0; z<zkeys.size; z++ )
+		{
+			zone = level.zones[ zkeys[z] ];
+			if ( zone.is_enabled )
+				continue;
+
+			zonesClosed++;	
+		}
+
+		if( zonesClosed < 2 )
+			break;
+
+		wait(2);
+	}
+
+	while( true )
+	{
+		rounds_until_spawn = randomintrange( 1, 3 );
+
+		if( is_true( level.dev_only ) )
+			rounds_until_spawn = 1;
+
+		//iprintln( "Rounds until vending machines swap: " + rounds_until_swap );
+		for( i = 0; i < rounds_until_spawn; i++ )
+		{
+			level waittill( "between_round_over" );
+			//self waittill( "end_of_round" );
+		}
+
+		level.pap_used = false;
+		while( 1 )
+		{
+			seconds_wait = randomintrange( 30, 120 );
+
+			if( is_true( level.dev_only ) )
+				seconds_wait = 10;
+
+			level waittill_any_or_timeout( seconds_wait, "end_of_round" );
+
+			if( level.pap_used )
+				break;
+
+			drop_spot = array_randomize( level.ARRAY_VERUKT_PAP_DROP_SPAWN_LOCATIONS )[0];
+			maps\_zombiemode_powerups::specific_powerup_drop( "pap_teleport", drop_spot.origin );
+
+			wait( 1 );
+
+		}
+
+		
+	}
 
 }
 

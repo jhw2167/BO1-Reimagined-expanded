@@ -381,8 +381,8 @@ include_weapons()
 	include_weapon( "fnfal_upgraded_zm", false );
 
 	//	Weapons - Sniper Rifles
-	//include_weapon( "dragunov_zm" );							// ptrs41
-	//include_weapon( "dragunov_upgraded_zm", false );
+	include_weapon( "dragunov_zm" );							// ptrs41
+	include_weapon( "dragunov_upgraded_zm", false );
 	include_weapon( "l96a1_zm" );
 	include_weapon( "l96a1_upgraded_zm", false );
 
@@ -425,44 +425,6 @@ include_weapons()
 	// get the bowie into the collector achievement list
 	level.collector_achievement_weapons = array_add( level.collector_achievement_weapons, "bowie_knife_zm" );
 	
-	
-	/* //All double PaP weapons:
-		// - no wall weapons
-		// - no wonder weapons
-	//include_weapon( "m14_upgraded_zm_x2", false );
-	//include_weapon( "rottweil72_upgraded_zm_x2", false );
-	//include_weapon( "m16_gl_upgraded_zm_x2", false );
-	//include_weapon( "gl_m16_upgraded_zm_x2", false );
-	include_weapon( "python_upgraded_zm_x2", false );
-	include_weapon( "cz75_upgraded_zm_x2", false );
-	include_weapon( "cz75dw_upgraded_zm_x2", false );
-	
-	include_weapon( "spectre_upgraded_zm_x2", false );
-	include_weapon( "spas_upgraded_zm_x2", false );
-	include_weapon( "hs10_upgraded_zm_x2", false );
-	
-	//include_weapon( "ithaca_upgraded_zm_x2", false );
-	include_weapon( "fnfal_upgraded_zm_x2", false );
-	include_weapon( "g11_lps_upgraded_zm_x2", false );
-	include_weapon( "famas_upgraded_zm_x2", false );
-	include_weapon( "aug_acog_mk_upgraded_zm_x2", false );
-	include_weapon( "mk_aug_upgraded_zm_x2", false );
-	include_weapon( "commando_upgraded_zm_x2", false );
-	include_weapon( "galil_upgraded_zm_x2", false );
-	include_weapon( "rpk_upgraded_zm_x2", false );
-	include_weapon( "hk21_upgraded_zm_x2", false );
-	include_weapon( "l96a1_upgraded_zm_x2", false );
-	//include_weapon( "china_lake_upgraded_zm_x2", false );
-	//include_weapon( "m72_law_upgraded_zm_x2", false );
-	include_weapon( "knife_ballistic_upgraded_zm_x2", false );
-	include_weapon( "crossbow_explosive_upgraded_zm_x2", false );
-	//include_weapon( "explosive_bolt_upgraded_zm_x2", false );
-
-	include_weapon( "ppsh_upgraded_zm_x2", false );
-	include_weapon( "ak47_ft_upgraded_zm_x2", false );
-	include_weapon( "stoner63_upgraded_zm_x2", false );
-	include_weapon( "psg1_upgraded_zm_x2", false );
-	 */
 
 }
 
@@ -481,6 +443,11 @@ include_powerups()
 	include_powerup( "empty_clip" ); 
 	include_powerup( "fire_sale" );
 	include_powerup( "free_perk" );
+
+	include_powerup( "tesla" );
+	include_powerup( "restock" );
+PreCacheItem( "minigun_zm" );
+include_powerup( "minigun" );
 	
 }
 
@@ -715,7 +682,7 @@ init_random_perk_machines()
 	randMachines = _add_machine(randMachines, "vending_divetonuke", "mus_perks_phd_sting", "specialty_flakjacket", "mus_perks_phd_jingle", "divetonuke_perk", "zombie_vending_nuke");
 	randMachines = _add_machine(randMachines, "vending_deadshot", "mus_perks_deadshot_sting", "specialty_deadshot", "mus_perks_deadshot_jingle", "tap_deadshot", "zombie_vending_ads");
 	randMachines = _add_machine(randMachines, "vending_sleight", "mus_perks_speed_sting", "specialty_fastreload", "mus_perks_speed_jingle", "speedcola_perk", "zombie_vending_sleight");
-	randMachines = _add_machine(randMachines, "vending_doubletap", "mus_perks_doubletap_sting", "specialty_rof", "mus_perks_doubletap_jingle", "tap_perk", "zombie_vending_doubletap");
+	randMachines = _add_machine(randMachines, "vending_doubletap", "mus_perks_doubletap_sting", "specialty_rof", "mus_perks_doubletap_jingle", "tap_perk", "zombie_vending_doubletap2");
 	if(IsDefined(level.override_place_revive_machine))
 	{
 		[[level.override_place_revive_machine]]();
@@ -1298,7 +1265,7 @@ zombie_temple_place_additionalprimaryweapon_machine()
 
 	machine_clip = spawn( "script_model", origin + (0, -10, 0) );
 	machine_clip.angles = (0, 0, 0);
-	machine_clip setmodel( "collision_geo_64x64x256" );
+	machine_clip setmodel( "collision_geo_64x64x64" );
 	machine_clip Hide();
 }
 

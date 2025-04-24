@@ -2,6 +2,7 @@
 #include common_scripts\utility;
 #include maps\_zombiemode_utility;
 #include animscripts\zombie_Utility;
+#include maps\_zombiemode_reimagined_utility;
 
 init()
 {
@@ -452,7 +453,7 @@ thief_round_tracker()
 
 	while ( 1 )
 	{
-		level waittill( "between_round_over" );
+		level waittill_any( "between_round_over", "thief_round_stop" );
 
 
 		if ( level.round_number >= level.next_thief_round )
@@ -486,6 +487,14 @@ thief_round_tracker()
 					level.next_thief_round = level.round_number + 4;
 					level.prev_thief_round_amount = undefined;
 				}
+			}
+
+			if( level.apocalypse )
+			{
+				flag_wait( "last_thief_down" );
+				
+				thief_round_stop();
+				level.music_round_override = false;
 			}
 
 			//level.prev_thief_round = level.next_thief_round;
@@ -683,6 +692,7 @@ thief_zombie_think()
 	flag_set( "death_in_pre_game" );
 
 	self thread thief_zombie_choose_run();
+	self thread thief_zombie_watch_explosive();
 
 	self.goalradius = 32;
 	self.ignoreall = false;
@@ -698,7 +708,59 @@ thief_zombie_think()
 	*/
 
 	//Reimagined-Expanded
-	start_health = level.zombie_health * level.VALUE_THIEF_HEALTH_SCALAR;
+	/*
+		For each player in the game, increase the health by 1.5x for a player owning a PaP weapon and 3x for owning a
+		double PaP weapon
+
+		e.g. player 1 has a x2 weapon and a x1 weapon, player 2 has a x1 weapon:
+		3 + 1.5 = 4.5
+
+	 */
+	num_players = get_players().size;
+	pap_multiplier = 0;
+	for ( i = 0; i < num_players; i++ )
+	{
+		player = get_players()[i];
+
+		//Get list of weapons
+		weapons = player GetWeaponsListPrimaries();
+
+		//For each weapon, check if it's PaP'd or x2 pap
+		//isUpgraded = IsSubStr( weapon, "_upgraded" );
+		//isDoubleUpgraded = IsSubStr( weapon, "_x2" );
+		if( !isDefined( weapons ) || weapons.size == 0 )
+			continue;
+		
+		isUpgraded = false;
+		isDoubleUpgraded = false;
+		for( j = 0; j < weapons.size; j++ )
+		{
+			weapon = player get_upgraded_weapon_string( weapons[j] );
+			isUpgraded = IsSubStr( weapon, "_upgraded" ) || isUpgraded;
+			isDoubleUpgraded = IsSubStr( weapon, "_x2" )|| isDoubleUpgraded;
+		}
+
+		if( isDoubleUpgraded )
+		{
+			pap_multiplier += level.VALUE_THIEF_HEALTH_SCALAR_x2_BONUS;
+		}
+		else if( isUpgraded )
+		{
+			pap_multiplier += level.VALUE_THIEF_HEALTH_SCALAR_PAP_BONUS;
+		}
+	
+	}
+
+	if( pap_multiplier < 1 )
+		pap_multiplier = 1;
+
+	start_health = int( level.zombie_health * level.VALUE_THIEF_HEALTH_SCALAR * num_players * pap_multiplier );
+		
+		//Print out zombie health, health after scalling and health after pap
+		//iprintln( "Zombie Health: " + level.zombie_health );
+		//iprintln( "Health after scaler: " + level.zombie_health * level.VALUE_THIEF_HEALTH_SCALAR * num_players );
+		//iprintln( "Health after pap: " + start_health );
+
 
 	//start_health = thief_scale_health( start_health );
 	//pregame_health = thief_scale_health( GetDvarInt( #"scr_thief_health_pregame" ) );
@@ -828,6 +890,29 @@ thief_zombie_choose_run()
 		self.needs_run_update = true;
 		wait( 0.05 );
 	}
+}
+
+/*
+
+	If thief zombie takes explosive damage, he walks for 2 seconds, 30 second cooldown
+
+*/
+thief_zombie_watch_explosive()
+{
+	self endon( "death" );
+
+	while ( 1 )
+	{
+		self waittill( "explosive_damage" );
+		old_speed = self.thief_speed;
+
+		self.thief_speed = "walk";
+		wait( 3 );
+
+		self.thief_speed = old_speed;
+		wait( 30 );
+	}
+
 }
 
 thief_zombie_die()
@@ -993,7 +1078,15 @@ thief_take_loot()
 	is_laststand = player maps\_laststand::player_is_in_laststand();
 
 	// don't take these items...choose random primary instead
-	if ( is_offhand_weapon( weapon ) || weapon == "zombie_bowie_flourish" || weapon == "none" || isSubStr( weapon, "zombie_perk_bottle" ) || is_laststand || weapon == "zombie_knuckle_crack" )
+	is_nonstealable = is_offhand_weapon( weapon ) 
+		|| weapon == "zombie_bowie_flourish" 
+		|| isSubStr( weapon, "zombie_perk_bottle" ) 
+		|| is_laststand || weapon == "zombie_knuckle_crack"
+		|| weapon == player.current_melee_weapon
+		|| weapon == player.offhand_melee_weapon
+		|| is_in_array( level.ARRAY_VALID_ZOMBIE_KNOCKDOWN_WEAPONS, weapon );
+
+	if ( is_nonstealable )
 	{
 		primaries = player GetWeaponsListPrimaries();
 		if( isDefined( primaries ) )

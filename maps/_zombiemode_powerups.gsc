@@ -1,6 +1,7 @@
 #include maps\_utility; 
 #include common_scripts\utility;
 #include maps\_zombiemode_utility;
+#include maps\_zombiemode_reimagined_utility;
 
 
 //
@@ -122,6 +123,7 @@ init_powerups()
 	//"specialty_lightningbolt_zombies" );
 
 	/* GREEN DROPS */
+	//add_zombie_powerup( powerup_name, model_name, 		hint, 					solo, caution, zombie_grabbable, fx, drop_color )
 	add_zombie_powerup( "nuke", 		"zombie_bomb",		&"ZOMBIE_POWERUP_NUKE", false, false, false, 			"misc/fx_zombie_mini_nuke_hotness" );
 	add_zombie_powerup( "insta_kill", 	"zombie_skull",		&"ZOMBIE_POWERUP_INSTA_KILL", false, false, false );
 	add_zombie_powerup( "double_points","zombie_x2_icon",	&"ZOMBIE_POWERUP_DOUBLE_POINTS", false, false, false );
@@ -131,17 +133,17 @@ init_powerups()
 	if( !level.mutators["mutator_noMagicBox"] )
 		add_zombie_powerup( "fire_sale",  	"zombie_firesale",	&"ZOMBIE_POWERUP_MAX_AMMO", false, false, false );
 	add_zombie_powerup( "bonfire_sale",  	"zombie_pickup_bonfire",	&"ZOMBIE_POWERUP_MAX_AMMO", false, false, false );
-	add_zombie_powerup( "tesla", "lightning_bolt", &"ZOMBIE_POWERUP_MINIGUN", true, false, false);
 	add_zombie_powerup("free_perk", "zombie_pickup_perk_bottle", &"ZOMBIE_POWERUP_FREE_PERK", false, false, false );
 
 	
-	//Blue Drops
+	//Blue Dropsdrop_item.hint = &"REIMAGINED_POWERUP_RESTOCK";
 	add_zombie_powerup("minigun", "zombie_pickup_minigun", &"ZOMBIE_POWERUP_MINIGUN", true, false, false, undefined, "BLUE");
+	add_zombie_powerup( "tesla", "lightning_bolt", &"REIMAGINED_POWERUP_SUPERPOWER", true, false, false, undefined, "BLUE");
+	add_zombie_powerup( "restock",  	"zombie_ammocan",	&"REIMAGINED_POWERUP_RESTOCK", true, false, false, undefined, "BLUE");
+	add_zombie_powerup( "pap_teleport",  	"zombie_pickup_bonfire",	&"REIMAGINED_POWERUP_PAP_TELEPORT", true, false, false, undefined, "BLUE");
 	/*
-	add_zombie_powerup("superpower", "lightning_bolt", &"ZOMBIE_POWERUP_MINIGUN", true, false, false, undefined, "BLUE");
 	add_zombie_powerup("upgrade_perk", "zombie_pickup_perk_bottle", &"ZOMBIE_POWERUP_FREE_PERK", false, false, false, undefined, "BLUE");
 	add_zombie_powerup("quad_points", "zombie_x4_icon", &"ZOMBIE_POWERUP_DOUBLE_POINTS", false, false, false, undefined, "BLUE");
-	add_zombie_powerup("max_ammo", "zombie_ammocan", &"ZOMBIE_POWERUP_MAX_AMMO", false, false, false, undefined, "BLUE");
 	add_zombie_powerup("insta_kill", "zombie_skull", &"ZOMBIE_POWERUP_INSTA_KILL", false, false, false, undefined, "BLUE");
 	add_zombie_powerup("zombie_blood", "zombie_skull", &"ZOMBIE_POWERUP_MAX_AMMO", true, false, false, undefined, "BLUE");
 
@@ -483,9 +485,16 @@ get_next_powerup( drop_color )
 		drop_color = "GREEN";
 
 	randomize_powerups();
+
 	for(i=0;i<level.zombie_powerup_array.size;i++) 
 	{
-		if(level.zombie_powerup_array[i].drop_color == drop_color) {
+		//iprintln( "get_next_powerup: " + level.zombie_powerup_array[i] );
+	}
+	for(i=0;i<level.zombie_powerup_array.size;i++) 
+	{
+		powerup_name = level.zombie_powerup_array[i];
+		localStruct = level.zombie_powerups[powerup_name];
+		if(localStruct.drop_color == drop_color) {
 			return level.zombie_powerup_array[i];
 		}
 	}
@@ -562,6 +571,10 @@ is_valid_powerup(powerup_name)
 	{
 		return false;
 	}
+	else if ( powerup_name == "pap_teleport" )	// never drops with regular powerups
+	{
+		return false;
+	}
 	else if( powerup_name == "minigun" && minigun_no_drop() ) // don't drop unless life bought in solo, or power has been turned on
 	{
 		return false;
@@ -572,7 +585,7 @@ is_valid_powerup(powerup_name)
 	}
 	else if( powerup_name == "tesla" )					// never drops with regular powerups
 	{
-		return false;
+		return true;	//Reimagined-Expanded, implemented as "superpower", blue drop
 	}
 	else if( powerup_name == "random_weapon" )					// never drops with regular powerups
 	{
@@ -687,7 +700,7 @@ watch_for_drop()
 			level.zombie_vars["zombie_drop_item"] = 1;
 			while(curr_total_score >= score_to_drop)
 			{
-				level.zombie_vars["zombie_powerup_drop_increment"] *= 1.1;
+				level.zombie_vars["zombie_powerup_drop_increment"] *= level.VALUE_ZOMBIE_RANDOM_DROP_EARLY_SCALER;
 				score_to_drop += level.zombie_vars["zombie_powerup_drop_increment"];
 			}
 		}
@@ -805,16 +818,15 @@ powerup_drop(drop_point, player, zombie)
 		type = "random";
 	}
 
-	level.total_drops_round++;
-	if ( level.total_drops_round > level.THRESHOLD_MAX_DROPS )
-		return;
-
 	//iprintln("SPAWNING DROP FROM POWERUP_DROP: " + type);
 	// This needs to go above the network_safe_spawn because that has a wait.
 	// Otherwise, multiple threads could attempt to drop powerups.
 
+	//iprintln("POWERUP_DROP: " + zombie.hasDrop);
+
 	level.powerup_drop_count++;
-	powerup = maps\_zombiemode_net::network_safe_spawn( "powerup", 1, "script_model", drop_point + (0,0,40));
+	origin = drop_point + (0,0,40);
+	powerup = maps\_zombiemode_net::network_safe_spawn( "powerup", 1, "script_model", origin);
 
 	// Never drop unless in the playable area
 	valid_drop = false;
@@ -856,7 +868,7 @@ powerup_drop(drop_point, player, zombie)
 
 	//Color of the drop comes from zombiemode_spawner .hasDrop
 	powerup powerup_setup( undefined, zombie.hasDrop );
-
+	
 	if( !isDefined( powerup.powerup_name ) ) {
 		powerup delete();
 		return;
@@ -1083,6 +1095,14 @@ powerup_setup( powerup_override, drop_color )
 
 	struct = level.zombie_powerups[powerup];
 
+	//iprintln( "Setting up with struct: " + struct.model_name );
+	if( !IsDefined( powerup ) )
+	{
+		//iprintln( "No powerup found for drop color: " );
+		//iprintln( drop_color );
+		return;
+	}
+
 	if ( powerup == "random_weapon" )
 	{
 		if(IsDefined(self.gg_powerup))
@@ -1167,6 +1187,7 @@ powerup_setup( powerup_override, drop_color )
 		self SetModel( struct.model_name );
 	}
 
+	/*
 	if(powerup == "tesla")
 	{
 		if(IsDefined(level.upgraded_tesla_reward) && level.upgraded_tesla_reward)
@@ -1181,6 +1202,7 @@ powerup_setup( powerup_override, drop_color )
 		self.base_weapon = self.weapon;
 		struct.weapon = self.weapon;
 	}
+	*/
 
 	//TUEY Spawn Powerup
 	playsoundatposition("zmb_spawn_powerup", self.origin);
@@ -1409,6 +1431,8 @@ powerup_grab()
 		//return;
 	}
 
+	//iprintln( "grabbing powerup: " + self.powerup_name );
+
 	self endon ("powerup_timedout");
 	self endon ("powerup_grabbed");
 	self endon( "powerup_end" );
@@ -1428,8 +1452,7 @@ powerup_grab()
 
 			// Don't let them grab the minigun, tesla, or random weapon if they're downed or reviving
 			//	due to weapon switching issues.
-			if ( (self.powerup_name == "minigun" || self.powerup_name == "tesla" || self.powerup_name == "random_weapon" || self.powerup_name == "upgrade_weapon" || 
-				self.powerup_name == "meat") &&
+			if ( is_true( self.solo )  &&
 				( players[i] maps\_laststand::player_is_in_laststand() || ( players[i] UseButtonPressed() && players[i] in_revive_trigger() ) ) )
 			{
 				continue;
@@ -1439,9 +1462,8 @@ powerup_grab()
 			if(self.powerup_name == "minigun" && IsDefined(players[i].has_tesla) && players[i].has_tesla)
 				continue;
 
-			//no picking up unupgraded waffe if upgraded waffe is active
-			if(self.powerup_name == "tesla" && IsDefined(players[i].has_tesla) && players[i].has_tesla && players[i] GetCurrentWeapon() == "tesla_gun_powerup_upgraded_zm" && self.weapon == "tesla_gun_powerup_zm")
-				continue;
+		
+		
 
 			//no picking up qed random weapon powerup if player the hasn't triggered it
 			if(self.powerup_name == "random_weapon" && !IsDefined(self.gg_powerup) && !is_true(self.weapon_powerup_grabbed))
@@ -1462,6 +1484,12 @@ powerup_grab()
 				}
 				else
 				{
+					//Reimagined-Expanded - Vulture upgraded drops
+					if( players[i] maps\_zombiemode_perks::hasProPerk( level.VLT_PRO ) )
+						level.vulture_is_upgraded_drop = true;
+					else
+						level.vulture_is_upgraded_drop = false;
+	
 					switch (self.powerup_name)
 					{
 					case "nuke":
@@ -1479,6 +1507,11 @@ powerup_grab()
 						players[i] thread powerup_vo("full_ammo");
 						break;
 
+					case "restock":
+						level thread full_ammo_powerup_implementation( undefined, players[i], players[i].entity_num );
+						//players[i] thread powerup_vo("full_ammo");
+						break;
+
 					case "double_points":
 						level thread double_points_powerup( self, players[i] );
 						players[i] thread powerup_vo("double_points");
@@ -1490,8 +1523,8 @@ powerup_grab()
 						break;
 
 					case "carpenter": //reimagined-expanded
-						level thread start_carpenter_new( self.origin );
 						players[i] thread powerup_vo("carpenter");
+						level thread start_carpenter_new( self.origin );
 						break;
 
 					case "fire_sale":
@@ -1500,8 +1533,14 @@ powerup_grab()
 						break;
 
 					case "bonfire_sale":
+						
 						level thread start_bonfire_sale( self );
 						players[i] thread powerup_vo("firesale");
+						break;
+
+					case "pap_teleport":
+						players[i] thread start_special_pap( self );
+						players[i] thread powerup_vo( "tesla" );
 						break;
 
 					case "minigun":
@@ -1631,6 +1670,29 @@ powerup_grab()
 	}
 }
 
+delay_give_drop( player, powerup_name, delay)
+{
+	wait(delay);
+	
+	switch(powerup_name)
+	{
+		case "full_ammo":
+			level thread full_ammo_powerup( self, player );
+			player thread powerup_vo("full_ammo");
+							
+		break;
+
+	
+		case "carpenter": //reimagined-expanded
+			player thread powerup_vo("carpenter");
+			level thread start_carpenter_new( self.origin );
+			
+		break;
+	}
+		
+
+}
+
 //Reimagined-Expanded - Call zombieblood script!
 zombie_blood_powerup( player, time )
 {
@@ -1669,22 +1731,33 @@ start_fire_sale( item )
 	
 	level thread maps\_zombiemode_audio::do_announcer_playvox( level.devil_vox["powerup"]["fire_sale_short"] );
 
+	powerup_time = 30;
+	players = get_players();
+	for(i = 0; i < players.size; i++)
+	{
+		if( players[i] maps\_zombiemode_perks::hasProPerk( level.VLT_PRO ) )
+		{
+			powerup_time = 45;
+		}
+	}
+	
+
 	players = get_players();
 	if(level.zombie_vars["zombie_powerup_fire_sale_on"])
 	{
-		level.zombie_vars["zombie_powerup_fire_sale_time"] += 30;
+		level.zombie_vars["zombie_powerup_fire_sale_time"] += powerup_time;
 		for(i = 0; i < players.size; i++)
 		{
-			players[i].zombie_vars["zombie_powerup_fire_sale_time"] += 30;
+			players[i].zombie_vars["zombie_powerup_fire_sale_time"] += powerup_time;
 		}
 	}
 	else
 	{
 		level notify("fire_sale_on");
-		level.zombie_vars["zombie_powerup_fire_sale_time"] = 30;
+		level.zombie_vars["zombie_powerup_fire_sale_time"] = powerup_time;
 		for(i = 0; i < players.size; i++)
 		{
-			players[i].zombie_vars["zombie_powerup_fire_sale_time"] = 30;
+			players[i].zombie_vars["zombie_powerup_fire_sale_time"] = powerup_time;
 		}
 	}
     
@@ -1736,21 +1809,31 @@ start_bonfire_sale( item )
 	temp_ent playloopsound ("zmb_double_point_loop");
 	level thread delete_on_bonfire_sale(temp_ent);
 
+	powerup_time = 30;
+	players = get_players();
+	for(i = 0; i < players.size; i++)
+	{
+		if( players[i] maps\_zombiemode_perks::hasProPerk( level.VLT_PRO ) )
+		{
+			powerup_time = 45;
+		}
+	}
+
 	players = get_players();
 	if(level.zombie_vars["zombie_powerup_bonfire_sale_on"])
 	{
-		level.zombie_vars["zombie_powerup_bonfire_sale_time"] += 30;
+		level.zombie_vars["zombie_powerup_bonfire_sale_time"] += powerup_time;
 		for(i = 0; i < players.size; i++)
 		{
-			players[i].zombie_vars["zombie_powerup_bonfire_sale_time"] += 30;
+			players[i].zombie_vars["zombie_powerup_bonfire_sale_time"] += powerup_time;
 		}
 	}
 	else
 	{
-		level.zombie_vars["zombie_powerup_bonfire_sale_time"] = 30;
+		level.zombie_vars["zombie_powerup_bonfire_sale_time"] = powerup_time;
 		for(i = 0; i < players.size; i++)
 		{
-			players[i].zombie_vars["zombie_powerup_bonfire_sale_time"] = 30;
+			players[i].zombie_vars["zombie_powerup_bonfire_sale_time"] = powerup_time;
 		}
 	}
 
@@ -1798,6 +1881,63 @@ delete_on_bonfire_sale(temp_ent)
 		temp_ent Delete();
 }
 
+start_special_pap( powerup, isUpgraded )
+{
+	level.pap_used = true;
+	destination = SpawnStruct();
+
+	//destination.origin = level.pap_origin + (100, 0, 10);
+	destination.origin = (640, 14, 61);
+	destination.angles = level.pap_angles + (0, -180, 0);
+
+	level.pap_moving = false;
+	self.ignoreme = true;
+	self maps\_zombiemode_weap_black_hole_bomb::black_hole_teleport( destination, true );	
+
+	powerup_time = 15;
+	if( isUpgraded )
+		powerup_time = 20;
+
+	level.zombie_vars["zombie_powerup_bonfire_sale_time"] = powerup_time;
+	self.zombie_vars["zombie_powerup_bonfire_sale_time"] = powerup_time;
+	
+	level.zombie_vars["zombie_powerup_bonfire_sale_on"] = true;
+	self.zombie_vars["zombie_powerup_bonfire_sale_on"] = true;
+	
+	level thread toggle_bonfire_sale_on();
+
+	while ( level.zombie_vars["zombie_powerup_bonfire_sale_time"] > 0)
+	{
+		wait(0.1);
+		level.zombie_vars["zombie_powerup_bonfire_sale_time"] -= 0.1;
+		self.zombie_vars["zombie_powerup_bonfire_sale_time"] -= 0.1;	
+	}
+
+	//while pap in use, dont tp
+	while( flag("pack_machine_in_use") ) {
+		wait 0.5;
+	}
+
+	level.zombie_vars["zombie_powerup_bonfire_sale_on"] = false;
+	self.zombie_vars["zombie_powerup_bonfire_sale_on"] = false;
+	
+	level notify ( "bonfire_sale_off" );
+
+
+	level.pap_moving = true;
+
+	respawn_point = array_randomize( level.ARRAY_VERUKT_PAP_DROP_SPAWN_LOCATIONS )[0];
+	respawn = SpawnStruct();
+	respawn.origin = respawn_point.origin;
+	respawn.angles = self GetPlayerAngles();
+
+	self maps\_zombiemode_weap_black_hole_bomb::black_hole_teleport( respawn, true );
+	self VisionSetNaked( level.zombie_visionset, 0.5 );
+	wait 0.5;
+	self.ignoreme = false;
+	//wait(2);
+
+}
 
 start_carpenter( origin )
 {
@@ -2033,10 +2173,14 @@ powerup_timeout()
 }
 
 // kill them all!
-nuke_powerup( drop_item, grabber )
+nuke_powerup( drop_item, grabber, give_points )
 {
+	if( !isDefined( give_points ) ) 
+		give_points = true;
+
 	zombies = getaispeciesarray("axis");
 	location = drop_item.origin;
+	
 
 	PlayFx( drop_item.fx, location );
 	level thread nuke_flash();
@@ -2109,7 +2253,8 @@ nuke_powerup( drop_item, grabber )
 			continue;
 		}
 
-		players[i] maps\_zombiemode_score::player_add_points( "nuke_powerup", 400 );
+		if( give_points )
+			players[i] maps\_zombiemode_score::player_add_points( "nuke_powerup", 400 );
 	}
 
 	if(level.gamemode != "survival")
@@ -2178,6 +2323,9 @@ nuke_flash_player()
 double_points_powerup( drop_item, player )
 {
 	players = get_players();
+	upgraded = false;
+
+
 	for(i = 0; i < players.size; i++)
 	{
 		if(level.gamemode != "survival" && players[i].vsteam != player.vsteam)
@@ -2201,10 +2349,6 @@ double_points_powerup_player( drop_item )
 	self endon ("powerup points scaled");
 	self endon("disconnect");
 
-	//	players = get_players();
-	//	array_thread(level,::point_doubler_on_hud, drop_item);
-	//self thread point_doubler_on_hud( drop_item );
-
 	self thread powerup_shader_on_hud( drop_item, "zombie_powerup_point_doubler_on", "zombie_powerup_point_doubler_time", "zmb_points_loop_off", "zmb_double_point_loop" );
 
 	self.zombie_vars["zombie_point_scalar"] = 2;
@@ -2225,13 +2369,14 @@ full_ammo_powerup_implementation( drop_item, player, player_num )
 {
 	//iprintln("Calling full ammo with player num: " + player_num + "");
 
-	if( drop_item == undefined )
+	//For Mule
+	if( !IsDefined(drop_item) )
 	{
 		//iprintln("Drop item is undefined");
 		player thread powerup_vo("full_ammo");
 		drop_item = SpawnStruct();
 		drop_item.caution = false; //makes text red
-		drop_item.hint = &"ZOMBIE_POWERUP_MAX_AMMO";
+		drop_item.hint = &"REIMAGINED_POWERUP_RESTOCK";
 	}
 
 	players = get_players();
@@ -2242,7 +2387,7 @@ full_ammo_powerup_implementation( drop_item, player, player_num )
 			continue;
 		}
 		
-		//Reimagined-Expanded - allows us to give max ammo's to particular players
+		//Reimagined-Expanded - allows us to give max ammos to particular players
 		if( player_num != -1 && players[i].entity_num != player_num )
 		{
 			continue;
@@ -2403,16 +2548,21 @@ insta_kill_on_hud( drop_item )
 {
 	self endon ("disconnect");
 
+	powerup_time = 30;
+	if( self maps\_zombiemode_perks::hasProPerk( level.VLT_PRO ) )
+	{
+		powerup_time = 45;
+	}
 	// check to see if this is on or not
 	if ( self.zombie_vars["zombie_powerup_insta_kill_on"] )
 	{
 		// reset the time and keep going
-		self.zombie_vars["zombie_powerup_insta_kill_time"] += 30;
+		self.zombie_vars["zombie_powerup_insta_kill_time"] += powerup_time;
 		return;
 	}
 	else
 	{
-		self.zombie_vars["zombie_powerup_insta_kill_time"] = 30;
+		self.zombie_vars["zombie_powerup_insta_kill_time"] = powerup_time;
 	}
 
 	self.zombie_vars["zombie_powerup_insta_kill_on"] = true;
@@ -2482,28 +2632,25 @@ point_doubler_on_hud( drop_item )
 {
 	self endon ("disconnect");
 
+	powerup_time = 30;
+	if( self maps\_zombiemode_perks::hasProPerk( level.VLT_PRO ) )
+	{
+		powerup_time = 45;
+	}
+
 	// check to see if this is on or not
 	if ( self.zombie_vars["zombie_powerup_point_doubler_on"] )
 	{
 		// reset the time and keep going
-		self.zombie_vars["zombie_powerup_point_doubler_time"] += 30;
+		self.zombie_vars["zombie_powerup_point_doubler_time"] += powerup_time;
 		return;
 	}
 	else
 	{
-		self.zombie_vars["zombie_powerup_point_doubler_time"] = 30;
+		self.zombie_vars["zombie_powerup_point_doubler_time"] = powerup_time;
 	}
 
 	self.zombie_vars["zombie_powerup_point_doubler_on"] = true;
-	//level.powerup_hud_array[0] = true;
-	// set up the hudelem
-	//hudelem = maps\_hud_util::createFontString( "objective", 2 );
-	//hudelem maps\_hud_util::setPoint( "TOP", undefined, 0, level.zombie_vars["zombie_timer_offset"] );
-	//hudelem.sort = 0.5;
-	//hudelem.alpha = 0;
-	//hudelem fadeovertime( 0.5 );
-	//hudelem.alpha = 1;
-	//hudelem.label = drop_item.hint;
 
 	// set time remaining for point doubler
 	self thread time_remaining_on_point_doubler_powerup();
@@ -2514,7 +2661,6 @@ point_doubler_on_hud( drop_item )
 
 time_remaining_on_point_doubler_powerup()
 {
-	//self setvalue( level.zombie_vars["zombie_powerup_point_doubler_time"] );
 	temp_ent = undefined;
 	players = get_players();
 	if(self == players[0])
@@ -2531,7 +2677,6 @@ time_remaining_on_point_doubler_powerup()
 	{
 		wait 0.1;
 		self.zombie_vars["zombie_powerup_point_doubler_time"] = self.zombie_vars["zombie_powerup_point_doubler_time"] - 0.1;
-		//self setvalue( level.zombie_vars["zombie_powerup_point_doubler_time"] );
 	}
 
 	// turn off the timer
@@ -2549,6 +2694,7 @@ time_remaining_on_point_doubler_powerup()
 	if(IsDefined(temp_ent))
 		temp_ent delete();
 }
+
 toggle_bonfire_sale_on()
 {
 	level endon ("powerup bonfire sale");
@@ -2811,10 +2957,11 @@ play_bonfiresale_audio()
 //******************************************************************************
 free_perk_powerup( item, player )
 {
-	level.max_perks++;
+	//level.max_perks++;
 	players = getplayers();
 	for ( i = 0; i < players.size; i++ )
 	{
+
 		if(level.gamemode != "survival" && players[i].vsteam != player.vsteam)
 		{
 			continue;
@@ -2822,9 +2969,13 @@ free_perk_powerup( item, player )
 
 		if ( !players[i] maps\_laststand::player_is_in_laststand() && !(players[i].sessionstate == "spectator") )
 		{
-			players[i] maps\_zombiemode_perks::give_random_perk();
+			players[i] thread maps\_zombiemode_perks::give_random_perk();
 		}
+		players[i].perk_slots++;
 	}
+
+	//Reimagined-Expanded
+	player thread generate_perk_hint( "free_perk_powerup" );
 
 	if(level.gamemode != "survival")
 	{
@@ -3282,56 +3433,76 @@ minigun_watch_gunner_downed()
 tesla_weapon_powerup( ent_player, powerup, time )
 {
 	ent_player endon( "disconnect" );
-	ent_player endon( "death" );
-	ent_player endon( "player_downed" );
 
-	weapon = powerup.weapon;
+	wait(0.5);	//in case player picks up perk bottle nearby
 
-	if ( !IsDefined( time ) )
+	if( is_true( ent_player.superpower_active) )
 	{
-		time = 11; // no blink
-	}
-
-	// Just replenish the time if it's already active
-	if ( ent_player.zombie_vars[ "zombie_powerup_tesla_on" ] && (weapon == ent_player GetCurrentWeapon() && (IsDefined(ent_player.has_tesla) && ent_player.has_tesla) ))
-	{
-		ent_player maps\_zombiemode_weapons::give_max_ammo(weapon);
-
-		if ( ent_player.zombie_vars[ "zombie_powerup_tesla_time" ] < time )
-		{
-			ent_player.zombie_vars[ "zombie_powerup_tesla_time" ] = time;
-		}
+		level.stack_player_superpower = true;
 		return;
 	}
 
-	ent_player notify( "replace_weapon_powerup" );
+	ent_player.superpower_active = true;
+
 	ent_player._show_solo_hud = true;
 
-	wait_network_frame();
-
-	// make sure weapons are replaced properly if the player is downed
-	level._zombie_tesla_powerup_last_stand_func = ::tesla_watch_gunner_downed;
-	ent_player.has_tesla = true;
-	ent_player.has_powerup_weapon = true;
-
-	ent_player increment_is_drinking();
-	ent_player._zombie_gun_before_tesla = ent_player GetCurrentWeapon();
-
-	// give player a tesla
-	ent_player GiveWeapon( weapon, 0, ent_player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( weapon ) );
-	ent_player maps\_zombiemode_weapons::give_max_ammo(weapon);
-	ent_player SwitchToWeapon( weapon );
-
-	if(weapon == "tesla_gun_powerup_upgraded_zm" && ent_player HasWeapon("tesla_gun_powerup_zm"))
+	DROP_LENGTH = 20;
+	if( ent_player maps\_zombiemode_perks::hasProPerk( level.VLT_PRO ) )
 	{
-		ent_player TakeWeapon("tesla_gun_powerup_zm");
+		DROP_LENGTH = 30;
+	}
+	drop_time = DROP_LENGTH;
+
+	//Reimagined-Expanded, override "Tesla" powerup to be a "Superpower"
+
+	//Record player perks
+	current_perks = ent_player.purchased_perks;
+
+	//Give player normal than upgraded perks in rapid succession
+	for( i = 0; i < level.ARRAY_VALID_PRO_PERKS.size; i++ ) {
+		ent_player maps\_zombiemode_perks::returnPerk( level.ARRAY_VALID_PERKS[i] );
+		wait(0.02);
 	}
 
-	ent_player.zombie_vars[ "zombie_powerup_tesla_on" ] = true;
+	//Give player all PRO perks, if they don't have them already
+	for( i = 0; i < level.ARRAY_VALID_PRO_PERKS.size; i++ ) {
+		ent_player maps\_zombiemode_perks::returnPerk( level.ARRAY_VALID_PRO_PERKS[i] );
+		wait(0.02);
+	}
 
-	level thread tesla_weapon_powerup_countdown( ent_player, "tesla_time_over", weapon, time );
-	level thread tesla_weapon_powerup_replace( ent_player, "tesla_time_over", weapon );
-	level thread tesla_weapon_powerup_weapon_change( ent_player, "tesla_time_over", weapon );
+	if( is_true( level.dev_only ) )
+		drop_time = 5; //dev
+
+	time = 0;
+	while( time < drop_time )
+	{
+		if( is_true( level.stack_player_superpower ) )
+		{
+			drop_time += DROP_LENGTH;
+			level.stack_player_superpower = false;
+		}
+		
+		time += 0.5;
+		wait(0.5);
+	}
+	
+
+	//Take all Pro Perks
+	for(i = level.ARRAY_VALID_PRO_PERKS.size; i > -1 ; i--) {
+		ent_player maps\_zombiemode_perks::removePerk(level.ARRAY_VALID_PRO_PERKS[i]);
+		wait(0.1);
+	}
+
+	//Give player all perks they had before
+	for( i = 0; i < current_perks.size; i++ ) {
+		ent_player maps\_zombiemode_perks::returnPerk( current_perks[i] );
+		wait(0.1);
+	}
+
+
+	ent_player.superpower_active = false;
+	ent_player.num_perks = current_perks.size;
+	//iprintlnBold("current_perks.size: " + current_perks.size);
 }
 
 tesla_weapon_powerup_countdown( ent_player, str_gun_return_notify, weapon, time )
@@ -3775,6 +3946,8 @@ powerup_shader_on_hud( item, powerup_on_var, powerup_time_var, sound, loop_sound
 	if(!IsDefined(time))
 	{
 		time = 30;
+		if( level.vulture_is_upgraded_drop )
+			time = 45;
 	}
 
 	// check to see if this is on or not
@@ -4358,7 +4531,7 @@ carpenter_speed_down()
 	for(i=0;i<zombies.size;i++) 
 	{
 		var = randomintrange(1, 4);
-		if( zombies[i].has_legs == true) 
+		if( is_true( zombies[i].is_zombie ) ) 
 		{
 			if( zombies[i].zombie_move_speed == "sprint" )
 			{

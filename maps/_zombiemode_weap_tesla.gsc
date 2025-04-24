@@ -16,8 +16,8 @@ init()
 	
 	//Reimagined-Expanded - Included in _zombiemode_weapon_effects.gsc
 	//level._effect["tesla_bolt"]				= loadfx( "maps/zombie/fx_zombie_tesla_bolt_secondary" );
-	//level._effect["tesla_shock"]			= loadfx( "maps/zombie/fx_zombie_tesla_shock" );
-	//level._effect["tesla_shock_secondary"]	= loadfx( "maps/zombie/fx_zombie_tesla_shock_secondary" );
+	level._effect["tesla_shock"]			= loadfx( "maps/zombie/fx_zombie_tesla_shock" );
+	level._effect["tesla_shock_secondary"]	= loadfx( "maps/zombie/fx_zombie_tesla_shock_secondary" );
 
 		
 	level._effect["tesla_viewmodel_rail"]	= loadfx( "maps/zombie/fx_zombie_tesla_rail_view" );

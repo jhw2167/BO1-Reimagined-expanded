@@ -302,7 +302,22 @@
 			textfont		UI_FONT_EXTRABIG
 			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
 			ownerdraw		CG_PLAYER_WEAPON_NAME
-			visible			1
+			visible			when(dvarString("ui_playerWeaponName") == "")
+			decoration
+		}
+		
+		itemDef
+		{
+			name			"weapnameraw"
+			type			ITEM_TYPE_TEXT
+			rect			(WEAPINFO_X+7) (WEAPINFO_Y+20) 1 1
+			textalign		ITEM_ALIGN_RIGHT
+			textstyle		ITEM_TEXTSTYLE_SHADOWEDMORE
+			textscale		TEXTSIZE_DEFAULT
+			textfont		UI_FONT_EXTRABIG
+			forecolor		1 1 1 HUD_FOREGROUND_ALPHA
+			exp				text( dvarString("ui_playerWeaponName") )
+			visible			when(dvarString("ui_playerWeaponName") != "")
 			decoration
 		}
 

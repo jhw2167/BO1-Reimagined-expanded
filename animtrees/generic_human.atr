@@ -5595,6 +5595,12 @@ body
 			ai_zombie_tesla_crawl_death_a
 			ai_zombie_tesla_crawl_death_b
 			
+			ai_zombie_afterlife_stun_a
+			ai_zombie_afterlife_stun_b
+			ai_zombie_afterlife_stun_c
+			ai_zombie_afterlife_stun_d
+			ai_zombie_afterlife_stun_e
+
 			ai_zombie_death_12
 			ai_zombie_death_13
 			ai_zombie_death_10

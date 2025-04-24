@@ -46,15 +46,15 @@ pack_a_punch_activate()
 	
 	
 	//wait for the landers to be used
-	flag_wait( "lander_a_used" );
-	flag_wait( "lander_b_used" );
-	flag_wait( "lander_c_used" );
+	//flag_wait( "lander_a_used" );
+	//flag_wait( "lander_b_used" );
+	//flag_wait( "lander_c_used" );
 	
 	level thread move_rocket_arm();
 	
 	wait(4);
 	
-	//flag_set("launch_activated");
+	flag_set("launch_activated");
 
 	flag_wait("launch_complete");
 	

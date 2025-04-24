@@ -275,7 +275,10 @@ thundergun_fling_zombie( player, fling_vec, index )
 		return;
 	}
 
-	self DoDamage( self.health + 666, player.origin, player );
+	if( level.apocalypse )
+		self DoDamage( self.health + 666, player.origin );
+	else
+		self DoDamage( self.health + 666, player.origin, player );
 
 	if ( self.health <= 0 )
 	{

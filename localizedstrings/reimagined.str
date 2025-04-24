@@ -22,7 +22,7 @@ REFERENCE           WEAPONCOSTAMMO
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Weapon [Cost: &&1], Ammo [Cost: &&2]"
 
 REFERENCE           WEAPONCOSTAMMO_UPGRADE
-LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Weapon [Cost: &&1], Ammo [Cost: &&2],\n                     Upgraded Ammo [Cost: 2500]"
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Weapon [Cost: &&1], Ammo [Cost: &&2],\n                     Upgraded Ammo [Cost: 4500]"
 
 REFERENCE           WEAPONCOSTAMMO_UPGRADE_HACKED
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Upgraded Weapon [Cost: &&1], Ammo [Cost: &&2],\n                         Upgraded Ammo [Cost: &&3]"
@@ -45,7 +45,7 @@ LANG_ENGLISH       	"Hold ^3[{+activate}]^7 to Pick Up Bouncing Betty"
 REFERENCE          	BETTY_PURCHASE
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Bouncing Betty [Cost: 1000]"
 
-REFERENCE          	PERK_JUGGERNAUT
+REFERENCE          	PERK_JUGGERNOG
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Juggernog [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_QUICKREVIVE
@@ -55,7 +55,7 @@ REFERENCE          	PERK_FASTRELOAD
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Speed Cola [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_DOUBLETAP
-LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Double Tap [Cost: &&1]\n        or upgrade [Cost: &&2]"
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Double Tap 2.0 [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_MARATHON
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Marathon [Cost: &&1]\n        or upgrade [Cost: &&2]"
@@ -64,19 +64,37 @@ REFERENCE          	PERK_DIVETONUKE
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy PhD Flopper [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_DEADSHOT
-LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Deadshot Daiquiri [Cost: &&1]\n        or upgrade [Cost: &&2]"
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Deadshot Daiquiri 2.0 [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_MULEKICK
 LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Mule Kick [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_CHERRY
-LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Electric Cherry [Cost: &&1]\n        or upgrade [Cost: &&2]"
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Electric Cherry 2.0 [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_VULTURE
-LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Vulture Aid [Cost: &&1]\n        or upgrade [Cost: &&2]"
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Vulture Aid 2.0 [Cost: &&1]\n        or upgrade [Cost: &&2]"
 
 REFERENCE          	PERK_WIDOWSWINE
-LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Widow's Wine [Cost: &&1]\n        or upgrade [Cost: &&2]"
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Widow's Wine 2.0 [Cost: &&1]\n        or upgrade [Cost: &&2]"
+
+//Classic Hintstrings, no upgraded perks:
+
+REFERENCE          	ZOMBIE_PERK_CHERRY
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Electric Cherry 2.0 [Cost: &&1]"
+
+REFERENCE          	ZOMBIE_PERK_VULTURE
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Vulture Aid 2.0 [Cost: &&1]"
+
+REFERENCE          	ZOMBIE_PERK_WIDOWSWINE
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to buy Widow's Wine 2.0 [Cost: &&1]"
+
+
+REFERENCE           NACHT_POWER
+LANG_ENGLISH        "Hold ^3[{+activate}]^7 to radio for help"
+
+REFERENCE          	WINE_GRENADES
+LANG_ENGLISH        "Web Grenades"
 
 REFERENCE          	PERK_BABYJUGG
 LANG_ENGLISH       	"Hold ^3[{+activate}]^7 to buy Baby Jugg [Cost: &&1]"
@@ -146,6 +164,24 @@ LANG_ENGLISH       	"The lander is currently in use"
 
 //WEAPONS
 
+REFERENCE          	COMBAT_KNIFE
+LANG_ENGLISH       	"Combat Knife"
+
+REFERENCE          	BOWIE_KNIFE
+LANG_ENGLISH       	"Bowie Knife"
+
+REFERENCE          	SICKLE_KNIFE
+LANG_ENGLISH       	"Sickle"
+
+REFERENCE          	MEAT
+LANG_ENGLISH       	"Meat"
+
+REFERENCE          	WEAPON_STICKY_GRENADE
+LANG_ENGLISH        "WEAPON_STICKY_GRENADE"
+
+REFERENCE          	WEAPON_GL_M16
+LANG_ENGLISH        "WEAPON_GL_M16"
+
 REFERENCE          	CROSSBOW_EXPLOSIVE
 LANG_ENGLISH       	"Crossbow Explosive Bolt"
 
@@ -161,113 +197,154 @@ LANG_ENGLISH       	"24 Bore"
 REFERENCE          	PES
 LANG_ENGLISH       	"P.E.S."
 
+
+REFERENCE          	WEAPON_SABERTOOTH
+LANG_ENGLISH       	"Sabertooth"
+
+REFERENCE          	SABERTOOTH_UPGRADED
+LANG_ENGLISH       	"S-115 Dismemberer"
+
+REFERENCE          	SABERTOOTH_UPGRADED_x2
+LANG_ENGLISH       	"S-339 Disintegrator"
+
+REFERENCE          	CROSSBOW_EXPLOSIVE_UPGRADED_X2
+LANG_ENGLISH        "Deliverance"
+
+REFERENCE          	KNIFE_BALLISTIC_UPGRADED_X2
+LANG_ENGLISH        "Krauss Defibrillator"
+
+
+REFERENCE          	KS23_UPGRADED
+LANG_ENGLISH       	"KS-56"
+
+REFERENCE          	KS23_UPGRADED_X2
+LANG_ENGLISH       	"Shock Army Exterminator"
+
+REFERENCE          	SPAS_UPGRADED_X2
+LANG_ENGLISH       	"Spazzle Dazzle"
+
+REFERENCE          	HS10_UPGRADED_X2
+LANG_ENGLISH        "Typhoid & Mary (Divorced)"
+
+
+
 REFERENCE          	AK47_UPGRADED
 LANG_ENGLISH       	"The Red Mist"
 
-REFERENCE          	PSG1_UPGRADED
-LANG_ENGLISH       	"Psychotic Salient Genius"
+REFERENCE          	AK47_UPGRADED_X2
+LANG_ENGLISH       	"Blitzkrieg"
+
+REFERENCE          	ENFIELD_UPGRADED
+LANG_ENGLISH       	"WINFIELD"
+
+REFERENCE          	ENFIELD_UPGRADED_X2
+LANG_ENGLISH       	"Bullpup Penatrator"
+
+REFERENCE          	AUG_UPGRADED_X2
+LANG_ENGLISH        "Shock & AUG"
+
+REFERENCE          	FAMAS_UPGRADED_X2
+LANG_ENGLISH        "G16-G-Infinite"
+
+REFERENCE          	FNFAL_UPGRADED_X2
+LANG_ENGLISH        "FN Peacemaker"
+
+REFERENCE          	G11_LPS_UPGRADED_X2
+LANG_ENGLISH        "Gone-11"
+
+REFERENCE          	GALIL_UPGRADED_X2
+LANG_ENGLISH        "Winter's Wail"
+
+REFERENCE          	COMMANDO_UPGRADED_X2
+LANG_ENGLISH        "The Feast"
+
+
+
+REFERENCE          	SPECTRE_UPGRADED_X2
+LANG_ENGLISH        "Wraith"
 
 REFERENCE          	PPSH_UPGRADED
 LANG_ENGLISH       	"The Reaper"
 
+REFERENCE          	PPSH_UPGRADED_X2
+LANG_ENGLISH       	"YTE SLAYA"
+
+REFERENCE          	UZI_UPGRADED
+LANG_ENGLISH       	"Uzizi"
+
+REFERENCE          	UZI_UPGRADED_X2
+LANG_ENGLISH       	"Uzizi "
+
+REFERENCE          	MAC11_UPGRADED
+LANG_ENGLISH       	"Killer & Psycho"
+
+REFERENCE          	MAC11_UPGRADED_X2
+LANG_ENGLISH       	"Turmoil Twins"
+
+
+REFERENCE          	ASP_UPGRADED
+LANG_ENGLISH       	"Another Side Piece"
+
+REFERENCE          	ASP_UPGRADED_X2
+LANG_ENGLISH       	"PSA Death"
+
+REFERENCE          	CZ75_DW_UPGRADED_X2
+LANG_ENGLISH        "Silhouette and Gamble"
+
+REFERENCE          	CZ75_UPGRADED_X2
+LANG_ENGLISH        "Silhouette"
+
+REFERENCE          	PYTHON_UPGRADED_X2
+LANG_ENGLISH        "Cobra's Frenzy"
+
+
 REFERENCE          	STONER63_UPGRADED
 LANG_ENGLISH       	"Stoned69"
 
-REFERENCE          	COMBAT_KNIFE
-LANG_ENGLISH       	"Combat Knife"
+REFERENCE          	STONER63_UPGRADED_x2
+LANG_ENGLISH       	"He Who is Without Sin"
 
-REFERENCE          	BOWIE_KNIFE
-LANG_ENGLISH       	"Bowie Knife"
+REFERENCE          	HK21_UPGRADED_X2
+LANG_ENGLISH        "H115 Oscillator"
 
-REFERENCE          	SICKLE_KNIFE
-LANG_ENGLISH       	"Sickle"
+REFERENCE          	RPK_UPGRADED_X2
+LANG_ENGLISH        "Scorched Earch"
 
-REFERENCE          	MEAT
-LANG_ENGLISH       	"Meat"
+REFERENCE          	M60_UPGRADED
+LANG_ENGLISH       	"Mega-60"
 
-REFERENCE          	SPAS_UPGRADED_X2
-LANG_ENGLISH       	"Spas-24 x2"
+REFERENCE          	M60_UPGRADED_X2
+LANG_ENGLISH       	"Big Daddy"
 
-REFERENCE          	AK74U_UPGRADED_X2
-LANG_ENGLISH        "AK74U_UPGRADED_X2"
 
-REFERENCE          	AUG_UPGRADED_X2
-LANG_ENGLISH        "AUG_UPGRADED_X2"
+
+REFERENCE          	PSG1_UPGRADED
+LANG_ENGLISH       	"Psychotic Salient Genius"
+
+REFERENCE          	PSG1_UPGRADED_X2
+LANG_ENGLISH       	"Serendipity"
+
+REFERENCE          	L96A1_UPGRADED_X2
+LANG_ENGLISH        "L115 Decimator"
+
+REFERENCE          	RAY_GUN_UPGRADED_X2
+LANG_ENGLISH        "RAY_GUN_UPGRADED_X2"
 
 REFERENCE          	CHINA_LAKE_UPGRADED_X2
 LANG_ENGLISH        "CHINA_LAKE_UPGRADED_X2"
 
-REFERENCE          	COMMANDO_UPGRADED_X2
-LANG_ENGLISH        "COMMANDO_UPGRADED_X2"
 
-REFERENCE          	CROSSBOW_EXPLOSIVE_UPGRADED_X2
-LANG_ENGLISH        "CROSSBOW_EXPLOSIVE_UPGRADED_X2"
-
-REFERENCE          	CZ75_DW_UPGRADED_X2
-LANG_ENGLISH        "CZ75_DW_UPGRADED_X2"
-
-REFERENCE          	CZ75_DW_UPGRADED_X2
-LANG_ENGLISH        "CZ75_DW_UPGRADED_X2"
-
-REFERENCE          	CZ75_UPGRADED_X2
-LANG_ENGLISH        "CZ75_UPGRADED_X2"
-
-REFERENCE          	WEAPON_STICKY_GRENADE
-LANG_ENGLISH        "WEAPON_STICKY_GRENADE"
-
-REFERENCE          	FAMAS_UPGRADED_X2
-LANG_ENGLISH        "FAMAS_UPGRADED_X2"
-
-REFERENCE          	FNFAL_UPGRADED_X2
-LANG_ENGLISH        "FNFAL_UPGRADED_X2"
-
-REFERENCE          	G11_LPS_UPGRADED_X2
-LANG_ENGLISH        "G11_LPS_UPGRADED_X2"
-
-REFERENCE          	GALIL_UPGRADED_X2
-LANG_ENGLISH        "GALIL_UPGRADED_X2"
-
-REFERENCE          	WEAPON_GL_M16
-LANG_ENGLISH        "WEAPON_GL_M16"
-
-REFERENCE          	HK21_UPGRADED_X2
-LANG_ENGLISH        "HK21_UPGRADED_X2"
-
-REFERENCE          	HS10_UPGRADED_X2
-LANG_ENGLISH        "HS10_UPGRADED_X2"
-
-REFERENCE          	HS10_UPGRADED_X2
-LANG_ENGLISH        "HS10_UPGRADED_X2"
+REFERENCE          	ROTTWEIL72_UPGRADED_X2
+LANG_ENGLISH        "ROTTWEIL72_UPGRADED_X2"
 
 REFERENCE          	ITHACA_UPGRADED_X2
-LANG_ENGLISH        "ITHACA_UPGRADED_X2"
-
-REFERENCE          	KNIFE_BALLISTIC_UPGRADED_X2
-LANG_ENGLISH        "KNIFE_BALLISTIC_UPGRADED_X2"
-
-REFERENCE          	KNIFE_BALLISTIC_UPGRADED_X2
-LANG_ENGLISH        "KNIFE_BALLISTIC_UPGRADED_X2"
-
-REFERENCE          	KNIFE_BALLISTIC_UPGRADED_X2
-LANG_ENGLISH        "KNIFE_BALLISTIC_UPGRADED_X2"
-
-REFERENCE          	L96A1_UPGRADED_X2
-LANG_ENGLISH        "L96A1_UPGRADED_X2"
+LANG_ENGLISH        "Destroyer"
 
 REFERENCE          	M14_UPGRADED_X2
 LANG_ENGLISH        "M14_UPGRADED_X2"
 
 REFERENCE          	M16_UPGRADED_X2
 LANG_ENGLISH        "M16_UPGRADED_X2"
-
-REFERENCE          	M1911_UPGRADED_X2
-LANG_ENGLISH        "M1911_UPGRADED_X2"
-
-REFERENCE          	M1911_UPGRADED_X2
-LANG_ENGLISH        "M1911_UPGRADED_X2"
-
-REFERENCE          	M72_LAW_UPGRADED_X2
-LANG_ENGLISH        "M72_LAW_UPGRADED_X2"
 
 REFERENCE          	MP40_UPGRADED_X2
 LANG_ENGLISH        "MP40_UPGRADED_X2"
@@ -281,41 +358,9 @@ LANG_ENGLISH        "MPL_UPGRADED_X2"
 REFERENCE          	PM63_UPGRADED_X2
 LANG_ENGLISH        "PM63_UPGRADED_X2"
 
-REFERENCE          	PM63_UPGRADED_X2
-LANG_ENGLISH        "PM63_UPGRADED_X2"
 
-REFERENCE          	PPSH_UPGRADED
-LANG_ENGLISH        "PPSH_UPGRADED"
-
-REFERENCE          	PSG1_UPGRADED
-LANG_ENGLISH        "PSG1_UPGRADED"
-
-REFERENCE          	PYTHON_UPGRADED_X2
-LANG_ENGLISH        "PYTHON_UPGRADED_X2"
-
-REFERENCE          	RAY_GUN_UPGRADED_X2
-LANG_ENGLISH        "RAY_GUN_UPGRADED_X2"
-
-REFERENCE          	ROTTWEIL72_UPGRADED_X2
-LANG_ENGLISH        "ROTTWEIL72_UPGRADED_X2"
-
-REFERENCE          	RPK_UPGRADED_X2
-LANG_ENGLISH        "RPK_UPGRADED_X2"
-
-REFERENCE          	SPAS_UPGRADED_X2
-LANG_ENGLISH        "SPAS_UPGRADED_X2"
-
-REFERENCE          	SPECTRE_UPGRADED_X2
-LANG_ENGLISH        "SPECTRE_UPGRADED_X2"
-
-REFERENCE          	STONER63_UPGRADED
-LANG_ENGLISH        "STONER63_UPGRADED"
-
-REFERENCE          	TESLA_GUN_UPGRADED_X2
-LANG_ENGLISH        "TESLA_GUN_UPGRADED_X2"
-
-REFERENCE          	TESLA_GUN_UPGRADED_X2
-LANG_ENGLISH        "TESLA_GUN_UPGRADED_X2"
+REFERENCE          	AK74U_UPGRADED_X2
+LANG_ENGLISH        "AK74U_UPGRADED_X2"
 
 REFERENCE          	SHOTGUN_DOUBLE_BARRELED_UPGRADED
 LANG_ENGLISH        "SHOTGUN_DOUBLE_BARRELED_UPGRADED"
@@ -345,6 +390,18 @@ REFERENCE          	TYPE100_SMG_UPGRADED_X2
 LANG_ENGLISH        "TYPE100_SMG_UPGRADED_X2"
 
 
+REFERENCE          	BAR_UPGRADED
+LANG_ENGLISH        "THE STANDARD"
+
+REFERENCE          	M1GARAND_UPGRADED
+LANG_ENGLISH        "BULLPUP T31"
+
+REFERENCE          	SPRINGFIELD_UPGRADED
+LANG_ENGLISH        "WINTERFIELD"
+
+REFERENCE          	MAKAROV_UPGRADED
+LANG_ENGLISH        "PM Standartnyy"
+
 
 //HUD
 
@@ -359,6 +416,10 @@ LANG_ENGLISH       	"Round: "
 
 REFERENCE          	ROUND_TOTAL_TIME
 LANG_ENGLISH       	"Round Total: "
+
+REFERENCE          	SCRIPT_PERCENT
+LANG_ENGLISH       	"%"
+
 
 REFERENCE          	SIDEQUEST_COMPLETE
 LANG_ENGLISH       	"Sidequest Complete! Time: "
@@ -1110,7 +1171,16 @@ REFERENCE          	PAUSE
 LANG_ENGLISH       	"PAUSE ZOMBIE SPAWNING"
 
 REFERENCE          	APOCALYPSE
-LANG_ENGLISH       	"APOCALYPSE MODE"
+LANG_ENGLISH       	"DIFFICULTY"
+
+REFERENCE          	DIFFICULTY_CLASSIC
+LANG_ENGLISH       	"CLASSIC (VANILLA)"
+
+REFERENCE          	DIFFICULTY_EASY
+LANG_ENGLISH       	"REIMAGINED (EASY)"
+
+REFERENCE          	DIFFICULTY_HARD
+LANG_ENGLISH       	"APOCALYPSE (HARD)"
 
 REFERENCE          	ZOMBIE_CHEAT
 LANG_ENGLISH       	"ENABLE CHEATS"
@@ -1155,9 +1225,285 @@ REFERENCE          	BO2_PERKS
 LANG_ENGLISH       	"INCLUDE BO2 PERKS"
 
 REFERENCE          	EXTRA_DROPS
-LANG_ENGLISH       	"EXTRA DROPS"
+LANG_ENGLISH       	"INCLUDE BLUE DROPS"
 
 REFERENCE          	ROUND_START
 LANG_ENGLISH       	"STARTING ROUND"
+
+REFERENCE          	OPT_DEADSHOT_HITMARKERS
+LANG_ENGLISH       	"DEADSHOT HITMARKERS"
+
+REFERENCE          	GAME_HINTS
+LANG_ENGLISH       	"REIMAGINED IN-GAME HINTS"
+
+REFERENCE          	APOCALYPSE_TITLE
+LANG_ENGLISH       	"Apocalypse Mode"
+
+REFERENCE          	APOCALYPSE_HINT
+LANG_ENGLISH       	"Zombies are stronger, faster, and will respawn at full health if not killed quickly enough. Rounds \n     will progress even before all zombies are slain. Points are much harder to come by."
+
+REFERENCE          	APOCALYPSE_ROUNDS
+LANG_ENGLISH       	"Apocalypse Rounds"
+
+REFERENCE          	APOCALYPSE_HINT_ROUNDS
+LANG_ENGLISH       	"- Rounds will automatically start if you wait too long; with a break every 5 rounds"
+
+REFERENCE          	APOCALYPSE_POINTS
+LANG_ENGLISH       	"Apocalypse Mode Points"
+
+REFERENCE       	COWARDS_DOWN
+LANG_ENGLISH       	"Hold ^3[{+activate}]^7 to end the suffering"
+
+REFERENCE          	BABYJUGG_TITLE
+LANG_ENGLISH       	"Baby Jugg"
+
+REFERENCE          	BABYJUGG_HINT
+LANG_ENGLISH       	"Health set to 140, permanently"
+
+REFERENCE          	QRV_PRK_TITLE
+LANG_ENGLISH       	"Quick Revive"
+
+REFERENCE          	QRV_PRK_HINT
+LANG_ENGLISH       	"- Revive teammates faster \n- Regenerate health slightly quicker \n- After being revived, a random perk is returned to you (Co-op Only)"
+
+REFERENCE          	QRV_PRO_TITLE
+LANG_ENGLISH       	"QuickRevive Pro"
+
+REFERENCE          	QRV_PRO_HINT
+LANG_ENGLISH       	"- Trigger zombie blood for revived players \n- Larger revive radius \n- Points are not lost while a player with Quick Revive Pro is near a downed player (Apocalypse mode only)"
+
+REFERENCE          	JUG_PRK_TITLE
+LANG_ENGLISH       	"Juggernog"
+
+REFERENCE          	JUG_PRK_HINT
+LANG_ENGLISH       	"That's a little pricey, maybe try Babyjug?"
+
+REFERENCE          	JUG_PRO_TITLE
+LANG_ENGLISH       	"Juggernog Pro"
+
+REFERENCE          	JUG_PRO_HINT
+LANG_ENGLISH       	"Max health set to 325, permanently"
+
+REFERENCE 			SPD_PRO_TITLE
+LANG_ENGLISH 		"Speed Cola Pro"
+
+REFERENCE 			SPD_PRO_HINT
+LANG_ENGLISH 		"- Reloads any weapon not in your primary slot after 3.5 seconds \n- Drinking perks is extremely fast"
+
+REFERENCE 			DBT_PRK_TITLE
+LANG_ENGLISH 		"Double-Tap 2.0"
+
+REFERENCE 			DBT_PRK_HINT
+LANG_ENGLISH 		"All bullet weapons do 50% increased damage"
+
+REFERENCE 			DBT_PRO_TITLE
+LANG_ENGLISH 		"Double-Tap 2.0 Pro"
+
+REFERENCE 			DBT_PRO_HINT
+LANG_ENGLISH 		"- All bullet weapons do 100% increased damage \n- Provides bullet penetration of up to 6 zombies \n- Improves Double Pack-a-Punch wepaon abilities"
+
+REFERENCE 			STM_PRO_TITLE
+LANG_ENGLISH 		"Stamina-Up Pro"
+
+REFERENCE 			STM_PRO_HINT
+LANG_ENGLISH 		"- When you melee then sprint, enter a ghost mode for 3 seconds allowing you to run through zombies \n- Further speed increase \n- Doubles melee damage"
+
+REFERENCE 			PHD_PRK_TITLE
+LANG_ENGLISH 		"PhD Flopper 2.0"
+
+REFERENCE 			PHD_PRK_HINT
+LANG_ENGLISH 		"- Immune to damage caused by explosive weapons \n- Explosions deal double damage to zombies \n- Killing zombies with explosive weapons or equipment gives bonus points"
+
+REFERENCE 			PHD_PRO_TITLE
+LANG_ENGLISH 		"PhD Flopper 2.0 Pro"
+
+REFERENCE 			PHD_PRO_HINT
+LANG_ENGLISH 		"- Larger splash area and damage with all explosive weapons, equipment and flop \n- Longer lasting Hellfire \n- Any dolphin dive will trigger PhD effects \n- Closest zombies to PhD explosion are knocked down, hellfire is applied"
+
+REFERENCE 			DST_PRK_TITLE
+LANG_ENGLISH 		"Deadshot Daiquiri 2.0"
+
+REFERENCE 			DST_PRK_HINT
+LANG_ENGLISH 		"- All bullet weapons do 100% increased headshot damage"
+
+REFERENCE 			DST_PRO_TITLE
+LANG_ENGLISH 		"Deadshot Daiquiri 2.0 Pro"
+
+REFERENCE 			DST_PRO_HINT
+LANG_ENGLISH 		"- All bullet weapons do 50% increased damage while ADS \n- Hitmarkers on hitting zombies \n- Each successive headshot gives your next shot an additional 5% damage, stackable"
+
+REFERENCE 			MUL_PRO_TITLE
+LANG_ENGLISH 		"Mule Kick Pro"
+
+REFERENCE 			MUL_PRO_HINT
+LANG_ENGLISH 		"- 3rd weapon is permanent \n- Rewards player a Max Ammo on purchase"
+
+REFERENCE 			ECH_PRK_TITLE
+LANG_ENGLISH 		"Electric Cherry 2.0"
+
+REFERENCE 			ECH_PRK_HINT
+LANG_ENGLISH 		"- Reloading your weapon emits an electric shock that stuns and damages nearby zombies \n- Each sequential reload will reduce Cherry's effectiveness \n- Cherry recharges fully every 30 seconds"
+
+REFERENCE 			ECH_PRO_TITLE
+LANG_ENGLISH 		"Electric Cherry 2.0 Pro"
+
+REFERENCE 			ECH_PRO_HINT
+LANG_ENGLISH 		"- When a zombie hits you, you take no damage and Cherry will trigger, 10s cooldown \n- Electric pulse effect is always full charge \n- Electric pulse may stun up to 12 enemies"
+
+REFERENCE 			VLT_PRK_TITLE
+LANG_ENGLISH 		"Vulture Aid 2.0"
+
+REFERENCE 			VLT_PRK_HINT
+LANG_ENGLISH 		"- Visualize perks, drops, and enemies on the map  \n- Press [{+speed_throw}] and [{+melee}] to toggle Vulture Waypoints \n- Knifing zombies rewards additional points \n- Occaissionally find small ammo drops"
+
+REFERENCE 			VLT_PRO_TITLE
+LANG_ENGLISH 		"Vulture Aid 2.0 Pro"
+
+REFERENCE 			VLT_PRO_HINT
+LANG_ENGLISH 		"- Zombies ignore you for the first 10 seconds every round \n- Drops you pick up last longer or retrigger \n- Zombies with drops will glow \n- Ammo drops reward more rounds"
+
+REFERENCE 			WWN_PRK_TITLE
+LANG_ENGLISH 		"Widows Wine 2.0"
+
+REFERENCE 			WWN_PRK_HINT
+LANG_ENGLISH 		"- HUD effect alerts you when a zombie is behind you \n- Bullets poison zombies, reducing them to half health over 8 seconds \n- Classic Widows Wine effect moved to Eletric Cherry Pro"
+
+REFERENCE 			WWN_PRO_TITLE
+LANG_ENGLISH 		"Widows Wine 2.0 Pro"
+
+REFERENCE 			WWN_PRO_HINT
+LANG_ENGLISH 		"- Replaces special grenade with Web Grenades that will slow all zombies in moderate radius \n- Poison reduces to 1/3 health over 15 seconds"
+
+REFERENCE			OFFHAND_MELEE_TITLE
+LANG_ENGLISH 		"Combat Knife/Fists"
+
+REFERENCE			OFFHAND_MELEE_HINT
+LANG_ENGLISH 		"- Press [{+speed_throw}] (ADS) with your knife out to swap offhand weapon \n - Your knife does a minimum 25% max health damage to zombies \n - Your fists will knock zombies down, allowing you to run past them"
+
+REFERENCE			FREE_PERK_TITLE
+LANG_ENGLISH 		"Perk Bottle"
+
+REFERENCE			FREE_PERK_HINT
+LANG_ENGLISH 		"Perk limit increased by 1"
+
+REFERENCE			PAP_TITLE
+LANG_ENGLISH 		"Pack-a-Punch"
+
+REFERENCE			PAP_HINT
+LANG_ENGLISH 		"Damage Increased"
+
+REFERENCE			PAP_HELLFIRE_TITLE
+LANG_ENGLISH 		"HELLFIRE"
+
+REFERENCE			PAP_HELLFIRE_HINT
+LANG_ENGLISH 		"- All Double Pack-a-Punched weapons receive a flat 4x damage increase \n- Hellfire: Holding down the trigger for 2 seconds will apply Hellfire to all zombies struck by your rounds \n- Hellfire disintigrates any normal zombie after four seconds "
+
+REFERENCE			PAP_HELLFIRE_ONHIT_TITLE
+LANG_ENGLISH 		"HELLFIRE"
+
+REFERENCE			PAP_HELLFIRE_ONHIT_HINT
+LANG_ENGLISH 		"- All Double Pack-a-Punched weapons receive a flat 4x damage increase \n- Hellfire (on hit): Hellfire is applied to all zombies struck by your rounds \n- Hellfire disintigrates any normal zombie after four seconds "
+
+REFERENCE			PAP_SHEER_COLD_TITLE
+LANG_ENGLISH 		"SHEER-COLD"
+
+REFERENCE			PAP_SHEER_COLD_HINT
+LANG_ENGLISH 		"- All Double Pack-a-Punched weapons receive a flat 4x damage increase \n- Sheer-Cold: When zombie get too close, your bullets will afflict zombies with Sheer-Cold \n- Affected zombies are drastically slowed before eventually thawing out"
+
+REFERENCE			PAP_SHOCK_ROUNDS_TITLE
+LANG_ENGLISH 		"SHOCK ROUNDS"
+
+REFERENCE			PAP_SHOCK_ROUNDS_HINT
+LANG_ENGLISH 		"- All Double Pack-a-Punched weapons receive a flat 4x damage increase \n- Shock Rounds - Random bullets in your magazine will shock zombies, stunning and killing them instantly"
+
+REFERENCE			PAP_BIG_DAMAGE_TITLE
+LANG_ENGLISH 		"BIG DAMAGE"
+
+REFERENCE			PAP_BIG_DAMAGE_HINT
+LANG_ENGLISH 		"- All Double Pack-a-Punched weapons receive a flat 4x damage increase \n- In addition to the base damage increase, all rounds do an additional 50% damage"
+
+REFERENCE			PAP_BIG_HEADSHOT_DAMAGE_TITLE
+LANG_ENGLISH 		"BIG HEADSHOT DAMAGE"
+
+REFERENCE			PAP_BIG_HEADSHOT_DAMAGE_HINT
+LANG_ENGLISH 		"- All Double Pack-a-Punched weapons receive a flat 4x damage increase \n- In addition to the base damage increase, all rounds do an additional 100% headshot damage \n- On snipers, this is 1000% times extra damage"
+
+REFERENCE			PAP_EXECUTE_TITLE
+LANG_ENGLISH 		"EXECUTE"
+
+REFERENCE			PAP_EXECUTE_HINT
+LANG_ENGLISH 		"Excutes non-boss zombies that are sufficiently low health"
+
+
+REFERENCE			PAP_M1911_TITLE
+LANG_ENGLISH 		"Mustang & Sally"
+
+REFERENCE			PAP_M1911_HINT
+LANG_ENGLISH 		"Can be re-Pack-a-Punch'd indefinitely to refill ammo"
+
+REFERENCE			PAP_UZIZI_TITLE
+LANG_ENGLISH 		"ELEMENTS OF UZIZI"
+
+REFERENCE			PAP_UZIZI_HINT
+LANG_ENGLISH 		"Can be re-Pack-a-Punch'd exchange between Uzizi Elements"
+
+REFERENCE			PAP_FAMAS_TITLE
+LANG_ENGLISH 		"G16-G-INFINITE"
+
+REFERENCE			PAP_FAMAS_HINT
+LANG_ENGLISH 		"Regenerates ammo over time"
+
+REFERENCE			PAP_SPAS_TITLE
+LANG_ENGLISH 		"SPONTANEITY"
+
+REFERENCE			PAP_SPAS_HINT
+LANG_ENGLISH 		"When low on ammo, a bonus ammotype is assigned randomly"
+
+REFERENCE			PAP_SPECTRE_TITLE
+LANG_ENGLISH 		"Wraith"
+
+REFERENCE			PAP_SPECTRE_HINT
+LANG_ENGLISH 		"- 2x damage bonus from isolating zombies\n- Applies Sheercold when zombies get too close"
+
+REFERENCE			PAP_KS23_TITLE
+LANG_ENGLISH 		"SHOCK ARMY EXTERMINATOR"
+
+REFERENCE			PAP_KS23_HINT
+LANG_ENGLISH 		"Shocks and instantly oblitherates any animal zombie variant (Nova Crawlers, monkeys, dogs)"
+
+
+
+
+REFERENCE			SHOTGUN_DAMAGE_TITLE
+LANG_ENGLISH 		"SHOTGUNS"
+
+REFERENCE			SHOTGUN_DAMAGE_HINT
+LANG_ENGLISH 		"- For each round you own a Shotgun, you do 10% more damage with all shotguns \n- All attrition is lost if you begin a round without owning a shotgun"
+
+REFERENCE			SIDEARM_DAMAGE_TITLE
+LANG_ENGLISH 		"SIDEARMS"
+
+REFERENCE			SIDEARM_DAMAGE_HINT
+LANG_ENGLISH 		"- Pistols reward 33% more points than normal weapons on Apocalypse mode"
+
+REFERENCE			SNIPER_DAMAGE_TITLE
+LANG_ENGLISH 		"SNIPERS"
+
+REFERENCE			SNIPER_DAMAGE_HINT
+LANG_ENGLISH 		"SNIPERS"
+
+
+
+
+//Drops
+REFERENCE			POWERUP_SUPERPOWER
+LANG_ENGLISH 		"SUPERPOWER!!"
+
+REFERENCE			POWERUP_RESTOCK
+LANG_ENGLISH 		"RESTOCK!!"
+
+REFERENCE			POWERUP_PAP_TELEPORT
+LANG_ENGLISH 		"TRANSPORTED!!"
+
 
 ENDMARKER

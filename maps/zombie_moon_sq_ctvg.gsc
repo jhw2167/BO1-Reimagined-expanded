@@ -193,14 +193,16 @@ vg_qualifier()
 		num = self.zm_random_char;
 	}
 
+	
 	if(level.richtofen_in_game)
 	{
 		return( (num == 3) && level._all_previous_done);
 	}
 	else
 	{
-		return( (num == level.random_entnum) && level._all_previous_done);
+		return( level._all_previous_done );
 	}
+	
 }
 
 vg()

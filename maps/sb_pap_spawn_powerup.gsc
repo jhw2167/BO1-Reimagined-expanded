@@ -174,8 +174,8 @@ wait_all_perk_spawn()
 	level thread wait_for_perk( "specialty_fastreload_power_on" );
 	level thread wait_for_perk( "specialty_longersprint_power_on" );
 	level thread wait_for_perk( "specialty_flakjacket_power_on" );
-	level thread wait_for_perk( "specialty_bulletaccuracy_power_on" );
 	level thread wait_for_perk( "specialty_extraammo_power_on" );
+	level thread wait_for_perk( "specialty_bulletaccuracy_power_on" );
 	while( level.perk_activated < 8 )
 	{
 		wait 0.05;

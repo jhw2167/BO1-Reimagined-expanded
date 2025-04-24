@@ -1313,6 +1313,7 @@ playerHealthRegen()
 			if( self player_flag( "player_has_red_flashing_overlay" ) )
 			{
 				player_flag_clear( "player_has_red_flashing_overlay" );
+				self notify( "widows_cancel_warning" );
 				level notify( "take_cover_done" );
 			}
 
@@ -1689,7 +1690,7 @@ playerHeartbeatSound(healthcap)
 
 	for (;;)
 	{
-		wait .2;
+		wait(0.2);
 		//if (self.health <= 0)
 		//return;
 
@@ -1709,7 +1710,7 @@ playerHeartbeatSound(healthcap)
 		self waittill( "end_heartbeat_loop" );
 		//self stoploopsound (1);
 
-	  	wait (.2);
+	  	wait(0.2);
 		self thread event_heart_beat( "none" , 0 );
 
 		level.player_pain_vox = 0;
@@ -1737,6 +1738,11 @@ event_heart_beat( emotion, loudness )
 	if(!IsDefined(self.last_emotion))
 	{
 		self.last_emotion = "undefined";
+	}
+
+	if(!IsDefined(self.emotional_state_system))
+	{
+		self.emotional_state_system = 0;
 	}
 
 	if(self.emotional_state_system == 0)
@@ -2255,7 +2261,7 @@ shouldShowCoverWarning()
 		return false;
 	}
 
-	if ( !maps\_load_common::map_is_early_in_the_game() )
+	if ( ! is_true(maps\_load_common::map_is_early_in_the_game() ) )
 	{
 		return false;
 	}

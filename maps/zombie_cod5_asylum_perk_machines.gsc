@@ -7,12 +7,19 @@ init()
 
 	place_divetonuke();
 	place_deadshot();	
-	place_marathon();		
-	//place_martyrdom();	
-	//place_extraammo();		
-	//place_chugabud();		
-	place_mulekick();	
-	//place_vulture();
+	place_marathon();
+	place_mulekick();
+
+	if( level.bo2_perks )
+	{
+		place_martyrdom();	
+		place_extraammo();		
+		//place_chugabud();	
+		place_vulture();
+	}
+	
+	place_packapunch();
+	place_barriers();
 }
 
 
@@ -27,8 +34,34 @@ place_babyjug()
 	perk_trigger = Spawn( "trigger_radius_use", machine_origin + (0 , 0, 0), 0, 270, 600 );
 	perk_trigger.targetname = "zombie_vending";
 	perk_trigger.target = "vending_babyjugg";
-	perk_trigger.script_noteworthy = "specialty_bulletaccuracy";
+	perk_trigger.script_noteworthy = "specialty_extraammo";
 
+}
+
+place_packapunch()
+{
+	machine_origin = (335, 18.25, 55.26);
+	level.pap_origin = machine_origin;
+	machine_angles = (0, 90, 0);
+	level.pap_angles = (0, 0, 0);;
+	perk = Spawn( "script_model", machine_origin );
+	perk.angles = machine_angles;
+	perk setModel( "zombie_vending_packapunch" );
+	perk.targetname = "vending_packapunch";
+	perk_trigger = Spawn( "trigger_radius_use", machine_origin + (0 , 0, 30), 0, 20, 70 );
+	perk_trigger.targetname = "zombie_vending_upgrade";
+	perk_trigger.target = "vending_packapunch";
+	perk_trigger.script_noteworthy = "specialty_weapupgrade";
+	perk_trigger.script_sound = "mus_perks_packa_jingle";
+	perk_trigger.script_label = "mus_perks_packa_sting";
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
+	perk_clip.angles = machine_angles;
+	perk_clip SetModel( "collision_geo_64x64x64" );
+	perk_clip Hide();
+	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
+	bump_trigger.script_activated = 1;
+	bump_trigger.script_sound = "fly_bump_bottle";
+	bump_trigger.targetname = "audio_bump_trigger";
 }
 
 place_divetonuke()
@@ -45,9 +78,9 @@ place_divetonuke()
 	perk_trigger.script_noteworthy = "specialty_flakjacket";
 	perk_trigger.script_sound = "mus_perks_phd_jingle";
 	perk_trigger.script_label = "mus_perks_phd_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -69,9 +102,9 @@ place_deadshot()
 	perk_trigger.script_noteworthy = "specialty_deadshot";
 	perk_trigger.script_sound = "mus_perks_deadshot_jingle";
 	perk_trigger.script_label = "mus_perks_deadshot_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -93,9 +126,9 @@ place_marathon()
 	perk_trigger.script_noteworthy = "specialty_longersprint";
 	perk_trigger.script_sound = "mus_perks_stamin_jingle";
 	perk_trigger.script_label = "mus_perks_stamin_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -105,11 +138,14 @@ place_marathon()
 
 place_martyrdom()
 {
-	machine_origin = (1169.64, 622.181, 56.5353);
-	machine_angles = (0, -90, 0);
+	//Renaisance
+	//machine_origin = (1169.64, 622.181, 56.5353);
+	//machine_angles = (0, -90, 0);
+	machine_origin = (-250, -384, 226);
+	machine_angles = (360, 180, 0);
 	perk = Spawn( "script_model", machine_origin );
 	perk.angles = machine_angles;
-	perk setModel( "p6_zm_vending_electric_cherry" );
+	perk setModel( "p6_zm_vending_electric_cherry_off" );
 	perk.targetname = "vending_electriccherry";
 	perk_trigger = Spawn( "trigger_radius_use", machine_origin + (0 , 0, 30), 0, 20, 70 );
 	perk_trigger.targetname = "zombie_vending";
@@ -117,9 +153,9 @@ place_martyrdom()
 	perk_trigger.script_noteworthy = "specialty_bulletdamage";
 	perk_trigger.script_sound = "mus_perks_cherry_jingle";
 	perk_trigger.script_label = "mus_perks_cherry_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -129,21 +165,26 @@ place_martyrdom()
 
 place_extraammo()
 {
-	machine_origin = (1481.5, 64.1, 61.8);
-	machine_angles = (0, -180, 0);
+	//Reinaissance
+	//machine_origin = (1481.5, 64.1, 61.8);
+	//machine_angles = (0, -180, 0);
+
+	machine_origin = (428, -408, 56);
+	machine_angles = (0, 180, 0);
+
 	perk = Spawn( "script_model", machine_origin );
 	perk.angles = machine_angles;
-	perk setModel( "p7_zm_vending_widows_wine" );
+	perk setModel( "bo3_p7_zm_vending_widows_wine_off" );
 	perk.targetname = "vending_widowswine";
 	perk_trigger = Spawn( "trigger_radius_use", machine_origin + (0 , 0, 30), 0, 20, 70 );
 	perk_trigger.targetname = "zombie_vending";
 	perk_trigger.target = "vending_widowswine";
-	perk_trigger.script_noteworthy = "specialty_extraammo";
+	perk_trigger.script_noteworthy = "specialty_bulletaccuracy";
 	perk_trigger.script_sound = "mus_perks_widows_jingle";
 	perk_trigger.script_label = "mus_perks_widows_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -162,12 +203,12 @@ place_chugabud()
 	perk_trigger = Spawn( "trigger_radius_use", machine_origin + (0 , 0, 30), 0, 20, 70 );
 	perk_trigger.targetname = "zombie_vending";
 	perk_trigger.target = "vending_chugabud";
-	perk_trigger.script_noteworthy = "specialty_bulletaccuracy";
+	perk_trigger.script_noteworthy = "specialty_extraammo";
 	perk_trigger.script_sound = "mus_perks_whoswho_jingle";
 	perk_trigger.script_label = "mus_perks_whoswho_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -191,7 +232,7 @@ place_mulekick()
 	perk_trigger.script_label = "mus_perks_mulekick_sting";
 	perk_clip = Spawn( "script_model", machine_origin );
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
@@ -205,7 +246,7 @@ place_vulture()
 	machine_angles = (0, -90, 0);
 	perk = Spawn( "script_model", machine_origin );
 	perk.angles = machine_angles;
-	perk setModel( "p6_zm_vending_vultureaid" );
+	perk setModel( "bo2_zombie_vending_vultureaid" );
 	perk.targetname = "vending_vulture";
 	perk_trigger = Spawn( "trigger_radius_use", machine_origin + (0 , 0, 30), 0, 20, 70 );
 	perk_trigger.targetname = "zombie_vending";
@@ -213,12 +254,43 @@ place_vulture()
 	perk_trigger.script_noteworthy = "specialty_altmelee";
 	perk_trigger.script_sound = "mus_perks_vulture_jingle";
 	perk_trigger.script_label = "mus_perks_vulture_sting";
-	perk_clip = spawn( "script_model", machine_origin );
+	perk_clip = spawn( "script_model", machine_origin + (0, 0, 30));
 	perk_clip.angles = machine_angles;
-	perk_clip SetModel( "collision_geo_64x64x256" );
+	perk_clip SetModel( "collision_geo_64x64x64" );
 	perk_clip Hide();
 	bump_trigger = Spawn( "trigger_radius", machine_origin, 0, 35, 64 );
 	bump_trigger.script_activated = 1;
 	bump_trigger.script_sound = "fly_bump_bottle";
 	bump_trigger.targetname = "audio_bump_trigger";
 }
+
+
+place_barriers()
+{
+	level.verukt_barriers = [];
+
+	//Side Barriers
+	side_origin = ( 600, -568, 86 );
+	level.verukt_barriers[0] = spawn( "script_model", side_origin );
+	level.verukt_barriers[0].angles = (0, 0, 0);
+	level.verukt_barriers[0] SetModel( "collision_geo_64x64x64" );
+	level.verukt_barriers[0] Hide();
+
+	level.verukt_barriers[1] = spawn( "script_model", side_origin + (-70, 0, 0) );
+	level.verukt_barriers[1].angles = (0, 0, 0);
+	level.verukt_barriers[1] SetModel( "collision_geo_64x64x64" );
+	level.verukt_barriers[1] Hide();
+
+	//Behind Barriers
+	behind_origin = ( 300, -392, 91 );
+	for(i = 0; i < 18; i++)
+	{
+		level.verukt_barriers[i+2] = spawn( "script_model", behind_origin + (0, 50 * i, 0) );
+		level.verukt_barriers[i+2].angles = (0, 0, 0);
+		level.verukt_barriers[i+2] SetModel( "collision_geo_64x64x64" );
+		level.verukt_barriers[i+2] Hide();
+	}
+	
+	
+}
+

@@ -19,10 +19,14 @@ main()
 	//maps\_waw_destructible_opel_blitz::init_blitz();
 	level.startInvulnerableTime = GetDvarInt( "player_deathInvulnerableTime" );
 
+	level.mapname = Tolower( GetDvar( #"mapname" ) );
+	level.script = level.mapname;
+
 	include_weapons();
 	include_powerups();
 	
 	level.zones = [];
+	
 
 	level._effect["zombie_grain"]			= LoadFx( "misc/fx_zombie_grain_cloud" );
 
@@ -50,9 +54,9 @@ main()
 	
 	//thread bad_area_fixes();
 
-	thread above_couches_death();
-	thread above_roof_death();
-	thread below_ground_death();
+	//thread above_couches_death();
+	//thread above_roof_death();
+	//thread below_ground_death();
 		
 	level thread zombie_collision_patch();
 
@@ -356,7 +360,7 @@ disable_stances_in_zones()
  		players[i] thread fix_hax();
 		players[i] thread fix_couch_stuckspot();
  		//players[i] thread in_bad_zone_watcher();	
- 		players[i] thread out_of_bounds_watcher();
+ 		//players[i] thread out_of_bounds_watcher();
  	}
 }
 
@@ -578,22 +582,68 @@ include_weapons()
 	include_weapon("ray_gun_zm");
 	include_weapon("crossbow_explosive_zm");
 	include_weapon("knife_ballistic_zm");
+
+	include_weapon("m72_law_upgraded_zm", false);
+	include_weapon("crossbow_explosive_upgraded_zm", false);
+	include_weapon("knife_ballistic_upgraded_zm", false);
+	//Normal upgraded Weapons - included from _zombiemode_weapons
+	include_weapon("aug_acog_mk_upgraded_zm", false);
+	include_weapon("rpk_upgraded_zm", false);
+	include_weapon("python_upgraded_zm", false);
+	include_weapon("hs10_upgraded_zm", false);
+	/*
+	
+	include_weapon("cz75_upgraded_zm", false);
+	include_weapon("g11_lps_upgraded_zm", false);
+	include_weapon("famas_upgraded_zm", false);
+	include_weapon("spectre_upgraded_zm", false);
+	include_weapon("cz75dw_upgraded_zm", false);
+	include_weapon("spas_upgraded_zm", false);
+	
+	
+	include_weapon("galil_upgraded_zm", false);
+	include_weapon("commando_upgraded_zm", false);
+	include_weapon("fnfal_upgraded_zm", false);
+	include_weapon("dragunov_upgraded_zm", false);
+	include_weapon("l96a1_upgraded_zm", false);
+	
+	include_weapon("hk21_upgraded_zm", false);
+	include_weapon("china_lake_upgraded_zm", false);
+	*/
+
 	
 	include_weapon( "zombie_m1carbine", false, true );
+	include_weapon( "zombie_m1carbine_upgraded", false, true );	//new
+
 	include_weapon( "zombie_thompson", false, true );
+	include_weapon( "zombie_thompson_upgraded", false, true );	//new
+
 	include_weapon( "zombie_kar98k", false, true );
+	include_weapon( "zombie_kar98k_upgraded", false, true );	//new
+
+	include_weapon( "zombie_stg44", false, true );
+	include_weapon( "zombie_stg44_upgraded", false );
+	
 	include_weapon( "kar98k_scoped_zombie", false, true );
 	include_weapon( "stielhandgranate", false, true );
 	include_weapon( "zombie_doublebarrel", false, true );
 	include_weapon( "zombie_doublebarrel_sawed", false, true );
+	include_weapon( "zombie_doublebarrel_upgraded", false );
+
 	include_weapon( "zombie_shotgun", false, true );
+	include_weapon( "zombie_shotgun_upgraded", false );
+
 	include_weapon( "zombie_bar", false, true );
+	include_weapon( "zombie_bar_upgraded", false );
 
 	include_weapon( "zombie_cymbal_monkey");
 
 	include_weapon( "ray_gun_zm" );
 	include_weapon( "thundergun_zm" );
+
 	include_weapon( "m1911_upgraded_zm", false );
+	include_weapon( "ray_gun_upgraded_zm", false );
+	include_weapon( "thundergun_upgraded_zm", false );
 
 	level._uses_retrievable_ballisitic_knives = true;
 
@@ -609,17 +659,17 @@ include_weapons()
 
 
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_kar98k", "zombie_kar98k_upgraded", 						&"WAW_ZOMBIE_WEAPON_KAR98K_200", 				200,	"rifle");
-	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "",					&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
+	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_type99_rifle", "zombie_kar98k_upgraded",					&"WAW_ZOMBIE_WEAPON_TYPE99_200", 			    200,	"rifle" );
 
 	// Semi Auto                                        		
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_gewehr43", "zombie_gewehr43_upgraded",						&"WAW_ZOMBIE_WEAPON_GEWEHR43_600", 				600,	"rifle" );
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1carbine","zombie_m1carbine_upgraded",						&"WAW_ZOMBIE_WEAPON_M1CARBINE_600",				600,	"rifle" );
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_m1garand", "zombie_m1garand_upgraded" ,						&"WAW_ZOMBIE_WEAPON_M1GARAND_600", 				600,	"rifle" );
 
-	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		250,	"grenade", "", 250 );
+	maps\_zombiemode_weapons::add_zombie_weapon( "stielhandgranate", "", 						&"WAW_ZOMBIE_WEAPON_STIELHANDGRANATE_250", 		1000,	"grenade", "", 1000 );
 	maps\_zombiemode_weapons::add_zombie_weapon( "mine_bouncing_betty", "", &"WAW_ZOMBIE_WEAPON_SATCHEL_2000", 2000 );		
 	// Scoped
-	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				1500,	"sniper");
+	maps\_zombiemode_weapons::add_zombie_weapon( "kar98k_scoped_zombie", "zombie_kar98k_upgraded", 					&"WAW_ZOMBIE_WEAPON_KAR98K_S_750", 				1500,	"sniper");
 
 	// Full Auto                                                                                	
 	maps\_zombiemode_weapons::add_zombie_weapon( "zombie_stg44", "zombie_stg44_upgraded", 							    &"WAW_ZOMBIE_WEAPON_STG44_1200", 				1200, "mg" );
@@ -647,6 +697,12 @@ include_powerups()
 	include_powerup( "double_points" );
 	include_powerup( "full_ammo" );
 	include_powerup( "carpenter" );
+	include_powerup( "free_perk" );
+
+	include_powerup( "tesla" );
+	include_powerup( "restock" );
+	PreCacheItem( "minigun_zm" );
+	include_powerup( "minigun" );
 }
 
 above_couches_death()
@@ -749,7 +805,7 @@ out_of_bounds_watcher()
  		if (kill_player)
  		{
  			setsaveddvar("player_deathInvulnerableTime", 0);
-			self DoDamage( self.health + 1000, self.origin, undefined, undefined, "riflebullet" );
+			//self DoDamage( self.health + 1000, self.origin, undefined, undefined, "riflebullet" );
 			setsaveddvar("player_deathInvulnerableTime", level.startInvulnerableTime);	
  		}
  		

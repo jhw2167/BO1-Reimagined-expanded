@@ -123,6 +123,7 @@ wait_to_show_glowing_model( prey ) // self == retrievable_model
 	level endon( "game_ended" );
 	self endon( "death" );
 
+
 	glowing_retrievable_model = Spawn( "script_model", self.origin );
 	self.glowing_model = glowing_retrievable_model;
 	glowing_retrievable_model.angles = self.angles;
@@ -274,6 +275,16 @@ watch_use_trigger( trigger, model, callback, weapon, playerSoundOnUse, npcSoundO
 
 pick_up( weapon, model, trigger ) // self == player
 {
+	//Reimagined-Expanded: Dumb hack, don't know why this broke
+	if( self hasWeapon( "knife_ballistic_zm" ) )
+	{
+		weapon = "knife_ballistic_zm";
+	}
+	else
+	{
+		weapon = "knife_ballistic_upgraded_zm";
+	}
+
 	self SetWeaponAmmoStock( weapon, self GetWeaponAmmoStock( weapon ) + 1 );
 
 	model destroy_ent();

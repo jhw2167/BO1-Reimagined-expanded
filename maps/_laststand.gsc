@@ -163,7 +163,10 @@ PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sH
 	// bleed out timer
 	self thread laststand_bleedout( GetDvarFloat( #"player_lastStandBleedoutTime" ) );
 
+	
 	self notify( "player_downed" );
+	level notify( "player_downed");
+
 	self thread refire_player_downed();
 }
 
@@ -177,6 +180,9 @@ refire_player_downed()
 	{
 		self notify("player_downed");
 	}
+
+	if( isDefined(level.cowards_down_func))
+		self thread [[level.cowards_down_func]]();
 
 }
 
@@ -384,12 +390,21 @@ Laststand_Bleedout( delay )
 
 	setClientSysState("lsm", "1", self);
 
-	self.bleedout_time = delay;
+	//self.bleedout_time = delay;
+	self.bleedout_time = level.VALUE_PLAYER_DOWNED_BLEEDOUT_TIME;
+
+	if( !IsDefined( self.cowards_down ) )
+	{
+		self.cowards_down = false;
+	}
 
 	while ( self.bleedout_time > Int( delay * 0.5 ) )
 	{
 		self.bleedout_time -= .5;
 		wait( .5 );
+
+		if( self.cowards_down )
+			self.bleedout_time = 0;
 	}
 
 	if ( GetDvar( #"zombiemode" ) == "1" )
@@ -405,6 +420,9 @@ Laststand_Bleedout( delay )
 	{
 		self.bleedout_time -= .5;
 		wait( .5 );
+
+		if( self.cowards_down )
+			self.bleedout_time = 0;
 	}
 
 	//CODER_MOD: TOMMYK 07/13/2008
@@ -419,6 +437,8 @@ Laststand_Bleedout( delay )
 	setClientSysState("lsm", "0", self);	// Notify client last stand ended.
 
 	level notify("bleed_out", self GetEntityNumber());
+
+	self SetClientDvar("perk_bar_00", "" );	//remove perma-perks from bar on bleedout
 
 	if (isdefined(level.is_zombie_level ) && level.is_zombie_level)
 	{

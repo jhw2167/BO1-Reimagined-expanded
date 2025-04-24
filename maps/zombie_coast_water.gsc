@@ -130,6 +130,11 @@ zombie_water_move_slow()
 			self set_run_anim( "run" + var );
 			self.run_combatanim = level.scr_anim[ self.animname ][ "run" + var ];
 			break;
+
+		default:
+			self maps\_zombiemode_spawner::zombie_speed_up( -2, false );
+			break;
+
 		}
 	}
 
