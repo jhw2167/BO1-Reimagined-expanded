@@ -11,14 +11,15 @@ out="${dirOut}/__search.txt"
 
 mkdir $dirOut
 grep --exclude-dir={$dirOut,Common} -rFni $dir -e "${str}" > $out
+notepad $out
 
 
 #copy each file where instance was found into our out dir
-while IFS='' read -r LINE || [ -n "${LINE}" ]; do
-	fp=${LINE%%:*}
+#while IFS='' read -r LINE || [ -n "${LINE}" ]; do
+	#fp=${LINE%%:*}
 	#echo $fp | tr ./ -
-	subdir=`echo $fp | tr ./ -`
+	#subdir=`echo $fp | tr ./ -`
 	#echo "subdir is: ${subdir}"
-	mkdir "${dirOut}/${subdir}"
-    cp $fp "${dirOut}/${subdir}"
-done < $out
+	#mkdir "${dirOut}/${subdir}"
+    #cp $fp "${dirOut}/${subdir}"
+#done < $out

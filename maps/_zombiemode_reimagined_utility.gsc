@@ -170,6 +170,8 @@ generate_perk_hint( perkOrWeapon, specialHint )
 		perkOrWeapon = "specialty_offhand_melee";
 	}
 
+
+	//iprintln( "check activated: " + perkOrWeapon );
 	hintCode = perkOrWeapon;
 	if( is_true( self.hints_activated[ hintCode ] ) )
 		return;
@@ -182,6 +184,8 @@ generate_perk_hint( perkOrWeapon, specialHint )
 		self waittill( "perk_hint_end" );
 	}
 	self.new_perk_hint = true;
+
+	//iprintln( "notify 2: " + hintCode );
 
 	returnVultureVision = false;
 	if( self.vulture_vison_toggle )
@@ -241,10 +245,22 @@ generate_perk_hint( perkOrWeapon, specialHint )
     /* SET APPROPRIATE HINT */
 		switch( hintCode )
 		{
-		case "Apocalypse":
+		case "apocalypse":
 		//\n- Zombies will respawn at full health if not killed quickly \n- Rounds will automatically start if you wait too long; with a break every 5 rounds \n- Damaging zombies gives less points; kills and headshots give more points \n- Points are rewarded for finishing a round quickly \n- Doors and upgrades are more expensive
 			title SetText( &"REIMAGINED_APOCALYPSE_TITLE" );
 			text SetText( &"REIMAGINED_APOCALYPSE_HINT" );
+			break;
+
+		case "apocalypse_rounds":
+		//\n- Zombies will respawn at full health if not killed quickly \n- Rounds will automatically start if you wait too long; with a break every 5 rounds \n- Damaging zombies gives less points; kills and headshots give more points \n- Points are rewarded for finishing a round quickly \n- Doors and upgrades are more expensive
+			title SetText( &"REIMAGINED_APOCALYPSE_ROUNDS_TITLE" );
+			text SetText( &"REIMAGINED_APOCALYPSE_ROUNDS_HINT" );
+			break;
+
+		case "apocalypse_points":
+		//\n- Zombies will respawn at full health if not killed quickly \n- Rounds will automatically start if you wait too long; with a break every 5 rounds \n- Damaging zombies gives less points; kills and headshots give more points \n- Points are rewarded for finishing a round quickly \n- Doors and upgrades are more expensive
+			title SetText( &"REIMAGINED_APOCALYPSE_POINTS_TITLE" );
+			text SetText( &"REIMAGINED_APOCALYPSE_POINTS_HINT" );
 			break;
 
 		case "babyjugg":
@@ -409,6 +425,16 @@ generate_perk_hint( perkOrWeapon, specialHint )
 			title SetText( &"REIMAGINED_FREE_PERK_TITLE" );
 			break;
 
+		case "superpower_powerup":
+			text SetText( &"REIMAGINED_POWERUP_SUPERPOWER_HINT" );
+			title SetText( &"REIMAGINED_POWERUP_SUPERPOWER_TITLE" );
+			break;
+
+		case "restock_powerup":
+			text SetText( &"REIMAGINED_POWERUP_RESTOCK_HINT" );
+			title SetText( &"REIMAGINED_POWERUP_RESTOCK_TITLE" );
+			break;
+
 		/* Specific Weapons */
 		case "m1911_upgraded_zm":
 			//Dont set if player is in last stand
@@ -481,6 +507,8 @@ generate_perk_hint( perkOrWeapon, specialHint )
 
 	title destroy_hud();
 	text destroy_hud();
+
+	//iprintln( "notify 3: " + hintCode );
 }
 
 wait_print( msg, data )
@@ -925,6 +953,9 @@ start_properk_placer()
 	//iprintln("new pos: " + new_pos );
 	object = Spawn( "script_model", new_pos);
 	object SetModel( "t6_wpn_zmb_perk_bottle_jugg_world" );
+	//object SetModel( "t5_weapon_sabretooth_world" );
+  	//object SetModel( "char_ger_zombeng_body1_1" );
+
 	/*
 	object SetModel( "p_glo_propanetank_thin" );
 	wait(1);

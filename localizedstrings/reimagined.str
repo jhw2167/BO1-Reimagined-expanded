@@ -327,12 +327,12 @@ LANG_ENGLISH       	"Serendipity"
 REFERENCE          	L96A1_UPGRADED_X2
 LANG_ENGLISH        "L115 Decimator"
 
+
 REFERENCE          	RAY_GUN_UPGRADED_X2
 LANG_ENGLISH        "RAY_GUN_UPGRADED_X2"
 
 REFERENCE          	CHINA_LAKE_UPGRADED_X2
 LANG_ENGLISH        "CHINA_LAKE_UPGRADED_X2"
-
 
 REFERENCE          	ROTTWEIL72_UPGRADED_X2
 LANG_ENGLISH        "ROTTWEIL72_UPGRADED_X2"
@@ -358,12 +358,8 @@ LANG_ENGLISH        "MPL_UPGRADED_X2"
 REFERENCE          	PM63_UPGRADED_X2
 LANG_ENGLISH        "PM63_UPGRADED_X2"
 
-
 REFERENCE          	AK74U_UPGRADED_X2
 LANG_ENGLISH        "AK74U_UPGRADED_X2"
-
-REFERENCE          	SHOTGUN_DOUBLE_BARRELED_UPGRADED
-LANG_ENGLISH        "SHOTGUN_DOUBLE_BARRELED_UPGRADED"
 
 REFERENCE          	FG42_UPGRADED_X2
 LANG_ENGLISH        "FG42_UPGRADED_X2"
@@ -380,15 +376,11 @@ LANG_ENGLISH        "M1A1CARBINE_UPGRADED_X2"
 REFERENCE          	SHOTGUN_UPGRADED_X2
 LANG_ENGLISH        "SHOTGUN_UPGRADED_X2"
 
-REFERENCE          	STG-44_UPGRADED
-LANG_ENGLISH        "STG-44_UPGRADED"
-
 REFERENCE          	THOMPSON_UPGRADED_X2
 LANG_ENGLISH        "THOMPSON_UPGRADED_X2"
 
 REFERENCE          	TYPE100_SMG_UPGRADED_X2
 LANG_ENGLISH        "TYPE100_SMG_UPGRADED_X2"
-
 
 REFERENCE          	BAR_UPGRADED
 LANG_ENGLISH        "THE STANDARD"
@@ -1240,16 +1232,19 @@ REFERENCE          	APOCALYPSE_TITLE
 LANG_ENGLISH       	"Apocalypse Mode"
 
 REFERENCE          	APOCALYPSE_HINT
-LANG_ENGLISH       	"Zombies are stronger, faster, and will respawn at full health if not killed quickly enough. Rounds \n     will progress even before all zombies are slain. Points are much harder to come by."
+LANG_ENGLISH       	"Zombies are stronger, faster, and will respawn at full health if not killed quickly enough. Rounds will progress \n   before all zombies are slain. Damaging zombies is worth less points but Headshots and Kills are worth more."
 
-REFERENCE          	APOCALYPSE_ROUNDS
-LANG_ENGLISH       	"Apocalypse Rounds"
+REFERENCE          	APOCALYPSE_ROUNDS_TITLE
+LANG_ENGLISH       	"Apocalypse Mode Rounds"
 
-REFERENCE          	APOCALYPSE_HINT_ROUNDS
-LANG_ENGLISH       	"- Rounds will automatically start if you wait too long; with a break every 5 rounds"
+REFERENCE          	APOCALYPSE_ROUNDS_HINT
+LANG_ENGLISH       	"- If all zombies in the round are slain before the next round begins, bonus points are rewarded\n- Every 5 rounds, the game will wait for all zombies to be slain before starting the next one"
 
-REFERENCE          	APOCALYPSE_POINTS
+REFERENCE          	APOCALYPSE_POINTS_TITLE
 LANG_ENGLISH       	"Apocalypse Mode Points"
+
+REFERENCE          	APOCALYPSE_POINTS_HINT
+LANG_ENGLISH       	"- More of your points will be earned from killing zombies than damaging them\n- If a zombie goes undamaged for too long, it will die and respawn at full health \n- A respawned zombies gives no points when damaged"
 
 REFERENCE       	COWARDS_DOWN
 LANG_ENGLISH       	"Hold ^3[{+activate}]^7 to end the suffering"
@@ -1264,7 +1259,7 @@ REFERENCE          	QRV_PRK_TITLE
 LANG_ENGLISH       	"Quick Revive"
 
 REFERENCE          	QRV_PRK_HINT
-LANG_ENGLISH       	"- Revive teammates faster \n- Regenerate health slightly quicker \n- After being revived, a random perk is returned to you (Co-op Only)"
+LANG_ENGLISH       	"- Quick Revive is no longer required to revive you in solo \n- A revived player has a random perk returned to them"
 
 REFERENCE          	QRV_PRO_TITLE
 LANG_ENGLISH       	"QuickRevive Pro"
@@ -1324,7 +1319,7 @@ REFERENCE 			DST_PRK_TITLE
 LANG_ENGLISH 		"Deadshot Daiquiri 2.0"
 
 REFERENCE 			DST_PRK_HINT
-LANG_ENGLISH 		"- All bullet weapons do 100% increased headshot damage"
+LANG_ENGLISH 		"All bullet weapons do 100% increased headshot damage"
 
 REFERENCE 			DST_PRO_TITLE
 LANG_ENGLISH 		"Deadshot Daiquiri 2.0 Pro"
@@ -1378,7 +1373,7 @@ REFERENCE			OFFHAND_MELEE_TITLE
 LANG_ENGLISH 		"Combat Knife/Fists"
 
 REFERENCE			OFFHAND_MELEE_HINT
-LANG_ENGLISH 		"- Press [{+speed_throw}] (ADS) with your knife out to swap offhand weapon \n - Your knife does a minimum 25% max health damage to zombies \n - Your fists will knock zombies down, allowing you to run past them"
+LANG_ENGLISH 		"- Press [{+speed_throw}] (ADS) with your knife out to swap offhand weapon \n- Your knife does a minimum 25% max health damage to zombies \n- Your fists will knock zombies down, allowing you to run past them"
 
 REFERENCE			FREE_PERK_TITLE
 LANG_ENGLISH 		"Perk Bottle"
@@ -1478,7 +1473,7 @@ REFERENCE			SHOTGUN_DAMAGE_TITLE
 LANG_ENGLISH 		"SHOTGUNS"
 
 REFERENCE			SHOTGUN_DAMAGE_HINT
-LANG_ENGLISH 		"- For each round you own a Shotgun, you do 10% more damage with all shotguns \n- All attrition is lost if you begin a round without owning a shotgun"
+LANG_ENGLISH 		"- For each round you own a Shotgun, you do 10% more damage with all shotguns\n- All attrition is lost if you begin a round without owning a shotgun\n- Shotguns don't do very much damage to bosses"
 
 REFERENCE			SIDEARM_DAMAGE_TITLE
 LANG_ENGLISH 		"SIDEARMS"
@@ -1492,6 +1487,18 @@ LANG_ENGLISH 		"SNIPERS"
 REFERENCE			SNIPER_DAMAGE_HINT
 LANG_ENGLISH 		"SNIPERS"
 
+
+REFERENCE			POWERUP_SUPERPOWER_TITLE
+LANG_ENGLISH 		"SUPERPOWER"
+
+REFERENCE			POWERUP_SUPERPOWER_HINT
+LANG_ENGLISH 		"Grants player all Pro Perks for a limited time"
+
+REFERENCE			POWERUP_RESTOCK_TITLE
+LANG_ENGLISH 		"RESTOCK"
+
+REFERENCE			POWERUP_RESTOCK_HINT
+LANG_ENGLISH 		"Replenishes all ammo and equipment for only one player"
 
 
 

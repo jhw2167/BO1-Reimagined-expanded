@@ -4531,16 +4531,7 @@ watch_player_qrevive()
 	self endon("fake_death");
 	self endon("end_game");
 
-
-	//iprintln("watch_player_qrevive");
-
 	//if solo game, return
-	if( level.players_count == 1 )
-	{
-		return;
-	}
-		
-
 	self waittill("player_downed");
 	
 	//loop over self.purchased_perks
@@ -4564,7 +4555,7 @@ watch_player_qrevive()
 	self waittill("player_revived");
 
 	perkToReturn = array_randomize(returnablePerks)[0];
-	self give_perk(perkToReturn);
+	self returnPerk(perkToReturn);
 	
 }
 
@@ -5325,7 +5316,7 @@ test_disable_vulture()
 		{
 			zombies[i] setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
 			wait( 0.1 );
-			zombies[i] clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+			//zombies[i] clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
 		}
 	
 	}
@@ -5705,12 +5696,15 @@ init_vulture()
 				wp.color = ( 1, 0, 0); //red for boss zombies
 				zombie.vulture_waypoint = wp;
 				
-				
 				while( keep_waypoint )
 				{
 					keep_waypoint = self HasPerk( level.VLT_PRK ) && check_waypoint_visible( self, zombie );
 					wait 0.1;
 				}
+
+				//iprintln( "DELETING for zombie: " + zombie GetEntityNumber() + " created." );
+				//iprintln( "anim: " + zombie.animname );
+				//iprintln( "health: " + zombie.health );
 
 				zombie.vulture_waypoint Destroy();
 				model Delete();
@@ -6677,7 +6671,7 @@ init_widows_wine()
 
 player_watch_widowswine()
 {
-	self thread player_give_wine_grenades( level.WWN_PRK + "_stop" );
+	//self thread player_give_wine_grenades( level.WWN_PRK + "_stop" );
 	self thread player_watch_widows_warning();
 }
 
@@ -7169,12 +7163,12 @@ player_zombie_handle_widows_poison( zombie )
 
 player_watch_widows_grenade( stop_str )
 {
+
 	self endon( "disconnect" );
 	self endon( "death" );
 
 	while( self hasProPerk( level.WWN_PRO ) || (level.classic && self HasPerk( level.WWN_PRK )) )
 	{
-
 		self waittill( "grenade_fire", grenade, weapName );
 		if( weapName == "bo3_zm_widows_grenade" )
 			self thread player_widows_grenade_explode( grenade );

@@ -56,6 +56,25 @@ disable_traps( traps )
 }
 
 
+print_traps( traps )
+{
+	for( i = 0; i < traps.size; i++ )
+	{
+		if( isDefined( traps[i].target ) )
+		{
+			components = GetEntArray( traps[i].target, "targetname" );
+			for( j = 0; j < components.size; j++ )
+			{
+				if( components[j].classname == "trigger_use" )
+				{
+					//iprintln("Trap " + i + " in ent array at origin " + components[j].origin + "name: " + components[j].targetname);
+				}
+			}
+		}
+	}
+}
+
+
 //*****************************************************************************
 // This gets information from the trap trigger and then loops through its targets
 //	to identify and sets up each component.
@@ -279,46 +298,57 @@ trap_init()
 //		self = use trigger associated with the trap
 //		trap = trap trigger entity
 //*****************************************************************************
+//here
 trap_use_think( trap )
 {
 	trap thread update_string();
 
 	while(1)
 	{
-		//wait until someone uses the valve
+		self._trap_in_use = false;
 		self waittill("trigger",who);
 
-		if( who in_revive_trigger() )
+		if( isDefined(who) && who in_revive_trigger() )
 		{
 			continue;
 		}
+		//iprintln("Trap use triggered by " + self.targetname);
 
-		if( is_player_valid( who ) && !trap._trap_in_use )
+		//reimagined-expanded, want to trigger trap without player
+		if( !trap._trap_in_use )
 		{
-			// See if they can afford it
-			players = get_players();
-			if ( players.size == 1 && who.score >= trap.zombie_cost )
+			
+			if( is_player_valid( who ) )
 			{
-				// Solo buy
-				who maps\_zombiemode_score::minus_to_player_score( trap.zombie_cost );
+				// See if they can afford it
+				players = get_players();
+				if ( players.size == 1 && who.score >= trap.zombie_cost )
+				{
+					// Solo buy
+					who maps\_zombiemode_score::minus_to_player_score( trap.zombie_cost );
+				}
+				else if( level.team_pool[who.team_num].score >= trap.zombie_cost )
+				{
+					// Team buy
+					who maps\_zombiemode_score::minus_to_team_score( trap.zombie_cost );
+				}
+				else if( level.team_pool[ who.team_num ].score + who.score >= trap.zombie_cost )
+				{
+					// team funds + player funds
+					team_points = level.team_pool[ who.team_num ].score;
+					who maps\_zombiemode_score::minus_to_player_score( trap.zombie_cost - team_points );
+					who maps\_zombiemode_score::minus_to_team_score( team_points );
+				}
+				else
+				{
+					continue;
+				}
 			}
-			else if( level.team_pool[who.team_num].score >= trap.zombie_cost )
-			{
-				// Team buy
-				who maps\_zombiemode_score::minus_to_team_score( trap.zombie_cost );
-			}
-			else if( level.team_pool[ who.team_num ].score + who.score >= trap.zombie_cost )
-			{
-				// team funds + player funds
-				team_points = level.team_pool[ who.team_num ].score;
-				who maps\_zombiemode_score::minus_to_player_score( trap.zombie_cost - team_points );
-				who maps\_zombiemode_score::minus_to_team_score( team_points );
-			}
-			else
-			{
-				continue;
-			}
+		
+			if( !isDefined(who) )
+				who = self;
 
+			self._trap_in_use = true;
 			trap._trap_in_use = 1;
 			trap trap_set_string( &"REIMAGINED_TRAP_ACTIVE" );
 
@@ -338,6 +368,7 @@ trap_use_think( trap )
 			trap thread [[ trap._trap_activate_func ]](who);
 			//wait until done and then clean up and cool down
 			trap waittill("trap_done");
+			self notify ("trap_done");
 
 			//turn the damage detection trigger off until the trap is used again
 			trap trigger_off();
@@ -779,6 +810,16 @@ trap_damage(activator)
 		}
 		else
 		{
+
+			if( isDefined(ent.animname) && ent.animname == "boss_zombie") {
+				if(!isDefined(ent.damaged_by_trap) || ent.damaged_by_trap != self.targetname)
+				{
+					self doDamage( self.trap_damage, ent.origin, activator );
+					ent.damaged_by_trap = self.targetname;
+				}
+				return;
+			}
+
 			if(!isDefined(ent.marked_for_death))
 			{
 				switch ( self._trap_type )
@@ -796,6 +837,7 @@ trap_damage(activator)
 					break;
 				}
 			}
+
 		}
 	}
 }

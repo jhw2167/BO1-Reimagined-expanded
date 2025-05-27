@@ -4201,6 +4201,7 @@ weapon_give( weapon, weapon_unupgraded )
 		return;
 	}
 
+
 	self play_sound_on_ent( "purchase" );
 
 	if ( !is_weapon_upgraded( weapon ) )
@@ -4503,7 +4504,7 @@ init_includes()
 
 	//Specials
 	//include_weapon( "crossbow_explosive_upgraded_zm_x2", false );
-	include_weapon( "bo3_zm_widows_grenade", true );		//in box, only availible with WWn pro
+	include_weapon( "bo3_zm_widows_grenade", false );		//removed from box, issues
 
 	include_weapon( "sabertooth_zm" );
 	include_weapon( "sabertooth_upgraded_zm", false );

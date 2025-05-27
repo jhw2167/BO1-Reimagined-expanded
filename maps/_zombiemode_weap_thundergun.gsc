@@ -86,6 +86,9 @@ thundergun_network_choke()
 	level.thundergun_network_choke_count++;
 }
 
+is_boss_zombie( zomb ) {
+	return maps\_zombiemode::is_boss_zombie( zomb.animname );
+}
 
 thundergun_fired(currentweapon)
 {
@@ -108,7 +111,11 @@ thundergun_fired(currentweapon)
 	for ( i = 0; i < level.thundergun_fling_enemies.size; i++ )
 	{
 		//thundergun_network_choke();
-		if(IsAI(level.thundergun_fling_enemies[i]))
+		if( is_boss_zombie( level.thundergun_fling_enemies[i] ) ) {
+			zomb = level.thundergun_fling_enemies[i];
+			zomb thread [[zomb.thundergun_knockdown_func]](self, false);
+		} 
+		else if(IsAI(level.thundergun_fling_enemies[i]))
 		{
 			level.thundergun_fling_enemies[i] thread thundergun_fling_zombie( self, level.thundergun_fling_vecs[i], i );
 		}
@@ -122,7 +129,11 @@ thundergun_fired(currentweapon)
 	for ( i = 0; i < level.thundergun_knockdown_enemies.size; i++ )
 	{
 		//thundergun_network_choke();
-		if(IsAI(level.thundergun_fling_enemies[i]))
+		if( is_boss_zombie( level.thundergun_knockdown_enemies[i] ) ) {
+			zomb = level.thundergun_knockdown_enemies[i];
+			zomb thread [[zomb.thundergun_knockdown_func]](self, false);
+		}
+		else if(IsAI(level.thundergun_fling_enemies[i]))
 		{
 			level.thundergun_knockdown_enemies[i] thread thundergun_knockdown_zombie( self, level.thundergun_knockdown_gib[i] );
 		}

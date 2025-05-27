@@ -299,7 +299,6 @@ zombie_spawn_init( animname_set )
 		( level.round_number >= level.THRESHOLD_ZOMBIE_RANDOM_DROP_ROUND )
 		&& ( !self.respawn_zombie )
 		&& ( is_in_array(level.ARRAY_VALID_DESPAWN_ZOMBIES, self.animname) )
-		&& ( level.total_drops_round < level.THRESHOLD_MAX_DROPS )
 		)
 			self thread zombie_wait_determine_drop();
 
@@ -416,6 +415,19 @@ zombie_determine_drop()
 
 		if( level.total_drops_round >= level.THRESHOLD_MAX_DROPS )
 		{
+			if( is_true(level.dev_only ) ) {
+				//nothing
+			}
+			else {
+				self.hasDrop = "NONE";
+				return;
+			}
+			
+		}
+
+		wait(0.5);	//Wait for zombie to be in playable area
+
+		if( maps\_zombiemode::is_boss_zombie( self.animname ) ) {
 			self.hasDrop = "NONE";
 			return;
 		}
@@ -483,7 +495,7 @@ zombie_determine_drop()
 			{
 				self setclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
 				wait 0.5;
-				self clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+				//self clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
 			}
 			else
 			{
@@ -707,6 +719,11 @@ zombie_damage_failsafe()
 	self endon ("death");
 
 	continue_failsafe_damage = false;
+	//Reimagined-Expanded, we dont want this
+	if(!continue_failsafe_damage){
+		return;
+	}
+	
 	while (1)
 	{
 		//should only be for zombie exploits
@@ -759,6 +776,8 @@ set_zombie_run_cycle( new_move_speed, isPermanent )
 
 	
 	//if zombie doesnt have legs, return
+	self.pathEnemyFightDist = 64;
+	self.meleeAttackDist = 64;
 	if( !is_true(self.has_legs ) )
 		return;
 
@@ -782,6 +801,9 @@ set_zombie_run_cycle( new_move_speed, isPermanent )
 		self.zombie_move_speed_supersprint = true;
 		if( !IsDefined(self.zombie_speed_up) ) 
 			self.zombie_speed_up = 1.15;
+
+		self.pathEnemyFightDist = 80;
+		self.meleeAttackDist = 80;
 	}
 
 	self.needs_run_update = true;
@@ -4584,6 +4606,8 @@ zombie_death_event( zombie )
 		return;
 	}
 
+	zombie clearclientflag(level._ZOMBIE_ACTOR_ZOMBIE_HAS_DROP);
+
 	//Track all zombies killed
 	level.global_zombies_killed++;
 
@@ -4756,10 +4780,6 @@ find_flesh()
 			}
 		}
 
-		if (same_enemy_count > 12)
-		{
-			self.ignore_player[self.ignore_player.size] = self.favoriteenemy;
-		}
 
 		//PI_CHANGE_BEGIN - 6/18/09 JV It was requested that we use the poi functionality to set the "wait" point while all players
 		//are in the process of teleportation. It should not intefere with the monkey.  The way it should work is, if all players are in teleportation,
@@ -4972,6 +4992,7 @@ zombie_pathing()
 		self.zombie_path_timer += 100;
 		self SetGoalPos( goal );
 		self waittill( "bad_path" );
+		//iprintln( "Zombie pathing failed to breadcrumb at " + goal );
 
 		debug_print( "Zombie couldn't path to breadcrumb at " + goal + " Finding next breadcrumb" );
 		for( i = 0; i < crumb_list.size; i++ )

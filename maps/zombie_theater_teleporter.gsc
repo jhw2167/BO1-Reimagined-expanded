@@ -98,6 +98,10 @@ teleport_core_think( index )
 
 			trigger waittill( "trigger", user );
 
+			//Reimagined-Expanded: Notify use of telporting
+			level notify("teleporter_start");
+
+
 			if ( is_player_valid( user ) && user.score >= level.teleport_cost )
 			{
 				active = true;

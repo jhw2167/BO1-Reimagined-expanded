@@ -5455,6 +5455,7 @@ body
 		
 		zombie
 		{
+			p_zombie_perkacola_drink
 			ai_zombie_door_tear_v1
 			ai_zombie_door_tear_v2
 			ai_zombie_door_tear_high

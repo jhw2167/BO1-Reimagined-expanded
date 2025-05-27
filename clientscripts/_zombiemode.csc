@@ -1421,6 +1421,7 @@ vulture_zombie_powerup_fx( localclientnumber, set, newEnt )
 {
 	if( set )
 	{
+		self.hasDrop = true;
 		if( level.vulture_status[ localclientnumber ] > 1 )
 		{
 			ent_num = self GetEntityNumber();
@@ -1428,6 +1429,8 @@ vulture_zombie_powerup_fx( localclientnumber, set, newEnt )
 				PlayFXOnTag( localclientnumber, level._effect["powerup_on"], self, "j_SpineLower" );
 			self thread vulture_zombie_end_powerup_fx( localclientnumber );
 		}
+	} else {
+		self.hasDrop = false;
 	}
 	
 }
@@ -1436,7 +1439,7 @@ vulture_zombie_powerup_fx( localclientnumber, set, newEnt )
 vulture_zombie_end_powerup_fx( client_num )
 {
 	player_has_vulture_pro = level.vulture_status[ client_num ] > 1;
-	while( player_has_vulture_pro && IsAlive( self ) )
+	while( player_has_vulture_pro && ( IsDefined( self ) &&  IsAlive( self ) ) && self.hasDrop )
 	{
 		wait 0.5;
 		player_has_vulture_pro = (level.vulture_status[ client_num ] > 1 );

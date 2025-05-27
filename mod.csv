@@ -260,7 +260,6 @@ weapon,sp/spikemore_zm
 weapon,sp/equip_gasmask_zm
 weapon,sp/lower_equip_gasmask_zm
 weapon,sp/zombie_bullet_crouch
-weapon,sp/zombie_perk_bottle
 
 //New Weapons
 weapon,sp/ak47_zm
@@ -327,6 +326,7 @@ weapon,sp/hs10_upgraded_zm
 //weapon,sp/hs10_upgraded_zm_x2
 
 //ARs
+weapon,sp/famas_zm
 weapon,sp/famas_upgraded_zm
 weapon,sp/aug_acog_mk_upgraded_zm
 weapon,sp/galil_upgraded_zm_x2
@@ -418,6 +418,10 @@ material,specialty_bo4hitmarker_white
 material,specialty_bo4hitmarker_red__
 material,punch_zm
 material,mtl_sabretooth
+material,mtl_zombieengineer_wrench
+material,mtl_zombieengineer_body_skin
+material,mtl_zombieengineer_body_leather
+material,mtl_zombieengineer_body_canvas
 
 
 material,hud_icon_pistol
@@ -691,6 +695,9 @@ xmodel,t5_weapon_sabretooth_viewmodel
 xmodel,t5_weapon_sabretooth_world
 //{{NEW_XMODEL_LINE}}
 
+//boss
+xmodel,char_ger_zombeng_body1_1
+
 //ANIMS
 xanim,p_zombie_perkacola_drink
 xanim,ai_zombie_fast_sprint_01
@@ -741,6 +748,35 @@ xanim,ai_zombie_quad_death_tesla_3
 xanim,ai_zombie_quad_death_tesla_4
 
 xanim,ai_zombie_flinger_flail
+
+xanim,ai_zombie_boss_attack_multiswing_a
+xanim,ai_zombie_boss_attack_multiswing_b
+xanim,ai_zombie_boss_attack_running
+xanim,ai_zombie_boss_attack_sprinting
+xanim,ai_zombie_boss_attack_swing_overhead
+xanim,ai_zombie_boss_attack_swing_swipe
+xanim,ai_zombie_boss_death
+xanim,ai_zombie_boss_death_a
+xanim,ai_zombie_boss_enrage_short
+xanim,ai_zombie_boss_enrage_start
+xanim,ai_zombie_boss_enrage_start_a_coast
+xanim,ai_zombie_boss_enrage_start_coast
+xanim,ai_zombie_boss_enrage_start_scream_coast
+xanim,ai_zombie_boss_enrage_start_slamground_coast
+xanim,ai_zombie_boss_tesla_death_a_coast
+xanim,ai_zombie_boss_death_explode_coast
+xanim,ai_zombie_boss_headbutt
+xanim,ai_zombie_boss_idle_a
+xanim,ai_zombie_boss_idle_b
+xanim,ai_zombie_boss_run_a
+xanim,ai_zombie_boss_run_b
+xanim,ai_zombie_boss_run_c
+xanim,ai_zombie_boss_run_d
+xanim,ai_zombie_boss_run_hitground
+xanim,ai_zombie_boss_run_hitground_new
+xanim,ai_zombie_boss_sprint_a
+xanim,ai_zombie_boss_sprint_b
+xanim,ai_zombie_boss_walk_a
 
 //Weapons
 xanim,viewmodel_asp_sw_d2p_in

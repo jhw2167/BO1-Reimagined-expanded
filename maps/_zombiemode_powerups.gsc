@@ -53,15 +53,15 @@ init()
 	level._effect["powerup_grabbed_wave"] 			= loadfx( "misc/fx_zombie_powerup_wave" );
 
 	level._effect["powerup_on_red"] 				= loadfx( "misc/fx_zombie_powerup_on_red" );
-	level._effect["powerup_grabbed_red"] 			= loadfx( "misc/fx_zombie_powerup_red_grab" );
-	level._effect["powerup_grabbed_wave_red"] 		= loadfx( "misc/fx_zombie_powerup_red_wave" );
+	//level._effect["powerup_grabbed_red"] 			= loadfx( "misc/fx_zombie_powerup_red_grab" );
+	//level._effect["powerup_grabbed_wave_red"] 		= loadfx( "misc/fx_zombie_powerup_red_wave" );
 
 	level._effect["powerup_on_solo"]				= LoadFX( "misc/fx_zombie_powerup_solo_on" );
-	level._effect["powerup_grabbed_solo"]			= LoadFX( "misc/fx_zombie_powerup_solo_grab" );
-	level._effect["powerup_grabbed_wave_solo"] 		= loadfx( "misc/fx_zombie_powerup_solo_wave" );
-	level._effect["powerup_on_caution"]				= LoadFX( "misc/fx_zombie_powerup_caution_on" );
-	level._effect["powerup_grabbed_caution"]		= LoadFX( "misc/fx_zombie_powerup_caution_grab" );
-	level._effect["powerup_grabbed_wave_caution"] 	= loadfx( "misc/fx_zombie_powerup_caution_wave" );
+	//level._effect["powerup_grabbed_solo"]			= LoadFX( "misc/fx_zombie_powerup_solo_grab" );
+	//level._effect["powerup_grabbed_wave_solo"] 		= loadfx( "misc/fx_zombie_powerup_solo_wave" );
+	//level._effect["powerup_on_caution"]				= LoadFX( "misc/fx_zombie_powerup_caution_on" );
+	//level._effect["powerup_grabbed_caution"]		= LoadFX( "misc/fx_zombie_powerup_caution_grab" );
+	//level._effect["powerup_grabbed_wave_caution"] 	= loadfx( "misc/fx_zombie_powerup_caution_wave" );
 
 	if( level.mutators["mutator_noPowerups"] )
 	{
@@ -1500,6 +1500,9 @@ powerup_grab()
 						zombies = getaiarray("axis");
 						players[i].zombie_nuked = get_array_of_closest( self.origin, zombies );
 						players[i] notify("nuke_triggered");
+						if( IsDefined(level.currentEngineer) ) {
+							level.currentEngineer notify("nuke_triggered");
+						}
 						break;
 
 					case "full_ammo":
@@ -1509,6 +1512,7 @@ powerup_grab()
 
 					case "restock":
 						level thread full_ammo_powerup_implementation( undefined, players[i], players[i].entity_num );
+						players[i] thread generate_perk_hint( "restock_powerup" );
 						//players[i] thread powerup_vo("full_ammo");
 						break;
 
@@ -1560,6 +1564,7 @@ powerup_grab()
 
 					case "tesla":
 						level thread tesla_weapon_powerup( players[i], self );
+						players[i] thread generate_perk_hint( "superpower_powerup" );
 						players[i] thread powerup_vo( "tesla" ); // TODO: Audio should uncomment this once the sounds have been set up
 						break;
 
@@ -3469,6 +3474,7 @@ tesla_weapon_powerup( ent_player, powerup, time )
 		ent_player maps\_zombiemode_perks::returnPerk( level.ARRAY_VALID_PRO_PERKS[i] );
 		wait(0.02);
 	}
+
 
 	if( is_true( level.dev_only ) )
 		drop_time = 5; //dev

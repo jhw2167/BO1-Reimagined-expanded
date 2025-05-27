@@ -1035,6 +1035,7 @@ override_blocker_prices()
 }
 
 /*
+	//Reimagined-Expanded
 	- Gas Appears in different tanks throughout the map after set number of rounds
 	- Gas waits arbitrary length of time between each spawn
 	- If player knifes the tank, get opportunity to fill tank with gas by knifing nova crawlers
@@ -1147,7 +1148,7 @@ watch_start_gas()
 	gas_point Hide();
 	level.pentagon_gas_point = gas_point;
 
-	trigger = Spawn( "trigger_damage", gas_point.origin, 1, 30, 72 ); // org, flags, radius, height
+	trigger = Spawn( "trigger_damage", gas_point.origin, 1, 96, 72 ); // org, flags, radius, height
 	trigger enablelinkto();
 	trigger LinkTo( gas_point );
 

@@ -765,7 +765,10 @@ thief_zombie_think()
 	//start_health = thief_scale_health( start_health );
 	//pregame_health = thief_scale_health( GetDvarInt( #"scr_thief_health_pregame" ) );
 	self.maxhealth = start_health;
-	self.health = start_health;
+	self.health = self.maxhealth;
+	if( is_true(level.classic) )
+		self.health = self.maxhealth * 0.8;
+	
 
 	self thief_print( "start_health = " + start_health );
 
@@ -1952,6 +1955,19 @@ thief_take_player()
 
 	self notify( "victim_done" );
 	self thief_get_next_victim();
+
+	//Reimagined-Expanded reduce health after thief steals weapon
+	//Deal 10% of scientist health remaining up to 40% for a one player game
+	currentHealth = self.health;
+	damage = currentHealth * 0.1;
+	players = get_players();
+	for( i = 0; i < 5 - players.size; i++ ) {
+		self DoDamage( damage, self.origin );
+		//iprintln( "doing damge to thief " + damage );
+	}
+
+	
+
 }
 
 

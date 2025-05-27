@@ -434,7 +434,8 @@ cooldown_portal_timer(player)
 	self.portal_used = array_add(self.portal_used, player);
 
 	time = 0;
-	while(!flag("defcon_active") && time < 20 )
+	cooldown_time = randomIntRange( 1, 8 );
+	while(!flag("defcon_active") && time < cooldown_time )
 	{
 		wait(1);
 		time++;
